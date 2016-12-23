@@ -1,3 +1,8 @@
+BUILD
+=====
+meson build && cd build && ninja
+
+
 OXCART
 ======
 Open-XC-Airborne-Realtime-Telemetry
@@ -8,7 +13,9 @@ oxmem - reads and writes to shaxsred mem
 
 oxdev - base virtual device class Threaded
 
-oxdev_i2c - inherits from oxdev opens Wire singleton if needed.
+ox_wire - implements an Arduino like i2c communication singleton class
+
+oxdev_i2c - inherits from oxdev opens Wire (ox_wire) singleton if needed.
 
 oxdev_i2c_switch - inherits from oxdev opens Wire singleton if needed
                    adds oxdev_i2c devices attached to switch.
@@ -17,6 +24,8 @@ oxdev_serial - inherits from oxdev ( GPS reader with write methods )
 
 ox_display - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
              switched device
+
+named_store - shared mem base class to store 
 
 BMP85 - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
         switched device
@@ -28,6 +37,8 @@ GPS - Read this from GPSD SHM
 
 
 oxtran - encapsulates oxdev_serial, sends data to XCSoar 
+
+
 
 Boost SH MEM
 ============
