@@ -60,7 +60,6 @@ int main(int argc, char *argv[] ) {
     cerr << "OK delete..." << endl;;
   }
   else {
-    b::this_thread::sleep_for(b::chrono::seconds{1});
     cerr << "else" << endl;
     //Open already created shared memory object.
     

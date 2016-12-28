@@ -2,7 +2,6 @@
 #define __named_store_h__
 
 #include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/interprocess/containers/vector.hpp>
 #include <string.h>
 #include "ns.h"
 
@@ -14,21 +13,21 @@ static const unsigned int V=0;
 template <class STORE_T> class NamedStore {
 
 public:
-NamedStore();
+  NamedStore();
 
-NamedStore( const unsigned int &dimension );
+  NamedStore( const unsigned int &dimension );
 
 
-NamedStore( char const * name,
+  NamedStore( char const * name,
               bip::managed_shared_memory *shm,
               const unsigned int &dimension );
 
-NamedStore(const NamedStore& rhs);
+  NamedStore(const NamedStore& rhs);
 
-~NamedStore();
+  ~NamedStore();
 
-void set_val( unsigned int index, STORE_T val );
-STORE_T get_val( unsigned int index );
+  void set_val( unsigned int index, STORE_T val );
+  STORE_T get_val( unsigned int index );
 
                 
 private:

@@ -9,7 +9,7 @@ Open-XC-Airborne-Realtime-Telemetry
 
 oxcart - main
 
-oxmem - reads and writes to shaxsred mem
+* oxmem - reads and writes to shaxsred mem
 
 oxdev - base virtual device class Threaded
 
@@ -25,7 +25,7 @@ oxdev_serial - inherits from oxdev ( GPS reader with write methods )
 ox_display - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
              switched device
 
-named_store - shared mem base class to store 
+* named_store - shared mem base class to store 
 
 BMP85 - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
         switched device

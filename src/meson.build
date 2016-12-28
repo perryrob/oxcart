@@ -1,4 +1,4 @@
-oxcart_sources = ['named_store.cpp']
+oxcart_sources = ['named_store.cpp','oxmem.cpp']
 
 boost_dep=dependency('boost', version: '>=1.58')
 thread_dep = cpp.find_library('pthread', required : true)
