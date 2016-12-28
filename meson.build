@@ -1,7 +1,7 @@
 project(
     'oxcart', 'cpp',
-    version:'1.0.0',
-    license : 'MIT'
+     version:'1.0.0',
+     license : 'BSD'
 )
 
 cpp = meson.get_compiler('cpp')
