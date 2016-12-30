@@ -11,7 +11,7 @@ oxcart - main
 
 * oxmem - reads and writes to shaxsred mem
 
-oxdev - base virtual device class Threaded
+* oxbus - base virtual device class Threaded
 
 ox_wire - implements an Arduino like i2c communication singleton class
 

@@ -15,7 +15,7 @@ test_oxmem_exe = executable('test_oxmem', 'test_oxmem.cpp',
                                       bs_dep,bt_dep
                                   ])
 
-test_oxdev_exe = executable('test_oxdev', 'test_oxdev.cpp',
+test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
                                   include_directories : inc,
                                   link_with : [oxlib],
                                   dependencies :  [
@@ -25,4 +25,4 @@ test_oxdev_exe = executable('test_oxdev', 'test_oxdev.cpp',
 
 test('test_named_store test', test_named_store_exe)
 test('test_oxmem test', test_oxmem_exe)
-test('test_odev test', test_oxdev_exe)
+test('test_oxbus test', test_oxbus_exe)

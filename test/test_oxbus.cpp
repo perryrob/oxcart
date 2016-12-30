@@ -2,12 +2,12 @@
 #include <cstdlib>
 #include <cassert>
 #include "oxmem.h"
-#include "oxdev.h"
+#include "oxbus.h"
 #include "named_store.h"
 
 using namespace std;
 
-class OxDevTest : public OxDev {
+class OxBusTest : public OxBus {
 
 public:
 
@@ -15,7 +15,7 @@ public:
 
   unsigned int dim;
  
-  OxDevTest() {
+  OxBusTest() {
     dim = 1;
     ns = new NamedStore<int>("test",shm,dim);
   }
@@ -34,7 +34,7 @@ public:
     return junk.get_val(X);
   }
   
-  ~OxDevTest() {
+  ~OxBusTest() {
     delete ns;
   }
   
@@ -46,9 +46,9 @@ int main(int argc, char *argv[] ) {
 
     OxMem *oxm = new OxMem("OX",100);
 
-    OxDev::set_shared_mem( oxm->get_shm() );
+    OxBus::set_shared_mem( oxm->get_shm() );
 
-    OxDevTest * ot = new OxDevTest();
+    OxBusTest * ot = new OxBusTest();
     ot->run();
     b::this_thread::sleep_for(b::chrono::milliseconds{1});
     ot->stop();

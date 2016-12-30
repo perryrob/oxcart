@@ -1,18 +1,18 @@
-#ifndef __oxdev_h__
-#define __oxdev_h__
+#ifndef __oxbus_h__
+#define __oxbus_h__
 
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/thread.hpp>
 #include "ns.h"
 
-class OxDev  {
+class OxBus  {
 
 public:
 
-  OxDev(){ is_running = false; }
+  OxBus(){ is_running = false; }
   
   inline void run() {
-    thr = new b::thread(b::bind(&OxDev::threaded_task, this));
+    thr = new b::thread(b::bind(&OxBus::threaded_task, this));
     is_running = true;
   }
   inline void stop() {
@@ -21,10 +21,10 @@ public:
   }
 
   static void set_shared_mem( bip::managed_shared_memory * s ) {
-    OxDev::shm = s;
+    OxBus::shm = s;
   }
   inline bool running() { return is_running;  }
-  virtual ~OxDev() {
+  virtual ~OxBus() {
     delete thr;
     is_running = false;
   }
@@ -40,5 +40,5 @@ private:
   b::thread * thr;
 
 };
-bip::managed_shared_memory * OxDev::shm = 0;
+bip::managed_shared_memory * OxBus::shm = 0;
 #endif
