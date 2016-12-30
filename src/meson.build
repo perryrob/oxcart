@@ -18,12 +18,13 @@ oxlib = shared_library(
     install : true
 )
 
-#executable('oxcart', 'main.cpp', dependencies : [
-#    thread_dep,rt_dep,
-#    bs_dep,bt_dep
-#],link_with : oxcartlib)
+executable('oxcart',
+           'main.cpp',
+           include_directories : inc,
+           dependencies : [
+               thread_dep,rt_dep,
+               bs_dep,bt_dep
+           ],
+           link_with : oxlib
+)
 
-#executable('oxcart', 'main.cpp', dependencies : [
-#    thread_dep,rt_dep,
-#    bs_dep,bt_dep
-#])
