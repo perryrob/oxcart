@@ -1,4 +1,10 @@
-oxcart_sources = ['named_store.cpp','oxmem.cpp']
+oxcart_sources = [ 'named_store.cpp',
+                   'oxmem.cpp',
+                   'smbus.cpp',
+                   'arduino_core.cpp',
+                   'arduino_wire.cpp',
+                   'oxapp.cpp'
+    ]
 
 boost_dep=dependency('boost', version: '>=1.58')
 thread_dep = cpp.find_library('pthread', required : true)
@@ -17,6 +23,8 @@ oxlib = shared_library(
 ],
     install : true
 )
+
+subdir('devices')
 
 executable('oxcart',
            'main.cpp',

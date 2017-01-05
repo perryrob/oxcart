@@ -23,6 +23,24 @@ test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
                                       bs_dep,bt_dep
                                   ])
 
+test_awire_exe = executable('test_awire', 'test_arduino_wire.cpp',
+                            include_directories : inc,
+                            link_with : [oxlib],
+                            dependencies :  [
+                                thread_dep,rt_dep,
+                                bs_dep,bt_dep
+                            ])
+
+test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
+                            include_directories : inc,
+                            link_with : [oxlib],
+                            dependencies :  [
+                                thread_dep,rt_dep,
+                                bs_dep,bt_dep
+                            ])
+
 test('test_named_store test', test_named_store_exe)
 test('test_oxmem test', test_oxmem_exe)
 test('test_oxbus test', test_oxbus_exe)
+test('test_awire test', test_awire_exe)
+test('test_oxapp test', test_oxapp_exe)

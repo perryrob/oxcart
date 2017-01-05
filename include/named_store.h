@@ -31,11 +31,13 @@ public:
 
                 
 private:
+  
   STORE_T *vals;
   unsigned int dimension;
   std::string name;
-  bip::managed_shared_memory *shm;
+  bip::managed_shared_memory * shm;
   bool is_shared_mem;
+
 };
 
 #endif

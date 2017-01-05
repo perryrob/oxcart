@@ -9,6 +9,8 @@ Open-XC-Airborne-Realtime-Telemetry
 
 oxcart - main
 
+* oxapp - contains the named shared memory manager
+
 * oxmem - reads and writes to shaxsred mem
 
 * oxbus - base virtual device class Threaded
@@ -65,3 +67,16 @@ mkdir build
 meson build
 cd build
 ninja
+
+Implementation notes
+====================
+
+i2c = ArduinoWire::OxI2CBus( const char * address )
+i2c.add_device( OxDevice )
+i2c.run()  // starts thread that loops though devices and calls read_sensor
+
+
+TODO
+====
+Still need to add the named_store implementation to the OxDevice or device class itself.....
+Still need to add the multiplexing device.

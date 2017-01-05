@@ -66,8 +66,8 @@ int main(int argc, char *argv[] ) {
     bip::managed_shared_memory shm(bip::open_only,
                                    "MySharedMemory");
 
-    NamedStore<double> *ns_sm= new NamedStore<double>("Accel",&shm,3);
-    ns_sm->set_val(X, 0.0);
+    NamedStore<double> ns_sm("Accel",&shm,3);
+    ns_sm.set_val(X, 0.0);
     cerr << "Setting X val to 0.0 to kill the other process." << endl;
   }
 }
