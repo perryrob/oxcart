@@ -64,7 +64,7 @@ class BMP085 : public OxI2CDevice {
   uint16_t readRawTemperature(void);
   uint32_t readRawPressure(void);
   
-  void read_sensor() {} // Doing nothing ADD IMPLEMENTATION
+  void rw_sensor() {} // Doing nothing ADD IMPLEMENTATION
   ~BMP085() {} // Doing nothing ADD IMPLEMENTATION
     
  private:

@@ -28,7 +28,7 @@ public:
     is_running = false;
     thr->join();
     delete thr;
-    
+    thr = 0;
   }
 
   void add_device( OxI2CDevice *device ) {
@@ -55,7 +55,10 @@ private:
     while (is_running) {
       for( std::deque<OxI2CDevice*>::iterator itr = devices.begin();
            itr != devices.end(); ++itr ) {
-        (*itr)->read_sensor();
+        if(  (*itr)->is_multiplexed() ) {
+          (*itr)->get_multiplexer()->rw_sensor();
+        }
+        (*itr)->rw_sensor();
       }
     }
   }
