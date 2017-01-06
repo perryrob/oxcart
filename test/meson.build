@@ -4,7 +4,7 @@ test_named_store_exe = executable('test_named_store', 'test_named_store.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep
+                                      bs_dep,bt_dep,bt_log,bt_logs
                                   ])
 
 test_oxmem_exe = executable('test_oxmem', 'test_oxmem.cpp',
@@ -12,7 +12,7 @@ test_oxmem_exe = executable('test_oxmem', 'test_oxmem.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep
+                                      bs_dep,bt_dep,bt_log,bt_logs
                                   ])
 
 test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
@@ -20,7 +20,7 @@ test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep
+                                      bs_dep,bt_dep,bt_log,bt_logs
                                   ])
 
 test_awire_exe = executable('test_awire', 'test_arduino_wire.cpp',
@@ -28,7 +28,7 @@ test_awire_exe = executable('test_awire', 'test_arduino_wire.cpp',
                             link_with : [oxlib],
                             dependencies :  [
                                 thread_dep,rt_dep,
-                                bs_dep,bt_dep
+                                bs_dep,bt_dep,bt_log,bt_logs
                             ])
 
 test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
@@ -36,7 +36,7 @@ test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
                             link_with : [oxlib],
                             dependencies :  [
                                 thread_dep,rt_dep,
-                                bs_dep,bt_dep
+                                bs_dep,bt_dep,bt_log,bt_logs
                             ])
 
 test('test_named_store test', test_named_store_exe)
@@ -45,4 +45,4 @@ test('test_oxbus test', test_oxbus_exe)
 test('test_awire test', test_awire_exe)
 test('test_oxapp test', test_oxapp_exe)
 
-# subdir( 'devices' )
+subdir( 'devices' )

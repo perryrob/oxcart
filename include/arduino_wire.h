@@ -60,7 +60,8 @@ public:
 	 * Ends a transmission to the slave device
 	 *
 	 * Input values:
-	 * 		@param releaseDevice True, sends stop message, releasing the bus after transmission. False, sends a restart
+	 * 		@param releaseDevice True, sends stop message, 
+     *    releasing the bus after transmission. False, sends a restart
 	 * 		       keeping the connection active.
 	 *
 	 * @return
@@ -74,7 +75,8 @@ public:
 	int endTransmission(unsigned char = true);
 
 	/**
-	 * Used to request bytes from a slave device, given by . The bytes may then be retrieved with the available() and read() functions.
+	 * Used to request bytes from a slave device, given by . The bytes may 
+     * then be retrieved with the available() and read() functions.
 	 */
 	int requestFrom(int address, unsigned int read_len, bool releaseBus = true);
 	int available();

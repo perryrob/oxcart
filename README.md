@@ -80,3 +80,17 @@ TODO
 ====
 Still need to add the named_store implementation to the OxDevice or device class itself.....
 Still need to add the multiplexing device.
+
+
+UPDATE 1/6/2016
+===============
+Compiler dying with internal compiler error. Turns out that there is no swap. SO I created one on the SAN
+
+SWAP=/var/cache
+
+sudo mkdir -p $SWAP
+sudo dd if=/dev/zero of=$SWAP/swapfile bs=1M count=512
+sudo chmod 0600 $SWAP/swapfile
+sudo mkswap $SWAP/swapfile
+sudo swapon $SWAP/swapfile
+

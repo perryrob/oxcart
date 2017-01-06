@@ -71,7 +71,7 @@ size_t ArduinoWire::write(const uint8_t * data, size_t size){
 
 int ArduinoWire::endTransmission(unsigned char stop){
 
-  int bytes_written = 0; // used to be set to 1 hmmmmm.
+  int bytes_written = 1; // used to be set to 1 hmmmmm.
   int res = 0;
 
   uint8_t reg =  txBuffer[0];
