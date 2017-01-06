@@ -8,7 +8,7 @@
 int main(int argc, char * argv[] ) {
 
   init_log();
-
+  /**
   BOOST_LOG_TRIVIAL(debug) << "main" ;
   OxI2CBus i2c( "/dev/i2c-2" );
   BOOST_LOG_TRIVIAL(debug) << "bus" ;
@@ -26,6 +26,23 @@ int main(int argc, char * argv[] ) {
   BOOST_LOG_TRIVIAL(debug) << "WAKE UP" ;
   i2c.stop();
   BOOST_LOG_TRIVIAL(debug) << "stop" ;
+  */
+
+  OxI2CBus i2c( "/dev/i2c-2" );
+
+  TCA9548A tca9548a_multi( TCA9548A_OFF );
+  TCA9548A tca9548a( TCA9548A_CH2 );
+  TCA9548A tca9548a_off( TCA9548A_OFF );
+
+  tca9548a.set_multiplexer( &tca9548a_multi );
+
+  i2c.add_device( &tca9548a );
+  i2c.add_device( &tca9548a_off );
+
+  i2c.run();
+  b::this_thread::sleep(b::posix_time::milliseconds(10));
+  i2c.stop();
+
   return 0;
   
 }
