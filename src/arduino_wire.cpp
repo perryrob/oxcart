@@ -19,6 +19,8 @@
 #include "arduino_wire.h"
 #include "smbus.h"
 
+char * ArduinoWire::i2c_bus = 0;
+
 ArduinoWire::ArduinoWire(): fd(0), txAddress(0), activeDevice(false), is_master(true){}
 
 

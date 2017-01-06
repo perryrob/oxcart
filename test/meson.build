@@ -44,3 +44,5 @@ test('test_oxmem test', test_oxmem_exe)
 test('test_oxbus test', test_oxbus_exe)
 test('test_awire test', test_awire_exe)
 test('test_oxapp test', test_oxapp_exe)
+
+# subdir( 'devices' )

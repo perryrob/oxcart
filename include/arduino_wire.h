@@ -90,6 +90,4 @@ public:
     }
 };
 
-char * ArduinoWire::i2c_bus = 0;
-
 #endif /* ARDUINOWIRE_H_ */

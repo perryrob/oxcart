@@ -1,4 +1,4 @@
-oxcart_device_sources = [ 'BMP085.cpp']
+oxcart_device_sources = [ 'BMP085.cpp', 'TCA9548A.cpp']
 
 
 ox_device_lib = shared_library(

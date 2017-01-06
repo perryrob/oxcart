@@ -21,9 +21,7 @@
 #define __BMP085_H__
 
 #include "arduino_core.h"
-#include "arduino_wire.h"
 #include "oxi2cdevice.h"
-#include "oxi2cbus.h"
 
 #define BMP085_DEBUG 0
 
@@ -55,7 +53,7 @@
 class BMP085 : public OxI2CDevice {
 
  public:
-  BMP085( OxI2CBus &i2c_wire);
+  BMP085(){}
   bool begin(uint8_t mode = BMP085_ULTRAHIGHRES);  // by default go highres
   float readTemperature(void);
   int32_t readPressure(void);
@@ -69,7 +67,6 @@ class BMP085 : public OxI2CDevice {
     
  private:
   int32_t computeB5(int32_t UT);
-  ArduinoWire Wire;
   uint8_t read8(uint8_t addr);
   uint16_t read16(uint8_t addr);
   void write8(uint8_t addr, uint8_t data);

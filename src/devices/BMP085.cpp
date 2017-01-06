@@ -18,19 +18,12 @@
 #include "devices/BMP085.h"
 #include <math.h>
 
-BMP085::BMP085(OxI2CBus &i2c_wire) {
-
-  Wire = i2c_wire ;
-
-}
-
-
 bool BMP085::begin(uint8_t mode) {
   if (mode > BMP085_ULTRAHIGHRES) 
     mode = BMP085_ULTRAHIGHRES;
   oversampling = mode;
 
-  Wire.begin();
+  Wire->begin();
 
   if (read8(0xD0) != 0x55) return false;
 
@@ -241,14 +234,14 @@ float BMP085::readAltitude(float sealevelPressure) {
 uint8_t BMP085::read8(uint8_t a) {
   uint8_t ret;
 
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.write(a); // sends register address to read from
-  Wire.endTransmission(); // end transmission
+  Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
+  Wire->write(a); // sends register address to read from
+  Wire->endTransmission(); // end transmission
   
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.requestFrom(BMP085_I2CADDR, 1);// send data n-bytes read
-  ret = Wire.read(); // receive DATA
-  Wire.endTransmission(); // end transmission
+  Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
+  Wire->requestFrom(BMP085_I2CADDR, 1);// send data n-bytes read
+  ret = Wire->read(); // receive DATA
+  Wire->endTransmission(); // end transmission
 
   return ret;
 }
@@ -256,23 +249,23 @@ uint8_t BMP085::read8(uint8_t a) {
 uint16_t BMP085::read16(uint8_t a) {
   uint16_t ret;
 
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.write(a); // sends register address to read from
-  Wire.endTransmission(); // end transmission
+  Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
+  Wire->write(a); // sends register address to read from
+  Wire->endTransmission(); // end transmission
   
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.requestFrom(BMP085_I2CADDR, 2);// send data n-bytes read
-  ret = Wire.read(); // receive DATA
+  Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
+  Wire->requestFrom(BMP085_I2CADDR, 2);// send data n-bytes read
+  ret = Wire->read(); // receive DATA
   ret <<= 8;
-  ret |= Wire.read(); // receive DATA
-  Wire.endTransmission(); // end transmission
+  ret |= Wire->read(); // receive DATA
+  Wire->endTransmission(); // end transmission
 
   return ret;
 }
 
 void BMP085::write8(uint8_t a, uint8_t d) {
-  Wire.beginTransmission(BMP085_I2CADDR); // start transmission to device 
-  Wire.write(a); // sends register address to read from
-  Wire.write(d);  // write data
-  Wire.endTransmission(); // end transmission
+  Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
+  Wire->write(a); // sends register address to read from
+  Wire->write(d);  // write data
+  Wire->endTransmission(); // end transmission
 }

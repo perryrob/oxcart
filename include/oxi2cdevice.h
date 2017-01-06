@@ -1,6 +1,7 @@
 #ifndef __OX_I2C_DEVICE_H__
 #define __OX_I2C_DEVICE_H__
 
+#include "arduino_wire.h"
 #include <string>
 
 class OxI2CDevice {
@@ -16,12 +17,14 @@ public:
 
   inline bool is_multiplexed() { return multiplexer != 0;}
   inline OxI2CDevice * get_multiplexer() { return multiplexer; }
-    
+  void set_bus( ArduinoWire *i2cbus ) { Wire = i2cbus; }
+
   virtual void rw_sensor() = 0;
 
   
 protected:
-  
+
+  ArduinoWire *Wire;  
   OxI2CDevice() {}  
   virtual ~OxI2CDevice(){}
 
