@@ -1,7 +1,4 @@
-#include <boost/interprocess/managed_shared_memory.hpp>
-
 #include "oxapp.h"
-#include "ns.h"
 
 int main(int argc, char *argv[] ) {
 

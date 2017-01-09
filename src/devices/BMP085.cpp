@@ -14,7 +14,7 @@
   Written by Limor Fried/Ladyada for Adafruit Industries.  
   BSD license, all text above must be included in any redistribution
  ****************************************************/
-
+#include "oxapp.h"
 #include "devices/BMP085.h"
 #include <math.h>
 
@@ -111,7 +111,7 @@ uint32_t BMP085::readRawPressure(void) {
 
 
 int32_t BMP085::readPressure(void) {
-  int32_t UT, UP, B3, B5, B6, X1, X2, X3, p;
+  int32_t UT, UP, B3, B5, B6, X1, X2, X3;
   uint32_t B4, B7;
 
   UT = readRawTemperature();
@@ -170,13 +170,13 @@ int32_t BMP085::readPressure(void) {
 #endif
 
   if (B7 < 0x80000000) {
-    p = (B7 * 2) / B4;
+    lastP = (B7 * 2) / B4;
   } else {
-    p = (B7 / B4) * 2;
+    lastP = (B7 / B4) * 2;
   }
-  X1 = (p >> 8) * (p >> 8);
+  X1 = (lastP >> 8) * (lastP >> 8);
   X1 = (X1 * 3038) >> 16;
-  X2 = (-7357 * p) >> 16;
+  X2 = (-7357 * lastP) >> 16;
 
 #if BMP085_DEBUG == 1
   Serial.print("p = "); Serial.println(p);
@@ -184,11 +184,11 @@ int32_t BMP085::readPressure(void) {
   Serial.print("X2 = "); Serial.println(X2);
 #endif
 
-  p = p + ((X1 + X2 + (int32_t)3791)>>4);
+  lastP = lastP + ((X1 + X2 + (int32_t)3791)>>4);
 #if BMP085_DEBUG == 1
   Serial.print("p = "); Serial.println(p);
 #endif
-  return p;
+  return lastP;
 }
 
 int32_t BMP085::readSealevelPressure(float altitude_meters) {
@@ -198,7 +198,7 @@ int32_t BMP085::readSealevelPressure(float altitude_meters) {
 
 float BMP085::readTemperature(void) {
   int32_t UT, B5;     // following ds convention
-  float temp;
+
 
   UT = readRawTemperature();
 
@@ -212,20 +212,19 @@ float BMP085::readTemperature(void) {
 #endif
 
   B5 = computeB5(UT);
-  temp = (B5+8) >> 4;
-  temp /= 10;
+  lastT = (B5+8) >> 4;
+  lastT /= 10;
   
-  return temp;
+  return lastT;
 }
 
 float BMP085::readAltitude(float sealevelPressure) {
-  float altitude;
 
   float pressure = readPressure();
 
-  altitude = 44330 * (1.0 - pow(pressure /sealevelPressure,0.1903));
+  lastA = 44330 * (1.0 - pow(pressure /sealevelPressure,0.1903));
 
-  return altitude;
+  return lastA;
 }
 
 
@@ -237,7 +236,7 @@ uint8_t BMP085::read8(uint8_t a) {
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->write(a); // sends register address to read from
   Wire->endTransmission(); // end transmission
-  
+
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->requestFrom(BMP085_I2CADDR, 1);// send data n-bytes read
   ret = Wire->read(); // receive DATA
@@ -268,4 +267,15 @@ void BMP085::write8(uint8_t a, uint8_t d) {
   Wire->write(a); // sends register address to read from
   Wire->write(d);  // write data
   Wire->endTransmission(); // end transmission
+}
+void BMP085::rw_sensor() {
+  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
+  if (shm == 0) {
+    // Don't write to shared memory
+    begin();
+    readTemperature();
+    readAltitude(); // In pascals
+    readPressure();
+  } else {
+  }
 }

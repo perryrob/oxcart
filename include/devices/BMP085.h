@@ -53,7 +53,7 @@
 class BMP085 : public OxI2CDevice {
 
  public:
-  BMP085(){}
+ BMP085() : OxI2CDevice( "BMP085"),  lastP(0), lastT(0.0),lastA(0.0) {}
   bool begin(uint8_t mode = BMP085_ULTRAHIGHRES);  // by default go highres
   float readTemperature(void);
   int32_t readPressure(void);
@@ -62,7 +62,12 @@ class BMP085 : public OxI2CDevice {
   uint16_t readRawTemperature(void);
   uint32_t readRawPressure(void);
   
-  void rw_sensor() {} // Doing nothing ADD IMPLEMENTATION
+  uint32_t lastPressure() {return lastP;}
+  float lastAltitude() {return lastA;}
+  float lastTemperature() {return lastT;}
+
+
+  void rw_sensor();
   ~BMP085() {} // Doing nothing ADD IMPLEMENTATION
     
  private:
@@ -75,6 +80,10 @@ class BMP085 : public OxI2CDevice {
 
   int16_t ac1, ac2, ac3, b1, b2, mb, mc, md;
   uint16_t ac4, ac5, ac6;
+
+  int32_t lastP;
+  float lastT,lastA;
+
 };
 
 

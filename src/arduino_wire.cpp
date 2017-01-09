@@ -71,18 +71,21 @@ size_t ArduinoWire::write(const uint8_t * data, size_t size){
 
 int ArduinoWire::endTransmission(unsigned char stop){
 
-  int bytes_written = 1; 
+  int bytes_written = 0; 
   int res = 0;
 
   uint8_t reg =  txBuffer[0];
 
   if ( txBuffer.size() == 1 ) {
     res = i2c_smbus_write_byte(this->fd, reg );
-    if (res != 0) {
+    if (res == 0) {
+      bytes_written = 1; // Just the control register
+    } else {
       std::cerr<<"Byte not written...retcode : "<< res << std::endl;
     }
   }
   else {
+    bytes_written = 1; // account for the control register
     for (unsigned int i=1; i < txBuffer.size(); i++) {
       res += i2c_smbus_write_byte_data(this->fd,reg, txBuffer[i]);
       if (res == 0) {
@@ -93,7 +96,7 @@ int ArduinoWire::endTransmission(unsigned char stop){
       }
     }
   }
-  if (bytes_written != (int)txBuffer.size() ) {
+  if (txBuffer.size() > 0 && bytes_written != (int)txBuffer.size() ) {
     std::cerr<<"Transmission fail: txBufferLength: "<<txBuffer.size()<<"\t transmitted: "<< bytes_written << std::endl;;
   }
   return res;
@@ -105,7 +108,7 @@ int ArduinoWire::requestFrom(int address, unsigned int read_len,
     uint8_t reg =  txBuffer[0];
     uint8_t buff[read_len];
     uint8_t res = 0;
-    
+
     res = i2c_smbus_read_i2c_block_data(this->fd,reg,read_len,buff);
 
     for(uint8_t i=0;i < read_len; i++) {
