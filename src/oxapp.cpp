@@ -1,6 +1,8 @@
 #include "oxapp.h"
 #include <boost/interprocess/managed_shared_memory.hpp>
 
+bip::managed_shared_memory * OxApp::shm = 0;
+
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
   if (OxApp::shm == 0) {

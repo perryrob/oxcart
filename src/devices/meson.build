@@ -1,4 +1,4 @@
-oxcart_device_sources = [ 'BMP085.cpp', 'TCA9548A.cpp']
+oxcart_device_sources = [ 'BMP085.cpp', 'TCA9548A.cpp','LSM6.cpp','GPS.cpp']
 
 
 ox_device_lib = shared_library(
@@ -7,7 +7,7 @@ ox_device_lib = shared_library(
     include_directories : inc,
     dependencies :  [
         thread_dep,rt_dep,
-        bs_dep,bt_dep,bt_log,bt_logs
+        bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
     ],
     link_with : oxlib,
     install : true

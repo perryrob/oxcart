@@ -274,8 +274,8 @@ void BMP085::rw_sensor() {
     // Don't write to shared memory
     begin();
     readTemperature();
-    readAltitude(); // In pascals
-    readPressure();
+    readAltitude(); 
+    readPressure(); // In pascals
   } else {
   }
 }

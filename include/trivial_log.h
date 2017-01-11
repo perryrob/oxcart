@@ -1,5 +1,6 @@
 #ifndef __TRIVIAL_LOG_H__
 #define __TRIVIAL_LOG_H__
+
 #define BOOST_LOG_DYN_LINK 1
 
 #include <boost/log/core.hpp>
@@ -8,12 +9,6 @@
 
 namespace logging = boost::log;
 
-void init_log()
-{
-    logging::core::get()->set_filter
-    (
-        logging::trivial::severity >= logging::trivial::debug
-    );
-}
+void init_log();
 
 #endif

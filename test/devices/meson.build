@@ -15,5 +15,23 @@ test_BMP085_exe = executable('BMP085', 'test_BMP085.cpp',
                                       bs_dep,bt_dep,bt_log,bt_logs
                                   ])
 
+test_LSM6_exe = executable('LSM6', 'test_LSM6.cpp',
+                                  include_directories : inc,
+                                  link_with : [oxlib,ox_device_lib],
+                                  dependencies :  [
+                                      thread_dep,rt_dep,
+                                      bs_dep,bt_dep,bt_log,bt_logs
+                                  ])
+
+test_GPS_exe = executable('GPS', 'test_GPS.cpp',
+                                  include_directories : inc,
+                                  link_with : [oxlib,ox_device_lib],
+                                  dependencies :  [
+                                      thread_dep,rt_dep,
+                                      bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
+                                  ])
+
 test('TCA9548A', test_TCA9548A_exe)
 test('BMP085', test_BMP085_exe)
+test('LSM6', test_LSM6_exe)
+test('GPS', test_GPS_exe)

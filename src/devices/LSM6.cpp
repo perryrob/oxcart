@@ -1,4 +1,7 @@
-#include "LSM6.h"
+
+#include "oxapp.h"
+#include "devices/LSM6.h"
+
 #include <math.h>
 #include <iostream>
 // Defines ////////////////////////////////////////////////////////////////
@@ -14,7 +17,7 @@
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-LSM6::LSM6()
+LSM6::LSM6()  : OxI2CDevice( "LSM6DS33")
 {
   _device = device_auto;
 
@@ -42,11 +45,9 @@ uint16_t LSM6::getTimeout()
   return io_timeout;
 }
 
-bool LSM6::init(const char * i2c_bus, deviceType device, sa0State sa0)
+bool LSM6::init(deviceType device, sa0State sa0)
 {
 
-  this->Wire = ArduinoWire( i2c_bus );
-  
   // perform auto-detection unless device type and SA0 state were both specified
   if (device == device_auto || sa0 == sa0_auto)
   {
@@ -76,11 +77,12 @@ bool LSM6::init(const char * i2c_bus, deviceType device, sa0State sa0)
 
   _device = device;
 
-  switch (device)
-  {
-    case device_DS33:
-      address = (sa0 == sa0_high) ? DS33_SA0_HIGH_ADDRESS : DS33_SA0_LOW_ADDRESS;
-      break;
+  switch (device) {
+  case device_DS33:
+    address = (sa0 == sa0_high) ? DS33_SA0_HIGH_ADDRESS : DS33_SA0_LOW_ADDRESS;
+    break;
+  case device_auto:
+    break;
   }
 
   return true;
@@ -123,22 +125,22 @@ void LSM6::enableDefault(void)
 
 void LSM6::writeReg(uint8_t reg, uint8_t value)
 {
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  Wire.write(value);
-  last_status = Wire.endTransmission();
+  Wire->beginTransmission(address);
+  Wire->write(reg);
+  Wire->write(value);
+  last_status = Wire->endTransmission();
 }
 
 uint8_t LSM6::readReg(uint8_t reg)
 {
   uint8_t value;
 
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  last_status = Wire.endTransmission();
-  Wire.requestFrom(address, (uint8_t)1);
-  value = Wire.read();
-  Wire.endTransmission();
+  Wire->beginTransmission(address);
+  Wire->write(reg);
+  last_status = Wire->endTransmission();
+  Wire->requestFrom(address, (uint8_t)1);
+  value = Wire->read();
+  Wire->endTransmission();
 
   return value;
 }
@@ -146,14 +148,14 @@ uint8_t LSM6::readReg(uint8_t reg)
 // Reads the 3 accelerometer channels and stores them in vector a
 void LSM6::readAcc(void)
 {
-  Wire.beginTransmission(address);
+  Wire->beginTransmission(address);
   // automatic increment of register address is enabled by default (IF_INC in CTRL3_C)
-  Wire.write(OUTX_L_XL);
-  Wire.endTransmission();
-  Wire.requestFrom(address, (uint8_t)6);
+  Wire->write(OUTX_L_XL);
+  Wire->endTransmission();
+  Wire->requestFrom(address, (uint8_t)6);
 
   uint16_t millis_start = millis();
-  while (Wire.available() < 6) {
+  while (Wire->available() < 6) {
     if (io_timeout > 0 && ((uint16_t)millis() - millis_start) > io_timeout)
     {
       did_timeout = true;
@@ -161,12 +163,12 @@ void LSM6::readAcc(void)
     }
   }
 
-  uint8_t xla = Wire.read();
-  uint8_t xha = Wire.read();
-  uint8_t yla = Wire.read();
-  uint8_t yha = Wire.read();
-  uint8_t zla = Wire.read();
-  uint8_t zha = Wire.read();
+  uint8_t xla = Wire->read();
+  uint8_t xha = Wire->read();
+  uint8_t yla = Wire->read();
+  uint8_t yha = Wire->read();
+  uint8_t zla = Wire->read();
+  uint8_t zha = Wire->read();
 
   // combine high and low bytes
   a.x = (int16_t)(xha << 8 | xla);
@@ -177,14 +179,14 @@ void LSM6::readAcc(void)
 // Reads the 3 gyro channels and stores them in vector g
 void LSM6::readGyro(void)
 {
-  Wire.beginTransmission(address);
+  Wire->beginTransmission(address);
   // automatic increment of register address is enabled by default (IF_INC in CTRL3_C)
-  Wire.write(OUTX_L_G);
-  Wire.endTransmission();
-  Wire.requestFrom(address, (uint8_t)6);
+  Wire->write(OUTX_L_G);
+  Wire->endTransmission();
+  Wire->requestFrom(address, (uint8_t)6);
 
   uint16_t millis_start = millis();
-  while (Wire.available() < 6) {
+  while (Wire->available() < 6) {
     if (io_timeout > 0 && ((uint16_t)millis() - millis_start) > io_timeout)
     {
       did_timeout = true;
@@ -192,12 +194,12 @@ void LSM6::readGyro(void)
     }
   }
 
-  uint8_t xlg = Wire.read();
-  uint8_t xhg = Wire.read();
-  uint8_t ylg = Wire.read();
-  uint8_t yhg = Wire.read();
-  uint8_t zlg = Wire.read();
-  uint8_t zhg = Wire.read();
+  uint8_t xlg = Wire->read();
+  uint8_t xhg = Wire->read();
+  uint8_t ylg = Wire->read();
+  uint8_t yhg = Wire->read();
+  uint8_t zlg = Wire->read();
+  uint8_t zhg = Wire->read();
 
   // combine high and low bytes
   g.x = (int16_t)(xhg << 8 | xlg);
@@ -220,23 +222,34 @@ void LSM6::vector_normalize(vector<float> *a)
   a->z /= mag;
 }
 
+void LSM6::rw_sensor() {
+  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
+  if (shm == 0) {
+    init();
+    enableDefault();
+    readAcc();
+    readGyro();
+  } else {
+  }
+}
+
 // Private Methods //////////////////////////////////////////////////////////////
 
 int16_t LSM6::testReg(uint8_t address, regAddr reg)
 {
 
-  Wire.beginTransmission(address);
-  Wire.write((uint8_t)reg);
-  if (Wire.endTransmission() != 0)
+  Wire->beginTransmission(address);
+  Wire->write((uint8_t)reg);
+  if (Wire->endTransmission() != 0)
   {
     return TEST_REG_ERROR;
   }
 
-  Wire.requestFrom(address, (uint8_t)1);
+  Wire->requestFrom(address, (uint8_t)1);
 
-  if (Wire.available())
+  if (Wire->available())
   {
-    return Wire.read();
+    return Wire->read();
   }
   else
   {

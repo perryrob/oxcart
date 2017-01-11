@@ -31,5 +31,5 @@ private:
   static bip::managed_shared_memory * shm;
 
 };
-bip::managed_shared_memory * OxApp::shm = 0;
+
 #endif

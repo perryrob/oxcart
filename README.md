@@ -47,6 +47,15 @@ Boost SH MEM
 http://stackoverflow.com/questions/33513051/structures-and-vectors-in-boost-shared-memory
 http://coliru.stacked-crooked.com/a/0ab21481b69d87bb
 
+http://www.makelinux.net/alp/035
+
+ipcs -m 
+
+0x00000000 1627649   user    640       25600     0 
+
+ipcrm shm 1627649 ## To remove a memory segment
+
+
 BUILD
 =====
 Meson http://mesonbuild.com/documentation.html
@@ -84,12 +93,12 @@ Still need to add the multiplexing device.
 
 UPDATE 1/6/2016
 ===============
-Compiler dying with internal compiler error. Turns out that there is no swap. SO I created one on the SAN
+Compiler dying with internal compiler error. Turns out that there is no swap. SO I created one on the SD Card
 
-SWAP=/var/cache
+export SWAP=/mnt/sdcard/swap
 
 sudo mkdir -p $SWAP
-sudo dd if=/dev/zero of=$SWAP/swapfile bs=1M count=512
+sudo dd if=/dev/zero of=$SWAP/swapfile bs=1M count=1024
 sudo chmod 0600 $SWAP/swapfile
 sudo mkswap $SWAP/swapfile
 sudo swapon $SWAP/swapfile
