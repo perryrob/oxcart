@@ -15,6 +15,7 @@ void OxI2CBus::threaded_task() {
       BOOST_LOG_TRIVIAL(debug) <<  "rw";
       (*itr)->rw_sensor();
     }
+    b::this_thread::yield();
   }
   BOOST_LOG_TRIVIAL(debug) << "threaded_task() COMPLETE";
 }

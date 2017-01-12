@@ -6,6 +6,7 @@ void OxGPSDbus::threaded_task() {
          itr != devices.end(); ++itr ) {
       (*itr)->rw_sensor();
     }
+    b::this_thread::yield();
   }
 }
 
