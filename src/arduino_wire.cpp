@@ -42,10 +42,12 @@ void ArduinoWire::begin(const uint8_t address){
 }
 void ArduinoWire::beginTransmission(const uint8_t address){
   
-  this->fd = open(this->i2c_bus, O_RDWR);
+  if (this->fd == 0) {
+    this->fd = open(this->i2c_bus, O_RDWR);
+  }
 
   if (this->fd < 0) {
-    std::cerr<<"Could not open i2c device."<<std::endl;
+    std::cerr << "Could not open i2c device. " << this->fd << std::endl;
     exit(1);
   }  
 
@@ -121,6 +123,7 @@ int ArduinoWire::requestFrom(int address, unsigned int read_len,
     
 	if (releaseBus) {
 	  close( this->fd );
+      this->fd = 0;
 	}
     
     return rxBuffer.size();

@@ -270,12 +270,12 @@ void BMP085::write8(uint8_t a, uint8_t d) {
 }
 void BMP085::rw_sensor() {
   bip::managed_shared_memory * shm = OxApp::get_shared_mem();
-  if (shm == 0) {
     // Don't write to shared memory
     begin();
     readTemperature();
     readAltitude(); 
     readPressure(); // In pascals
+  if (shm == 0) {
   } else {
   }
 }

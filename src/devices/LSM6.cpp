@@ -224,11 +224,11 @@ void LSM6::vector_normalize(vector<float> *a)
 
 void LSM6::rw_sensor() {
   bip::managed_shared_memory * shm = OxApp::get_shared_mem();
+  init();
+  enableDefault();
+  readAcc();
+  readGyro();
   if (shm == 0) {
-    init();
-    enableDefault();
-    readAcc();
-    readGyro();
   } else {
   }
 }

@@ -4,6 +4,7 @@
 #include "devices/LSM6.h"
 #include "devices/GPS.h"
 
+#include "oxapp.h"
 #include "oxi2cbus.h"
 #include "oxGPSDbus.h"
 
@@ -14,6 +15,8 @@ using namespace std;
 
 int main(int argc, char * argv [] ) {
   
+  OxApp::create();
+
   OxI2CBus i2c( "/dev/i2c-2" );
   OxGPSDbus gps_bus;
 
@@ -35,6 +38,6 @@ int main(int argc, char * argv [] ) {
   i2c.stop();
   gps_bus.stop();
 
-
+  OxApp::destroy();
   return 0;
 }
