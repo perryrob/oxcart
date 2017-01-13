@@ -12,7 +12,7 @@ void OxI2CBus::threaded_task() {
         BOOST_LOG_TRIVIAL(debug) <<  "multiplexer";
         (*itr)->get_multiplexer()->rw_sensor();
       }
-      BOOST_LOG_TRIVIAL(debug) <<  "rw";
+      BOOST_LOG_TRIVIAL(debug) <<  "rw: " << (*itr)->get_name();
       (*itr)->rw_sensor();
     }
     b::this_thread::yield();
@@ -41,6 +41,7 @@ void OxI2CBus::add_device( OxI2CDevice *device ) {
     device->get_multiplexer()->set_bus(this);
   }
   devices.push_back( device );
+  BOOST_LOG_TRIVIAL(debug) <<  "add_device: " << device->get_name();
 }
   
 OxI2CBus::~OxI2CBus() {

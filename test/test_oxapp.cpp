@@ -7,6 +7,7 @@ int main(int argc, char *argv[] ) {
   assert( shm != 0 );
   OxApp::destroy();
   shm = OxApp::get_shared_mem();
+  std::cout << OxApp::get_time_ms() << std::endl;
   assert( shm == 0 );
   return 0;
 }

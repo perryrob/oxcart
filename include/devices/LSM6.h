@@ -5,6 +5,7 @@
 #include "oxi2cdevice.h"
 
 class LSM6 : public OxI2CDevice {
+
  public:
   template <typename T> struct vector {
     T x, y, z;

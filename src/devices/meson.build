@@ -1,4 +1,10 @@
-oxcart_device_sources = [ 'BMP085.cpp', 'TCA9548A.cpp','LSM6.cpp','GPS.cpp']
+oxcart_device_sources = [ 
+    'BMP085.cpp', 
+    'TCA9548A.cpp',
+    'LSM6.cpp',
+    'GPS.cpp',
+    'LIS3MDL.cpp'
+]
 
 
 ox_device_lib = shared_library(

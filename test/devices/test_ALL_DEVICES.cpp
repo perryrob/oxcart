@@ -1,4 +1,4 @@
-
+#include "devices/LIS3MDL.h"
 #include "devices/TCA9548A.h"
 #include "devices/BMP085.h"
 #include "devices/LSM6.h"
@@ -22,6 +22,7 @@ int main(int argc, char * argv [] ) {
 
   TCA9548A tca9548( TCA9548A_CH2 );
 
+  LIS3MDL l;
   BMP085 p;
   LSM6 s;
   GPS gps;
@@ -30,6 +31,7 @@ int main(int argc, char * argv [] ) {
 
   i2c.add_device(&p);
   i2c.add_device(&s);
+  i2c.add_device(&l);
   gps_bus.add_device( &gps );
 
   i2c.run();

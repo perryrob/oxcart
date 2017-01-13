@@ -1,11 +1,11 @@
 #ifndef LIS3MDL_h
 #define LIS3MDL_h
 
-#include "ArduinoCore.h"
-#include "ArduinoWire.h"
+#include "arduino_core.h"
+#include "oxi2cdevice.h"
 
-class LIS3MDL
-{
+class LIS3MDL : public OxI2CDevice {
+
   public:
     template <typename T> struct vector
     {
@@ -47,8 +47,7 @@ class LIS3MDL
 
     LIS3MDL();
 
-    bool init(const char * i2c_bus,
-                deviceType device = device_auto, sa1State sa1 = sa1_auto);
+    bool init(deviceType device = device_auto, sa1State sa1 = sa1_auto);
     deviceType getDeviceType(void) { return _device; }
 
     void enableDefault(void);
@@ -66,13 +65,13 @@ class LIS3MDL
     template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);
     template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a, const vector<Tb> *b);
     static void vector_normalize(vector<float> *a);
+    
+     void rw_sensor();
 
   private:
 
     deviceType _device; // chip type
     uint8_t address;
-
-    ArduinoWire Wire;
 
     uint16_t io_timeout;
     bool did_timeout;

@@ -1,5 +1,6 @@
-#include "LIS3MDL.h"
-#include <math.h>
+
+#include "oxapp.h"
+#include "devices/LIS3MDL.h"
 
 // Defines ////////////////////////////////////////////////////////////////
 
@@ -14,7 +15,7 @@
 
 // Constructors ////////////////////////////////////////////////////////////////
 
-LIS3MDL::LIS3MDL()
+LIS3MDL::LIS3MDL() : OxI2CDevice( "LIS3MDL") 
 {
   _device = device_auto;
 
@@ -42,10 +43,8 @@ uint16_t LIS3MDL::getTimeout()
   return io_timeout;
 }
 
-bool LIS3MDL::init(const char * i2c_bus, deviceType device, sa1State sa1)
+bool LIS3MDL::init(deviceType device, sa1State sa1)
 {
-
-  Wire = ArduinoWire(i2c_bus);
 
   // perform auto-detection unless device type and SA1 state were both specified
   if (device == device_auto || sa1 == sa1_auto)
@@ -80,6 +79,8 @@ bool LIS3MDL::init(const char * i2c_bus, deviceType device, sa1State sa1)
   {
     case device_LIS3MDL:
       address = (sa1 == sa1_high) ? LIS3MDL_SA1_HIGH_ADDRESS : LIS3MDL_SA1_LOW_ADDRESS;
+      break;
+    case device_auto:
       break;
   }
 
@@ -120,10 +121,10 @@ void LIS3MDL::enableDefault(void)
 // Writes a mag register
 void LIS3MDL::writeReg(uint8_t reg, uint8_t value)
 {
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  Wire.write(value);
-  last_status = Wire.endTransmission();
+  Wire->beginTransmission(address);
+  Wire->write(reg);
+  Wire->write(value);
+  last_status = Wire->endTransmission();
 }
 
 // Reads a mag register
@@ -131,12 +132,12 @@ uint8_t LIS3MDL::readReg(uint8_t reg)
 {
   uint8_t value;
 
-  Wire.beginTransmission(address);
-  Wire.write(reg);
-  last_status = Wire.endTransmission();
-  Wire.requestFrom(address, (uint8_t)1);
-  value = Wire.read();
-  Wire.endTransmission();
+  Wire->beginTransmission(address);
+  Wire->write(reg);
+  last_status = Wire->endTransmission();
+  Wire->requestFrom(address, (uint8_t)1);
+  value = Wire->read();
+  Wire->endTransmission();
 
   return value;
 }
@@ -144,14 +145,14 @@ uint8_t LIS3MDL::readReg(uint8_t reg)
 // Reads the 3 mag channels and stores them in vector m
 void LIS3MDL::read()
 {
-  Wire.beginTransmission(address);
+  Wire->beginTransmission(address);
   // assert MSB to enable subaddress updating
-  Wire.write(OUT_X_L | 0x80);
-  Wire.endTransmission();
-  Wire.requestFrom(address, (uint8_t)6);
+  Wire->write(OUT_X_L | 0x80);
+  Wire->endTransmission();
+  Wire->requestFrom(address, (uint8_t)6);
 
   uint16_t millis_start = millis();
-  while (Wire.available() < 6)
+  while (Wire->available() < 6)
   {
     if (io_timeout > 0 && ((uint16_t)millis() - millis_start) > io_timeout)
     {
@@ -160,12 +161,12 @@ void LIS3MDL::read()
     }
   }
 
-  uint8_t xlm = Wire.read();
-  uint8_t xhm = Wire.read();
-  uint8_t ylm = Wire.read();
-  uint8_t yhm = Wire.read();
-  uint8_t zlm = Wire.read();
-  uint8_t zhm = Wire.read();
+  uint8_t xlm = Wire->read();
+  uint8_t xhm = Wire->read();
+  uint8_t ylm = Wire->read();
+  uint8_t yhm = Wire->read();
+  uint8_t zlm = Wire->read();
+  uint8_t zhm = Wire->read();
 
   // combine high and low bytes
   m.x = (int16_t)(xhm << 8 | xlm);
@@ -180,22 +181,31 @@ void LIS3MDL::vector_normalize(vector<float> *a)
   a->y /= mag;
   a->z /= mag;
 }
+void LIS3MDL::rw_sensor() {
+  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
+  init();
+  enableDefault();
+  read();
+  if (shm == 0) {
+  } else {
+  }
+}
 
 // Private Methods //////////////////////////////////////////////////////////////
 
 int16_t LIS3MDL::testReg(uint8_t address, regAddr reg)
 {
-  Wire.beginTransmission(address);
-  Wire.write((uint8_t)reg);
-  if (Wire.endTransmission() != 0)
+  Wire->beginTransmission(address);
+  Wire->write((uint8_t)reg);
+  if (Wire->endTransmission() != 0)
   {
     return TEST_REG_ERROR;
   }
 
-  Wire.requestFrom(address, (uint8_t)1);
-  if (Wire.available())
+  Wire->requestFrom(address, (uint8_t)1);
+  if (Wire->available())
   {
-    return Wire.read();
+    return Wire->read();
   }
   else
   {
