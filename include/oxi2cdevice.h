@@ -19,7 +19,7 @@ public:
   inline OxI2CDevice * get_multiplexer() { return multiplexer; }
   void set_bus( ArduinoWire *i2cbus ) { Wire = i2cbus; }
 
-  virtual void rw_sensor() = 0;
+  virtual void rw_device() = 0;
 
   
 protected:

@@ -9,6 +9,29 @@ static const unsigned int X=0;
 static const unsigned int Y=1;
 static const unsigned int Z=2;
 static const unsigned int V=0;
+static const unsigned int BMP_ALTITUDE=0;
+
+static const unsigned int CH1=0;
+static const unsigned int CH2=1;
+static const unsigned int CH3=2;
+static const unsigned int CH4=3;
+static const unsigned int CH5=4;
+static const unsigned int CH6=5;
+static const unsigned int CH7=6;
+static const unsigned int CH8=7;
+
+static const unsigned int TIME=0;
+static const unsigned int MODE=0;
+
+static const unsigned int LONGITUDE=0;
+static const unsigned int LATITUDE=1;
+static const unsigned int GPS_ALTITUDE=2;
+static const unsigned int SPEED=3;
+static const unsigned int VERT_SPEED=4;
+static const unsigned int TRACK=5;
+
+
+
 
 template <class STORE_T> class NamedStore {
 

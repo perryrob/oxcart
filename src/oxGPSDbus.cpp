@@ -4,7 +4,7 @@ void OxGPSDbus::threaded_task() {
   while (keep_running) {
     for( std::deque<OxGPSDDevice*>::iterator itr = devices.begin();
          itr != devices.end(); ++itr ) {
-      (*itr)->rw_sensor();
+      (*itr)->rw_device();
     }
     b::this_thread::yield();
   }

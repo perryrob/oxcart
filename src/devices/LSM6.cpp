@@ -222,7 +222,7 @@ void LSM6::vector_normalize(vector<float> *a)
   a->z /= mag;
 }
 
-void LSM6::rw_sensor() {
+void LSM6::rw_device() {
   bip::managed_shared_memory * shm = OxApp::get_shared_mem();
   init();
   enableDefault();

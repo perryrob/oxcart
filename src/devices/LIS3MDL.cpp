@@ -181,7 +181,7 @@ void LIS3MDL::vector_normalize(vector<float> *a)
   a->y /= mag;
   a->z /= mag;
 }
-void LIS3MDL::rw_sensor() {
+void LIS3MDL::rw_device() {
   bip::managed_shared_memory * shm = OxApp::get_shared_mem();
   init();
   enableDefault();

@@ -9,7 +9,7 @@ public:
 
  GPS() : OxGPSDDevice( "GPS" ) {}
 
-  void rw_sensor();
+  void rw_device();
 
   inline struct gps_data_t* get_data() { return new_gps_data; }
   

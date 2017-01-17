@@ -1,5 +1,6 @@
 
 #include "named_store.h"
+#include "oxapp.h"
 
 template <class STORE_T>
 NamedStore<STORE_T>::NamedStore(){
@@ -39,6 +40,7 @@ NamedStore<STORE_T>::NamedStore( char const * name,
   this->is_shared_mem = true;
   
 }
+
 template <class STORE_T>
 void NamedStore<STORE_T>::set_val( unsigned int index, STORE_T val ) {
   vals[index] = val;
@@ -75,3 +77,7 @@ template class NamedStore<int>;
 template class NamedStore<long>;
 template class NamedStore<double>;
 template class NamedStore<float>;
+
+template class NamedStore<int16_t>;
+template class NamedStore<uint64_t>;
+

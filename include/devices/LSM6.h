@@ -113,7 +113,7 @@ class LSM6 : public OxI2CDevice {
   uint16_t getTimeout(void);
   bool timeoutOccurred(void);
 
-  void rw_sensor();
+  void rw_device();
   
   // vector functions
   template <typename Ta, typename Tb, typename To> static void vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out);

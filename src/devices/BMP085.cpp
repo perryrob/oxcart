@@ -16,6 +16,7 @@
  ****************************************************/
 #include "oxapp.h"
 #include "devices/BMP085.h"
+#include "devices/TCA9548A.h"
 #include <math.h>
 
 bool BMP085::begin(uint8_t mode) {
@@ -268,14 +269,30 @@ void BMP085::write8(uint8_t a, uint8_t d) {
   Wire->write(d);  // write data
   Wire->endTransmission(); // end transmission
 }
-void BMP085::rw_sensor() {
-  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
-    // Don't write to shared memory
-    begin();
-    readTemperature();
-    readAltitude(); 
-    readPressure(); // In pascals
-  if (shm == 0) {
-  } else {
+void BMP085::rw_device() {
+  
+  begin();
+  readTemperature();
+  readAltitude(); 
+  readPressure(); // In pascals
+
+  if (is_multiplexed()) {
+    switch(((TCA9548A*)get_multiplexer())->get_channel() ) {
+    case TCA9548A_CH1:
+      OxApp::l_pressure->set_val(CH1,lastP);
+      OxApp::l_temp->set_val(CH1,lastT);
+      break;
+    case TCA9548A_CH2:
+      OxApp::l_pressure->set_val(CH2,lastP);
+      OxApp::l_temp->set_val(CH2,lastT);
+      OxApp::l_alt->set_val(CH2,lastA);
+      break;
+    case TCA9548A_CH3:
+      OxApp::l_pressure->set_val(CH3,lastP);
+      OxApp::l_temp->set_val(CH3,lastT);
+      break;
+
+    }
   }
+  
 }

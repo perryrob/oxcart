@@ -2,7 +2,7 @@
 #include "oxapp.h"
 #include "devices/GPS.h"
 
-void GPS::rw_sensor() {
+void GPS::rw_device() {
 
   bip::managed_shared_memory * shm = OxApp::get_shared_mem();
 
@@ -20,7 +20,7 @@ void GPS::rw_sensor() {
   } else {
     BOOST_LOG_TRIVIAL(debug) << "GPS::shm active";
   }
-  BOOST_LOG_TRIVIAL(debug) << "GPS::rw_sensor complete";
+  BOOST_LOG_TRIVIAL(debug) << "GPS::rw_device complete";
 }
 
 

@@ -15,7 +15,7 @@ using namespace std;
 class TestMultiplexer : public OxI2CDevice {
 public:
   TestMultiplexer( const string &name ) : OxI2CDevice( name ) {}
-  void rw_sensor() {cerr << "MULTIPLEX";}
+  void rw_device() {cerr << "MULTIPLEX";}
   ~TestMultiplexer(){}
 };
 
@@ -27,7 +27,7 @@ public:
     running = true;
   }
                                                        
-  void rw_sensor() {
+  void rw_device() {
     for( int i=0; i < 5; ++i ) {
       cerr << ".";
       b::this_thread::sleep(b::posix_time::milliseconds(1));

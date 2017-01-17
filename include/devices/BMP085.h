@@ -67,7 +67,7 @@ class BMP085 : public OxI2CDevice {
   float lastTemperature() {return lastT;}
 
 
-  void rw_sensor();
+  void rw_device();
   ~BMP085() {} // Doing nothing ADD IMPLEMENTATION
     
  private:

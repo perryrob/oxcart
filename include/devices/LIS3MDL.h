@@ -66,7 +66,7 @@ class LIS3MDL : public OxI2CDevice {
     template <typename Ta, typename Tb> static float vector_dot(const vector<Ta> *a, const vector<Tb> *b);
     static void vector_normalize(vector<float> *a);
     
-     void rw_sensor();
+     void rw_device();
 
   private:
 

@@ -10,10 +10,10 @@ void OxI2CBus::threaded_task() {
       BOOST_LOG_TRIVIAL(debug) <<  "for";
       if(  (*itr)->is_multiplexed() ) {
         BOOST_LOG_TRIVIAL(debug) <<  "multiplexer";
-        (*itr)->get_multiplexer()->rw_sensor();
+        (*itr)->get_multiplexer()->rw_device();
       }
       BOOST_LOG_TRIVIAL(debug) <<  "rw: " << (*itr)->get_name();
-      (*itr)->rw_sensor();
+      (*itr)->rw_device();
     }
     b::this_thread::yield();
   }

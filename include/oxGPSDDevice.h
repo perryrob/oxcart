@@ -13,7 +13,7 @@ public:
 
   void set_bus( GPSD_SHM *gpsd_shm ) { this->gpsd_shm = gpsd_shm; }
 
-  virtual void rw_sensor() = 0;
+  virtual void rw_device() = 0;
 
   
 protected:
