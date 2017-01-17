@@ -18,7 +18,10 @@ class TestBlueDevice : public OxBlueDevice {
 
 public:
   TestBlueDevice( const string &name ) : OxBlueDevice( name ) {}
-  void rw_device() {}
+  void rw_device() {
+    string msg("This is a test.");
+    bus->write(msg);
+  }
   ~TestBlueDevice(){}
 };
 
@@ -35,7 +38,7 @@ int main(int argc, char *argv[] ) {
   bus.add_device( &test_device );
   bus.run();
 
-  b::this_thread::sleep(b::posix_time::milliseconds(6));
+  b::this_thread::sleep(b::posix_time::milliseconds(1000));
 
   bus.stop();
 

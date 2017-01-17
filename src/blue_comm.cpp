@@ -1,10 +1,13 @@
 
 #include "blue_comm.h"
+#include "trivial_log.h"
 
 BlueComm::BlueComm(std::string &address, int channel):sock(0),_is_open(false) {
 
+  this->address = address;
+  
   if(hci_devinfo(0, &di) < 0)  {
-    perror("HCI device info failed");
+    BOOST_LOG_TRIVIAL(error) << "HCI device info failed";
   }
 
   laddr.rc_family = AF_BLUETOOTH;
@@ -12,7 +15,7 @@ BlueComm::BlueComm(std::string &address, int channel):sock(0),_is_open(false) {
   laddr.rc_channel = 0;
 
   raddr.rc_family = AF_BLUETOOTH;
-  str2ba(address.c_str(),&raddr.rc_bdaddr);
+  str2ba(this->address.c_str(),&raddr.rc_bdaddr);
   raddr.rc_channel = channel;  
 
 }
@@ -21,15 +24,25 @@ bool BlueComm::open() {
   _is_open = true;
 
   if( (sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
-      perror("socket");
+    BOOST_LOG_TRIVIAL(error) << "Socket OPEN failed.";
       _is_open = false;
+  } else {
+    BOOST_LOG_TRIVIAL(debug) << "open success";
   }
 
   if(bind(sock, (struct sockaddr *)&laddr, sizeof(laddr)) < 0) {
-    perror("bind");
+    BOOST_LOG_TRIVIAL(error) << "Socket BIND failed.";
     _is_open = false;
+  } else {
+    BOOST_LOG_TRIVIAL(debug) << "bind success";
   }
 
+  if(connect(sock, (struct sockaddr *)&raddr, sizeof(raddr)) < 0) {
+    BOOST_LOG_TRIVIAL(error) << "Socket connect failed: " << address ;
+    shutdown( sock, SHUT_RDWR );
+    _is_open = false;
+  }
+  
   return _is_open;
 
 }

@@ -22,19 +22,20 @@ class BlueComm {
    BlueComm(): sock(0), _is_open(false){}
    BlueComm(std::string &address, int channel);
 
- protected:
-
    bool open();
    bool close();
    bool is_open() { return _is_open; }
    int read( char * buffer );
    int has_data();
    int write(std::string &mesg);
+
+ protected:
    ~BlueComm();
 
  private:
 
    int sock;
+   std::string address;
    struct sockaddr_rc laddr, raddr;
    struct hci_dev_info di;
    bool _is_open;
