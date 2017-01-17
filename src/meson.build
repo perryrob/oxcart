@@ -8,7 +8,9 @@ oxcart_sources = [
     'oxapp.cpp',
     'oxi2cbus.cpp',
     'oxGPSDbus.cpp',
-    'gpsd_shm.cpp'
+    'gpsd_shm.cpp',
+    'blue_comm.cpp',
+    'oxbluebus.cpp'
 ]
 
 boost_dep=dependency('boost', version: '>=1.58')
@@ -21,6 +23,7 @@ bt_logs = cpp.find_library('boost_log_setup', required : true)
 bt_dt = cpp.find_library('boost_date_time', required : true)
 bt_f = cpp.find_library('boost_filesystem', required : true)
 gpsd_dep = cpp.find_library('gps', required : true)
+bluetooth_dep = cpp.find_library('bluetooth', required : true)
 
 oxlib = shared_library(
     'oxlib',
@@ -28,7 +31,7 @@ oxlib = shared_library(
     include_directories : inc,
     dependencies :  [
         thread_dep,rt_dep,
-        bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
+        bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep
 ],
     install : true
 )
@@ -40,7 +43,7 @@ executable('oxcart',
            include_directories : inc,
            dependencies : [
                thread_dep,rt_dep,
-               bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
+               bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep
            ],
            link_with : oxlib
 )

@@ -39,10 +39,20 @@ test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
                                 bs_dep,bt_dep,bt_log,bt_logs
                             ])
 
+test_oxblue_exe = executable('test_oxblue', 'test_oxblue.cpp',
+                            include_directories : inc,
+                            link_with : [oxlib],
+                            dependencies :  [
+                                thread_dep,rt_dep,
+                                bs_dep,bt_dep,bt_log,bt_logs,bluetooth_dep
+                            ])
+
+
 test('test_named_store test', test_named_store_exe)
 test('test_oxmem test', test_oxmem_exe)
 test('test_oxbus test', test_oxbus_exe)
 test('test_awire test', test_awire_exe)
 test('test_oxapp test', test_oxapp_exe)
+test('test_oxblue test', test_oxblue_exe)
 
 subdir( 'devices' )
