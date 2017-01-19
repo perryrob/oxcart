@@ -1,8 +1,8 @@
 #include "oxbluebus.h"
 #include "trivial_log.h"
 
-OxBluebus::OxBluebus(std::string &address, int channel) : 
-  BlueComm(address, channel),
+OxBluebus::OxBluebus(std::string &address, int channel, int max_attempts ) : 
+  BlueComm(address, channel, max_attempts),
   keep_running(false) {
   open();
 }

@@ -14,7 +14,7 @@ int main(int argc, char *argv[] ) {
 
   if(argc == 1){ 
 
-    OxMem *oxm = new OxMem("OX",100);
+    OxMem *oxm = new OxMem("OX",64000);
     
     unsigned int dim = 3;
     
@@ -31,6 +31,11 @@ int main(int argc, char *argv[] ) {
     assert( ns_sm->get_val(X) == 123.45 );
     assert( ns_sm->get_val(Y) == 234.56 );
     assert( ns_sm->get_val(Z) == 345.67 );
+
+    cerr << ns_sm->get_time(X) << endl;
+    cerr << ns_sm->get_time(Y) << endl;
+    cerr << ns_sm->get_time(Z) << endl;
+    
 
     string s(argv[0]); s += " child ";
     if(0 != system(s.c_str()))

@@ -12,7 +12,7 @@ test_BMP085_exe = executable('BMP085', 'test_BMP085.cpp',
                                   link_with : [oxlib,ox_device_lib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep,bt_log,bt_logs
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
 test_LSM6_exe = executable('LSM6', 'test_LSM6.cpp',

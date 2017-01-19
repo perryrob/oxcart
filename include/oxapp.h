@@ -2,7 +2,7 @@
 #define __oxapp_h__
 
 #include <boost/interprocess/managed_shared_memory.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/chrono/system_clocks.hpp>
 
 #include <string>
 #include <gps.h>
@@ -74,10 +74,12 @@ public:
     return shm;
   }
 
-  static inline long get_time_ms() {
-    Time t(boost::posix_time::microsec_clock::local_time());
-    TimeDuration dt( t.time_of_day() );
-    return dt.total_milliseconds();
+  static inline uint64_t get_time_ms() {
+     // Timestamp the data in milliseconds
+    b::chrono::system_clock::time_point now = b::chrono::system_clock::now();
+    b::chrono::nanoseconds sec =  now.time_since_epoch();
+    b::chrono::milliseconds milliSecs = b::chrono::duration_cast<b::chrono::milliseconds>(sec);
+    return (uint64_t)milliSecs.count();
   }
 
   static NamedStore<int32_t> *l_pressure;

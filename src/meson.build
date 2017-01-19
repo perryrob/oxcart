@@ -21,6 +21,7 @@ bt_dep = cpp.find_library('boost_thread', required : true)
 bt_log = cpp.find_library('boost_log', required : true)
 bt_logs = cpp.find_library('boost_log_setup', required : true)
 bt_dt = cpp.find_library('boost_date_time', required : true)
+bt_chrono = cpp.find_library('boost_chrono', required : true)
 bt_f = cpp.find_library('boost_filesystem', required : true)
 gpsd_dep = cpp.find_library('gps', required : true)
 bluetooth_dep = cpp.find_library('bluetooth', required : true)
@@ -31,7 +32,7 @@ oxlib = shared_library(
     include_directories : inc,
     dependencies :  [
         thread_dep,rt_dep,
-        bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep
+        bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep,bt_chrono
 ],
     install : true
 )

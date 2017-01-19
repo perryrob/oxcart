@@ -18,6 +18,7 @@
 #include "devices/BMP085.h"
 #include "devices/TCA9548A.h"
 #include <math.h>
+#include "trivial_log.h"
 
 bool BMP085::begin(uint8_t mode) {
   if (mode > BMP085_ULTRAHIGHRES) 
@@ -247,11 +248,12 @@ uint8_t BMP085::read8(uint8_t a) {
 }
 
 uint16_t BMP085::read16(uint8_t a) {
-  uint16_t ret;
+  uint16_t ret = 0;
 
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->write(a); // sends register address to read from
-  Wire->endTransmission(); // end transmission
+  Wire->endTransmission();
+
   
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->requestFrom(BMP085_I2CADDR, 2);// send data n-bytes read
@@ -267,13 +269,25 @@ void BMP085::write8(uint8_t a, uint8_t d) {
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->write(a); // sends register address to read from
   Wire->write(d);  // write data
-  Wire->endTransmission(); // end transmission
+  Wire->endTransmission(); //end transmission
 }
 void BMP085::rw_device() {
   
-  begin();
-  readTemperature();
-  readAltitude(); 
+  if (is_device_failed()) {
+    BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<<get_name()<< " channel: " <<
+      (int)(((TCA9548A*)get_multiplexer())->get_channel());
+    return;
+  }
+
+  if (! begin()) {
+    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name()<< " channel: " <<
+      (int)(((TCA9548A*)get_multiplexer())->get_channel());
+    set_device_failed();
+    return;
+  }
+
+  readTemperature();// celsius
+  readAltitude();  // meters
   readPressure(); // In pascals
 
   if (is_multiplexed()) {
@@ -281,15 +295,21 @@ void BMP085::rw_device() {
     case TCA9548A_CH1:
       OxApp::l_pressure->set_val(CH1,lastP);
       OxApp::l_temp->set_val(CH1,lastT);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+        (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
     case TCA9548A_CH2:
       OxApp::l_pressure->set_val(CH2,lastP);
       OxApp::l_temp->set_val(CH2,lastT);
       OxApp::l_alt->set_val(CH2,lastA);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+        (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
     case TCA9548A_CH3:
       OxApp::l_pressure->set_val(CH3,lastP);
       OxApp::l_temp->set_val(CH3,lastT);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+        (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
 
     }

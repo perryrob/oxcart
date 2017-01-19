@@ -2,7 +2,10 @@
 #include "blue_comm.h"
 #include "trivial_log.h"
 
-BlueComm::BlueComm(std::string &address, int channel):sock(0),_is_open(false) {
+BlueComm::BlueComm(std::string &address, int channel,
+                   int max_attempts):sock(0),_is_open(false),
+                                     reconnect_attempts(0) {
+  MAX_ATTEMPTS=max_attempts;
 
   this->address = address;
   
@@ -43,6 +46,15 @@ bool BlueComm::open() {
     _is_open = false;
   }
   
+  if(! _is_open && reconnect_attempts < MAX_ATTEMPTS) {
+    close();
+    BOOST_LOG_TRIVIAL(error) << "Attempting to reconnect: "<<reconnect_attempts;
+    ++reconnect_attempts;
+    return open();
+  } else {
+    reconnect_attempts = 0;
+  }
+
   return _is_open;
 
 }
@@ -58,10 +70,23 @@ bool BlueComm::close() {
 }
 int BlueComm::read( char * buffer ){
 
-  if(_is_open) {
-    return recv(sock, buffer, sizeof buffer, 0);
+  int bytes_rec=-1;
+
+  if(_is_open && reconnect_attempts < MAX_ATTEMPTS ) {
+    bytes_rec = recv(sock, buffer, sizeof buffer, 0);
+    if( bytes_rec < 0) {
+      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt: " << bytes_rec ;
+      // close and try to reconnect
+      close();
+      open();
+      ++reconnect_attempts;
+      return read( buffer ); // try again for at least MAX_ATTEMPTS
+    } else {
+      reconnect_attempts = 0;
+    }
   }
-  return -1;
+  return bytes_rec;
+
 }
 int BlueComm::has_data(){
 
@@ -72,10 +97,22 @@ int BlueComm::has_data(){
 }
 int BlueComm::write( std::string &msg) {
 
-  if(_is_open) {
-    return send(sock,msg.c_str(),msg.size(),0);
+  int bytes_sent=-1;
+
+  if(_is_open && reconnect_attempts < MAX_ATTEMPTS ) {
+    bytes_sent = send(sock,msg.c_str(),msg.size(),0);
+    if( bytes_sent < 0) {
+      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt: " << bytes_sent ;
+      // close and try to reconnect
+      close();
+      open();
+      ++reconnect_attempts;
+      return write( msg ); // try again for at least MAX_ATTEMPTS
+    } else {
+      reconnect_attempts = 0;
+    }
   }
-  return -1;
+  return bytes_sent;
 }
 BlueComm::~BlueComm(){
   close();

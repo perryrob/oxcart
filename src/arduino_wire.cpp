@@ -84,6 +84,7 @@ int ArduinoWire::endTransmission(unsigned char stop){
       bytes_written = 1; // Just the control register
     } else {
       std::cerr<<"Byte not written...retcode : "<< res << std::endl;
+      return -1;
     }
   }
   else {
@@ -95,11 +96,13 @@ int ArduinoWire::endTransmission(unsigned char stop){
       }
       else {
         std::cerr<<"Byte(s) not written...retcode : "<< res << std::endl;
+        return -1;
       }
     }
   }
   if (txBuffer.size() > 0 && bytes_written != (int)txBuffer.size() ) {
     std::cerr<<"Transmission fail: txBufferLength: "<<txBuffer.size()<<"\t transmitted: "<< bytes_written << std::endl;;
+    return -1;
   }
   return res;
 }
@@ -118,7 +121,8 @@ int ArduinoWire::requestFrom(int address, unsigned int read_len,
     }
     
     if (res!=read_len) {
-      std::cerr<<"read not OK: "<<res<<std::endl;
+      std::cerr<<"read not OK: "<< (int)res <<std::endl;
+      return -1;
     }
     
 	if (releaseBus) {

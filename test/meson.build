@@ -4,7 +4,7 @@ test_named_store_exe = executable('test_named_store', 'test_named_store.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep,bt_log,bt_logs
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
 test_oxmem_exe = executable('test_oxmem', 'test_oxmem.cpp',
@@ -12,7 +12,7 @@ test_oxmem_exe = executable('test_oxmem', 'test_oxmem.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep,bt_log,bt_logs
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
 test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
@@ -20,7 +20,7 @@ test_oxbus_exe = executable('test_oxbus', 'test_oxbus.cpp',
                                   link_with : [oxlib],
                                   dependencies :  [
                                       thread_dep,rt_dep,
-                                      bs_dep,bt_dep,bt_log,bt_logs
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
 test_awire_exe = executable('test_awire', 'test_arduino_wire.cpp',
@@ -28,7 +28,7 @@ test_awire_exe = executable('test_awire', 'test_arduino_wire.cpp',
                             link_with : [oxlib],
                             dependencies :  [
                                 thread_dep,rt_dep,
-                                bs_dep,bt_dep,bt_log,bt_logs
+                                bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                             ])
 
 test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
@@ -36,7 +36,7 @@ test_oxapp_exe = executable('test_oxapp', 'test_oxapp.cpp',
                             link_with : [oxlib],
                             dependencies :  [
                                 thread_dep,rt_dep,
-                                bs_dep,bt_dep,bt_log,bt_logs
+                                bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                             ])
 
 test_oxblue_exe = executable('test_oxblue', 'test_oxblue.cpp',
@@ -44,7 +44,8 @@ test_oxblue_exe = executable('test_oxblue', 'test_oxblue.cpp',
                             link_with : [oxlib],
                             dependencies :  [
                                 thread_dep,rt_dep,
-                                bs_dep,bt_dep,bt_log,bt_logs,bluetooth_dep
+                                bs_dep,bt_dep,bt_log,bt_logs,bluetooth_dep,
+                                bt_chrono
                             ])
 
 

@@ -20,16 +20,26 @@ int main(int argc, char * argv [] ) {
   OxI2CBus i2c( "/dev/i2c-2" );
   OxGPSDbus gps_bus;
 
-  TCA9548A tca9548( TCA9548A_CH2 );
+  TCA9548A tca9548_1( TCA9548A_CH1 );
+  TCA9548A tca9548_2( TCA9548A_CH2 );
+  TCA9548A tca9548_3( TCA9548A_CH3 );
+  
+  BMP085 p1;
+  BMP085 p2;
+  BMP085 p3;
+  
+  p1.set_multiplexer( &tca9548_1 );
+  p2.set_multiplexer( &tca9548_2 );
+  p3.set_multiplexer( &tca9548_3 );
+  
+  i2c.add_device(&p1);
+  i2c.add_device(&p2);
+  i2c.add_device(&p3);
 
   LIS3MDL l;
-  BMP085 p;
   LSM6 s;
   GPS gps;
   
-  p.set_multiplexer( &tca9548 );
-
-  i2c.add_device(&p);
   i2c.add_device(&s);
   i2c.add_device(&l);
   gps_bus.add_device( &gps );

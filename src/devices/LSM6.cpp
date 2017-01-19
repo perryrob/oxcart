@@ -4,6 +4,9 @@
 
 #include <math.h>
 #include <iostream>
+
+#include "trivial_log.h"
+
 // Defines ////////////////////////////////////////////////////////////////
 
 // The Arduino two-wire interface uses a 7-bit number for the address,
@@ -223,14 +226,31 @@ void LSM6::vector_normalize(vector<float> *a)
 }
 
 void LSM6::rw_device() {
-  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
-  init();
+
+  if (is_device_failed()) {
+    BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
+    return;
+  }
+
+  if (! init() ) {
+    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
+    set_device_failed();
+    return;
+  }
+
   enableDefault();
   readAcc();
   readGyro();
-  if (shm == 0) {
-  } else {
-  }
+
+  OxApp::l_accel->set_val(X,a.x);
+  OxApp::l_accel->set_val(Y,a.y);
+  OxApp::l_accel->set_val(Z,a.z);
+
+  OxApp::l_gyro->set_val(X,g.x);
+  OxApp::l_gyro->set_val(Y,g.y);
+  OxApp::l_gyro->set_val(Z,g.z);
+
+  
 }
 
 // Private Methods //////////////////////////////////////////////////////////////

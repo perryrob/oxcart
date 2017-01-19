@@ -19,7 +19,7 @@ class TestBlueDevice : public OxBlueDevice {
 public:
   TestBlueDevice( const string &name ) : OxBlueDevice( name ) {}
   void rw_device() {
-    string msg("This is a test.");
+    string msg("This is a test.\n");
     bus->write(msg);
   }
   ~TestBlueDevice(){}
@@ -32,17 +32,17 @@ int main(int argc, char *argv[] ) {
 
   string remote_device = "00:06:66:73:E6:0D";
 
-  OxBluebus bus( remote_device ,1 );
+  OxBluebus bus( remote_device ,1 ,1);
   TestBlueDevice test_device( "Test Device" );
   
   bus.add_device( &test_device );
   bus.run();
 
-  b::this_thread::sleep(b::posix_time::milliseconds(1000));
+  b::this_thread::sleep(b::posix_time::milliseconds(100));
 
   bus.stop();
 
-  cerr << endl << "complete";
+  cerr << endl << "complete" << endl;;
   
   return 0;
 }

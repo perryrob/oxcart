@@ -51,11 +51,12 @@ public:
 
   void set_val( unsigned int index, STORE_T val );
   STORE_T get_val( unsigned int index );
-
+  uint64_t get_time( unsigned int index );
                 
 private:
   
   STORE_T *vals;
+  uint64_t *times; //milliseconds
   unsigned int dimension;
   std::string name;
   bip::managed_shared_memory * shm;

@@ -2,6 +2,8 @@
 #include "oxapp.h"
 #include "devices/LIS3MDL.h"
 
+#include "trivial_log.h"
+
 // Defines ////////////////////////////////////////////////////////////////
 
 // The Arduino two-wire interface uses a 7-bit number for the address,
@@ -182,13 +184,25 @@ void LIS3MDL::vector_normalize(vector<float> *a)
   a->z /= mag;
 }
 void LIS3MDL::rw_device() {
-  bip::managed_shared_memory * shm = OxApp::get_shared_mem();
-  init();
+
+  if (is_device_failed()) {
+    BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
+    return;
+  }
+
+  if (! init() ) {
+    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
+    set_device_failed();
+    return;
+  }
+
   enableDefault();
   read();
-  if (shm == 0) {
-  } else {
-  }
+
+  OxApp::l_mag->set_val(X,m.x);
+  OxApp::l_mag->set_val(Y,m.y);
+  OxApp::l_mag->set_val(Z,m.z);
+
 }
 
 // Private Methods //////////////////////////////////////////////////////////////
