@@ -10,9 +10,7 @@ NamedStore<int16_t> * OxApp::l_accel = new NamedStore<int16_t>(3);
 NamedStore<int16_t> * OxApp::l_gyro = new NamedStore<int16_t>(3);
 NamedStore<int16_t> * OxApp::l_mag = new NamedStore<int16_t>(3);
 
-NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(6);
-NamedStore<uint64_t> *OxApp::l_gps_time=new NamedStore<uint64_t>(1);
-NamedStore<int> * OxApp::l_gps_mode = new NamedStore<int>(1);
+NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(8);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -30,8 +28,6 @@ bip::managed_shared_memory * OxApp::create() {
     delete l_mag;
     
     delete l_gps_fix;
-    delete l_gps_time;
-    delete l_gps_mode;
     
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
@@ -40,9 +36,7 @@ bip::managed_shared_memory * OxApp::create() {
     l_gyro = new NamedStore<int16_t>( "LSM6.gyro", OxApp::shm, 3 );
     l_mag = new NamedStore<int16_t>( "LIS3MDL.mag", OxApp::shm, 3 );
     
-    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 6 );
-    l_gps_time = new NamedStore<uint64_t>( "GPS.time", OxApp::shm, 1 );
-    l_gps_mode = new NamedStore<int>( "GPS", OxApp::shm, 1 );
+    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 8 );
     
   }
   return OxApp::shm;
@@ -62,8 +56,6 @@ void OxApp::destroy() {
   delete l_mag;
   
   delete l_gps_fix;
-  delete l_gps_time;
-  delete l_gps_mode;
   
   if (OxApp::shm != 0) {
   bip::shared_memory_object::remove( MEM_NAME.c_str() );

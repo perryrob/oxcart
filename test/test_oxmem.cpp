@@ -26,15 +26,15 @@ int main(int argc, char *argv[] ) {
     ns_sm->set_val(Y,234.56);
     ns_sm->set_val(Z,345.67);  
 
-    cerr << "OK" << endl << "checking asserts ";
+    cerr << "OK" << endl << "checking asserts " << endl;
   
     assert( ns_sm->get_val(X) == 123.45 );
     assert( ns_sm->get_val(Y) == 234.56 );
     assert( ns_sm->get_val(Z) == 345.67 );
 
-    cerr << ns_sm->get_time(X) << endl;
-    cerr << ns_sm->get_time(Y) << endl;
-    cerr << ns_sm->get_time(Z) << endl;
+    cerr << ns_sm->get_val(X) << " " << ns_sm->get_time(X) << endl;
+    cerr << ns_sm->get_val(Y) << " " << ns_sm->get_time(Y) << endl;
+    cerr << ns_sm->get_val(Z) << " " << ns_sm->get_time(Z) << endl;
     
 
     string s(argv[0]); s += " child ";

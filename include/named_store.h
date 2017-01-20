@@ -20,15 +20,14 @@ static const unsigned int CH6=5;
 static const unsigned int CH7=6;
 static const unsigned int CH8=7;
 
-static const unsigned int TIME=0;
-static const unsigned int MODE=0;
-
 static const unsigned int LONGITUDE=0;
 static const unsigned int LATITUDE=1;
 static const unsigned int GPS_ALTITUDE=2;
 static const unsigned int SPEED=3;
 static const unsigned int VERT_SPEED=4;
 static const unsigned int TRACK=5;
+static const unsigned int TIME=6;
+static const unsigned int MODE=7;
 
 
 
