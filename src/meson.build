@@ -39,13 +39,5 @@ oxlib = shared_library(
 
 subdir('devices')
 
-executable('oxcart',
-           'main.cpp',
-           include_directories : inc,
-           dependencies : [
-               thread_dep,rt_dep,
-               bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep
-           ],
-           link_with : oxlib
-)
+
 

@@ -88,6 +88,8 @@ bool LSM6::init(deviceType device, sa0State sa0)
     break;
   }
 
+  enableDefault();
+
   return true;
 }
 
@@ -238,14 +240,11 @@ void LSM6::rw_device() {
     return;
   }
 
-  enableDefault();
   readAcc();
-  readGyro();
-
   OxApp::l_accel->set_val(X,a.x);
   OxApp::l_accel->set_val(Y,a.y);
   OxApp::l_accel->set_val(Z,a.z);
-
+  readGyro();
   OxApp::l_gyro->set_val(X,g.x);
   OxApp::l_gyro->set_val(Y,g.y);
   OxApp::l_gyro->set_val(Z,g.z);

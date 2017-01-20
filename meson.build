@@ -14,7 +14,7 @@ add_global_arguments('-DBOOST_LOG_DYN_LINK', language : 'cpp')
 subdir('include')
 subdir('src')
 subdir('test')
-
+subdir('apps')
 
 
 

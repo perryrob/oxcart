@@ -26,30 +26,15 @@ NamedStore<STORE_T>::NamedStore( char const * name,
                         bip::managed_shared_memory *shm,
                         const unsigned int &dimension ) {
 
-  /*
-   * First see if the shared memeory object exists. If
-   * it does, open it.
-   */
+
   this->name = name;
   this->dimension = dimension;
   
-  std::pair<STORE_T*, std::size_t> p = shm->find<STORE_T>(this->name.c_str());
-  
-  if (p.first == 0 ) {
-    this->vals=shm->construct<STORE_T>(this->name.c_str())[this->dimension](0);
-  } else {
-    this->vals = p.first;
-  }
+  vals = shm->find_or_construct<STORE_T>(this->name.c_str())[dimension]((STORE_T)0);
 
   std::string time_name = this->name + std::string("_time");
-  std::pair<uint64_t*, std::size_t> pt = shm->find<uint64_t>(time_name.c_str());
 
-  if (pt.first == 0 ) {
-    this->times = shm->construct<uint64_t>(time_name.c_str())[dimension](0);
-  } else {
-    this->times = pt.first;
-  }
-
+  times = shm->find_or_construct<uint64_t>(time_name.c_str())[dimension](0LL);
   
   
   this->shm = shm;
