@@ -63,15 +63,14 @@ Create the IMU devices. The magnetometer and the IMU
 Add the devices  to the I2C bus
   */  
   i2c.add_device(&s);
+  i2c.add_device(&p1);  // te
+  i2c.add_device(&s);   
+  i2c.add_device(&p2); // static / alt
+  i2c.add_device(&s);
+  i2c.add_device(&p3); // pitot
+  i2c.add_device(&s);
   i2c.add_device(&l);
-  i2c.add_device(&s);
-  i2c.add_device(&p1);
-  i2c.add_device(&s);
-  i2c.add_device(&p2);
-  i2c.add_device(&s);
-  i2c.add_device(&p3);
-
-  
+  i2c.add_device(&p3); // pitot
   /************************************************************
 Create the GPS object and add it to the gps serial bus
   */

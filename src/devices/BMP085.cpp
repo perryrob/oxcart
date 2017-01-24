@@ -20,6 +20,8 @@
 #include <math.h>
 #include "trivial_log.h"
 
+BMP085::BMP085()  : OxI2CDevice( "BMP085"),  lastP(0), lastT(0.0),lastA(0.0){}
+
 bool BMP085::begin(uint8_t mode) {
   if (mode > BMP085_ULTRAHIGHRES) 
     mode = BMP085_ULTRAHIGHRES;
@@ -43,21 +45,7 @@ bool BMP085::begin(uint8_t mode) {
   mb = read16(BMP085_CAL_MB);
   mc = read16(BMP085_CAL_MC);
   md = read16(BMP085_CAL_MD);
-#if (BMP085_DEBUG == 1)
-  Serial.print("ac1 = "); Serial.println(ac1, DEC);
-  Serial.print("ac2 = "); Serial.println(ac2, DEC);
-  Serial.print("ac3 = "); Serial.println(ac3, DEC);
-  Serial.print("ac4 = "); Serial.println(ac4, DEC);
-  Serial.print("ac5 = "); Serial.println(ac5, DEC);
-  Serial.print("ac6 = "); Serial.println(ac6, DEC);
 
-  Serial.print("b1 = "); Serial.println(b1, DEC);
-  Serial.print("b2 = "); Serial.println(b2, DEC);
-
-  Serial.print("mb = "); Serial.println(mb, DEC);
-  Serial.print("mc = "); Serial.println(mc, DEC);
-  Serial.print("md = "); Serial.println(md, DEC);
-#endif
 
   return true;
 }
@@ -71,9 +59,7 @@ int32_t BMP085::computeB5(int32_t UT) {
 uint16_t BMP085::readRawTemperature(void) {
   write8(BMP085_CONTROL, BMP085_READTEMPCMD);
   delay(5);
-#if BMP085_DEBUG == 1
-  Serial.print("Raw temp: "); Serial.println(read16(BMP085_TEMPDATA));
-#endif
+
   return read16(BMP085_TEMPDATA);
 }
 
@@ -278,8 +264,7 @@ void BMP085::rw_device() {
       (int)(((TCA9548A*)get_multiplexer())->get_channel());
     return;
   }
-
-  if (! begin()) {
+  if ( ! begin(BMP085_STANDARD) ) {
     BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name()<< " channel: " <<
       (int)(((TCA9548A*)get_multiplexer())->get_channel());
     set_device_failed();
@@ -293,22 +278,22 @@ void BMP085::rw_device() {
   if (is_multiplexed()) {
     switch(((TCA9548A*)get_multiplexer())->get_channel() ) {
     case TCA9548A_CH1:
-      OxApp::l_pressure->set_val(CH1,lastP);
-      OxApp::l_temp->set_val(CH1,lastT);
-      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+      OxApp::l_pressure->set_val(BMP_TE,lastP);
+      OxApp::l_temp->set_val(BMP_TE,lastT);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " TE channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
     case TCA9548A_CH2:
-      OxApp::l_pressure->set_val(CH2,lastP);
-      OxApp::l_temp->set_val(CH2,lastT);
-      OxApp::l_alt->set_val(CH2,lastA);
-      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+      OxApp::l_pressure->set_val(BMP_PITOT,lastP);
+      OxApp::l_temp->set_val(BMP_PITOT,lastT);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " PITOT channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
     case TCA9548A_CH3:
       OxApp::l_pressure->set_val(CH3,lastP);
       OxApp::l_temp->set_val(CH3,lastT);
-      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " channel: " <<
+      OxApp::l_alt->set_val(BMP_ALTITUDE,lastA);
+      BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " STATIC channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
 

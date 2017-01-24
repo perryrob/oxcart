@@ -6,11 +6,11 @@ bip::managed_shared_memory * OxApp::shm = 0;
 NamedStore<int32_t> * OxApp::l_pressure = new NamedStore<int32_t>(3);
 NamedStore<float> * OxApp::l_temp = new NamedStore<float>(3);
 NamedStore<float> * OxApp::l_alt = new NamedStore<float>( 1);
-NamedStore<int16_t> * OxApp::l_accel = new NamedStore<int16_t>(3);
-NamedStore<int16_t> * OxApp::l_gyro = new NamedStore<int16_t>(3);
-NamedStore<int16_t> * OxApp::l_mag = new NamedStore<int16_t>(3);
+NamedStore<double> * OxApp::l_accel = new NamedStore<double>(3);
+NamedStore<double> * OxApp::l_gyro = new NamedStore<double>(3);
+NamedStore<double> * OxApp::l_mag = new NamedStore<double>(3);
 
-NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(8);
+NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(9);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -32,15 +32,23 @@ bip::managed_shared_memory * OxApp::create() {
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
     l_alt = new NamedStore<float>( "BMP085.alt", OxApp::shm, 1 );
-    l_accel = new NamedStore<int16_t>( "LSM6.accel", OxApp::shm, 3 );
-    l_gyro = new NamedStore<int16_t>( "LSM6.gyro", OxApp::shm, 3 );
-    l_mag = new NamedStore<int16_t>( "LIS3MDL.mag", OxApp::shm, 3 );
+    l_accel = new NamedStore<double>( "LSM6.accel", OxApp::shm, 3 );
+    l_gyro = new NamedStore<double>( "LSM6.gyro", OxApp::shm, 3 );
+    l_mag = new NamedStore<double>( "LIS3MDL.mag", OxApp::shm, 3 );
     
-    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 8 );
+    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 9 );
     
   }
   return OxApp::shm;
 }
+uint64_t OxApp::get_time_ms() {
+     // Timestamp the data in milliseconds
+    b::chrono::system_clock::time_point now = b::chrono::system_clock::now();
+    b::chrono::nanoseconds sec =  now.time_since_epoch();
+    b::chrono::milliseconds milliSecs = b::chrono::duration_cast<b::chrono::milliseconds>(sec);
+    return (uint64_t)milliSecs.count();
+  }
+
 /************************************************************
  * Careful calling destroy, since it nukes the entire shared
  * memory pool. This should only be called when all apps are
@@ -63,4 +71,5 @@ void OxApp::destroy() {
   OxApp::shm = 0;
   }
 }
+
 

@@ -53,7 +53,7 @@
 class BMP085 : public OxI2CDevice {
 
  public:
- BMP085() : OxI2CDevice( "BMP085"),  lastP(0), lastT(0.0),lastA(0.0) {}
+  BMP085();
   bool begin(uint8_t mode = BMP085_ULTRAHIGHRES);  // by default go highres
   float readTemperature(void);
   int32_t readPressure(void);

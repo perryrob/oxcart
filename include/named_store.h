@@ -10,6 +10,11 @@ static const unsigned int Y=1;
 static const unsigned int Z=2;
 static const unsigned int V=0;
 static const unsigned int BMP_ALTITUDE=0;
+static const unsigned int BMP_TE=0;
+static const unsigned int BMP_PITOT=1;
+static const unsigned int BMP_STATIC=2;
+
+
 
 static const unsigned int CH1=0;
 static const unsigned int CH2=1;
@@ -26,8 +31,9 @@ static const unsigned int GPS_ALTITUDE=2;
 static const unsigned int SPEED=3;
 static const unsigned int VERT_SPEED=4;
 static const unsigned int TRACK=5;
-static const unsigned int TIME=6;
-static const unsigned int MODE=7;
+static const unsigned int TRACK_CHANGE=6;
+static const unsigned int TIME=7;
+static const unsigned int MODE=8;
 
 
 

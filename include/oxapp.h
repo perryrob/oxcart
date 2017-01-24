@@ -28,20 +28,14 @@ public:
     return shm;
   }
 
-  static inline uint64_t get_time_ms() {
-     // Timestamp the data in milliseconds
-    b::chrono::system_clock::time_point now = b::chrono::system_clock::now();
-    b::chrono::nanoseconds sec =  now.time_since_epoch();
-    b::chrono::milliseconds milliSecs = b::chrono::duration_cast<b::chrono::milliseconds>(sec);
-    return (uint64_t)milliSecs.count();
-  }
+  static uint64_t get_time_ms();
 
   static NamedStore<int32_t> *l_pressure;
   static NamedStore<float> *l_temp;
   static NamedStore<float> *l_alt;
-  static NamedStore<int16_t> *l_accel;
-  static NamedStore<int16_t> *l_gyro;
-  static NamedStore<int16_t> *l_mag;
+  static NamedStore<double> *l_accel;
+  static NamedStore<double> *l_gyro;
+  static NamedStore<double> *l_mag;
   
   static NamedStore<double> *l_gps_fix;
   

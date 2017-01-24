@@ -111,8 +111,9 @@ void LSM6::enableDefault(void)
     // Accelerometer
 
     // 0x80 = 0b10000000
-    // ODR = 1000 (1.66 kHz (high performance)); FS_XL = 00 (+/-2 g full scale)
-    writeReg(CTRL1_XL, 0x80);
+    // 0x98 = 0b10011000 4g, fast 6.66 kHz (high performance)
+    
+    writeReg(CTRL1_XL, 0x98);
 
     // Gyro
 
@@ -241,13 +242,13 @@ void LSM6::rw_device() {
   }
 
   readAcc();
-  OxApp::l_accel->set_val(X,a.x);
-  OxApp::l_accel->set_val(Y,a.y);
-  OxApp::l_accel->set_val(Z,a.z);
+  OxApp::l_accel->set_val(X,(double)a.x * 0.122 / 1000.0 * 9.80665); // m/s2 at 4g max
+  OxApp::l_accel->set_val(Y,(double)a.y * 0.122 / 1000.0 * 9.80665);
+  OxApp::l_accel->set_val(Z,(double)a.z * 0.122 / 1000.0 * 9.80665);
   readGyro();
-  OxApp::l_gyro->set_val(X,g.x);
-  OxApp::l_gyro->set_val(Y,g.y);
-  OxApp::l_gyro->set_val(Z,g.z);
+  OxApp::l_gyro->set_val(X,(double)g.x * 8.75 / 1000.0 * M_PI / 180.0); // rad/s at 245 max dps
+  OxApp::l_gyro->set_val(Y,(double)g.y * 8.75 / 1000.0 * M_PI / 180.0);
+  OxApp::l_gyro->set_val(Z,(double)g.z * 8.75 / 1000.0 * M_PI / 180.0);
 
   
 }

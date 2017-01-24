@@ -103,8 +103,9 @@ void LIS3MDL::enableDefault(void)
   if (_device == device_LIS3MDL)
   {
     // 0x70 = 0b01110000
+    // 0x68 =  0b01011000 
     // OM = 11 (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
-    writeReg(CTRL_REG1, 0x70);
+    writeReg(CTRL_REG1, 0x68);
 
     // 0x00 = 0b00000000
     // FS = 00 (+/- 4 gauss full scale)
@@ -199,9 +200,9 @@ void LIS3MDL::rw_device() {
   enableDefault();
   read();
 
-  OxApp::l_mag->set_val(X,m.x);
-  OxApp::l_mag->set_val(Y,m.y);
-  OxApp::l_mag->set_val(Z,m.z);
+  OxApp::l_mag->set_val(X,(double)m.x / 6842.0 );
+  OxApp::l_mag->set_val(Y,(double)m.y / 6842.0);
+  OxApp::l_mag->set_val(Z,(double)m.z / 6842.0);
 
 }
 

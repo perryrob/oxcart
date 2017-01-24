@@ -29,13 +29,13 @@ int main(int argc, char * argv [] ) {
     i2c.run();
     b::this_thread::sleep(b::posix_time::milliseconds(500));
     i2c.stop();
-
-    // sensitive to Tucson
-    assert( p2.lastPressure() > 1000.0 );
-    assert( p2.lastAltitude() > 500.0 );
-    assert( p2.lastTemperature() > 10.0 );
     
-    cout << p2.lastPressure() << " " << p2.lastAltitude() << " " << p2.lastTemperature() << endl;
+    // sensitive to Tucson
+    assert( p3.lastPressure() > 1000.0 );
+    assert( p3.lastAltitude() > 500.0 );
+    assert( p3.lastTemperature() > 10.0 );
+    
+    cout << p3.lastPressure() << " " << p3.lastAltitude() << " " << p3.lastTemperature() << endl;
 
     boost::chrono::system_clock::time_point now = boost::chrono::system_clock::now();
     boost::chrono::nanoseconds sec =  now.time_since_epoch();

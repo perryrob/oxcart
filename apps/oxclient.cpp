@@ -31,17 +31,42 @@ int main(int argc, char * argv[] ){
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-  uint64_t last_time=0;
+  uint64_t i2c_last_time=0;
+  uint64_t gps_last_time=0;
+  uint64_t sampling_rate=0;
 
-  while( KEEP_GOING ) {
-    if (last_time < OxApp::l_gyro->get_time(X) ) {
-      last_time =  OxApp::l_gyro->get_time(X);
+  while( KEEP_GOING ) {    
+    if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
+      sampling_rate = OxApp::l_gyro->get_time(X) - i2c_last_time ;
+      i2c_last_time =  OxApp::l_gyro->get_time(X);
       cout << OxApp::l_gyro->get_val(X) << " " << OxApp::l_gyro->get_val(Y) << 
-        " " << OxApp::l_gyro->get_val(Z) << endl;
+        " " << OxApp::l_gyro->get_val(Z) <<" rad/s" <<  endl;
       cout << OxApp::l_accel->get_val(X) << " " << OxApp::l_accel->get_val(Y) << 
-        " " << OxApp::l_accel->get_val(Z) << endl;
-      cout <<  "--------------------" << endl;
+        " " << OxApp::l_accel->get_val(Z) << " m/s2" << endl;
+      cout << OxApp::l_mag->get_val(X) << " " << OxApp::l_mag->get_val(Y) << 
+        " " << OxApp::l_mag->get_val(Z) << " gauss" << endl;
+      cout <<  "-------------------- " << endl;
+      cout << OxApp::l_alt->get_val(BMP_ALTITUDE) << "m " <<
+        OxApp::l_pressure->get_val(BMP_STATIC) << "pa " <<
+        OxApp::l_temp->get_val(BMP_STATIC) << "C " << endl;
+      cout <<  "-------------------- " << sampling_rate << endl;
+      cout << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
+        OxApp::l_gps_fix->get_val(LATITUDE) << " " << 
+        OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << "m " << 
+        OxApp::l_gps_fix->get_val(SPEED) << "m/s " << 
+        OxApp::l_gps_fix->get_val(VERT_SPEED) << "m/s " << 
+        OxApp::l_gps_fix->get_val(TRACK) << "rad " <<
+        OxApp::l_gps_fix->get_val(TRACK_CHANGE) << "rad/s mode:" << 
+        OxApp::l_gps_fix->get_val(MODE) << endl;
+      if (gps_last_time < OxApp::l_gps_fix->get_time(LONGITUDE) ) {
+        sampling_rate = OxApp::l_gps_fix->get_time(LONGITUDE) - gps_last_time ;
+        gps_last_time = OxApp::l_gps_fix->get_time(LONGITUDE);
+        cout <<  "-------------------- " << sampling_rate << endl;
+      } else {
+        cout <<  "-------------------- " << endl;
+      }
     }
+    
     b::this_thread::sleep(b::posix_time::milliseconds(5));
   }
   cout << endl;
