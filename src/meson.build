@@ -38,6 +38,7 @@ oxlib = shared_library(
 )
 
 subdir('devices')
+subdir('algo')
 
 
 

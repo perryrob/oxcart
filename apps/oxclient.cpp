@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "algo/MadgwickAHRS.h"
+
 using namespace std;
 
 static bool KEEP_GOING = true;
@@ -33,12 +35,35 @@ int main(int argc, char * argv[] ){
 
   uint64_t i2c_last_time=0;
   uint64_t gps_last_time=0;
-  uint64_t sampling_rate=0;
+  double sampling_rate=(double)OxApp::get_time_ms();
 
+  
+  Madgwick mw;
+
+           
   while( KEEP_GOING ) {    
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
-      sampling_rate = OxApp::l_gyro->get_time(X) - i2c_last_time ;
       i2c_last_time =  OxApp::l_gyro->get_time(X);
+      sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
+
+      mw.begin( OxApp::get_time_ms() );
+
+      mw.update( OxApp::l_accel->get_val(X),
+                 OxApp::l_accel->get_val(Y),
+                 OxApp::l_accel->get_val(Z),
+                 OxApp::l_gyro->get_val(X),
+                 OxApp::l_gyro->get_val(Y),
+                 OxApp::l_gyro->get_val(Z),
+                 OxApp::l_mag->get_val(X),
+                 OxApp::l_mag->get_val(Y),
+                 OxApp::l_mag->get_val(Z)
+                 );
+
+                 
+      cout << "Mroll: " << mw.getRoll() << " Mpitch: " << mw.getPitch() <<
+        " Myaw: " << mw.getYaw() << " Rate: " << sampling_rate << endl; 
+
+     
       cout << OxApp::l_gyro->get_val(X) << " " << OxApp::l_gyro->get_val(Y) << 
         " " << OxApp::l_gyro->get_val(Z) <<" rad/s" <<  endl;
       cout << OxApp::l_accel->get_val(X) << " " << OxApp::l_accel->get_val(Y) << 

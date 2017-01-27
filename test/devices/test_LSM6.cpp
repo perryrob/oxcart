@@ -1,4 +1,5 @@
 
+#include "oxapp.h"
 #include "oxi2cbus.h"
 #include "devices/LSM6.h"
 #include <iostream>
@@ -13,12 +14,15 @@ int main(int argc, char * argv [] ) {
 
     i2c.add_device(&s);
 
-    i2c.run();
-    b::this_thread::sleep(b::posix_time::milliseconds(10));
-    i2c.stop();
+    s.rw_device();
+    
+    cerr <<  OxApp::l_accel->get_val(X) << " " <<
+         OxApp::l_accel->get_val(Y) << " " <<
+      OxApp::l_accel->get_val(Z) << endl;
 
-    cerr << s.a.x << " " << s.a.y << " " << s.a.z << endl;
-    cerr << s.g.x << " " << s.g.y << " " << s.g.z << endl;
+    cerr <<  OxApp::l_gyro->get_val(X) << " " <<
+      OxApp::l_gyro->get_val(Y) << " " <<
+      OxApp::l_gyro->get_val(Z) << endl;
     
     return 0;
 

@@ -18,14 +18,26 @@
 
 #define DS33_WHO_ID    0x69
 
+const double GRAVITY = 9.80665;
+
 // Constructors ////////////////////////////////////////////////////////////////
 
 LSM6::LSM6()  : OxI2CDevice( "LSM6DS33")
 {
   _device = device_auto;
-
+  callibrated = false;
   io_timeout = 0;  // 0 = no timeout
   did_timeout = false;
+
+  a_bias.x = 0.0;
+  a_bias.y = 0.0;
+  a_bias.z = 0.0;
+  g_bias.x = 0.0;
+  g_bias.y = 0.0;
+  g_bias.z = 0.0;
+
+  a_mag = 0.0;
+
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -180,6 +192,12 @@ void LSM6::readAcc(void)
   a.x = (int16_t)(xha << 8 | xla);
   a.y = (int16_t)(yha << 8 | yla);
   a.z = (int16_t)(zha << 8 | zla);
+
+  if (callibrated) {
+    a.x = a.x - a_bias.x ;
+    a.y = a.y - a_bias.y ;
+    a.z = a.z ;// Just assume that Z is the magnitude of a_mag
+  }
 }
 
 // Reads the 3 gyro channels and stores them in vector g
@@ -211,6 +229,13 @@ void LSM6::readGyro(void)
   g.x = (int16_t)(xhg << 8 | xlg);
   g.y = (int16_t)(yhg << 8 | ylg);
   g.z = (int16_t)(zhg << 8 | zlg);
+
+  if (callibrated) {
+    g.x = g.x - g_bias.x;
+    g.y = g.y - g_bias.y;
+    g.z = g.z - g_bias.z;
+  }
+
 }
 
 // Reads all 6 channels of the LSM6 and stores them in the object variables
@@ -228,6 +253,56 @@ void LSM6::vector_normalize(vector<float> *a)
   a->z /= mag;
 }
 
+void LSM6::callibrate() {  
+  int SAMPLES = 10;
+
+  for( int i=0; i < SAMPLES; ++i ) {
+    readGyro();
+    g_bias.x += g.x;
+    g_bias.y += g.y;
+    g_bias.z += g.z;
+  }
+
+  for( int i=0; i < SAMPLES; ++i ) {
+    readAcc();
+    a_bias.x += (double)a.x;
+    a_bias.y += (double)a.y;
+    a_bias.z += (double)a.z;
+  }
+  g_bias.x = (double)g_bias.x / (double)SAMPLES;
+  g_bias.y = (double)g_bias.y / (double)SAMPLES;
+  g_bias.z = (double)g_bias.z / (double)SAMPLES;
+
+  a_bias.x = (double)a_bias.x / (double)SAMPLES;
+  a_bias.y = (double)a_bias.y / (double)SAMPLES;
+  a_bias.z = (double)a_bias.z / (double)SAMPLES;
+
+  
+  a_mag = sqrt(  a_bias.x * a_bias.x +  a_bias.y * a_bias.y  + a_bias.z * a_bias.z );
+
+  BOOST_LOG_TRIVIAL(debug) << a_mag;
+
+  double pitch = atan2(a_bias.x/a_mag, sqrt(a_bias.y/a_mag * a_bias.y/a_mag) + (a_bias.z/a_mag * a_bias.z/a_mag));
+  double roll = atan2(a_bias.y/a_mag, sqrt(a_bias.x/a_mag * a_bias.x/a_mag) + (a_bias.z/a_mag * a_bias.z/a_mag));
+
+  BOOST_LOG_TRIVIAL(debug) << "pitch: " << pitch  * 180.0 / M_PI;
+  BOOST_LOG_TRIVIAL(debug) << "roll: " << roll  * 180 / M_PI;
+
+  BOOST_LOG_TRIVIAL(debug) << a_mag * sin( pitch );
+  BOOST_LOG_TRIVIAL(debug) << a_mag * sin( roll );
+
+  a_bias.x -= a_mag * sin( pitch );
+  a_bias.y -= a_mag * sin( roll );
+  
+  a_mag /= GRAVITY;
+  
+  BOOST_LOG_TRIVIAL(debug) << a_bias.x  ;
+  BOOST_LOG_TRIVIAL(debug) << a_bias.y  ;
+
+  callibrated = true;
+}
+
+
 void LSM6::rw_device() {
 
   if (is_device_failed()) {
@@ -241,10 +316,14 @@ void LSM6::rw_device() {
     return;
   }
 
+  if (! callibrated) {
+    callibrate();
+  }
+
   readAcc();
-  OxApp::l_accel->set_val(X,(double)a.x * 0.122 / 1000.0 * 9.80665); // m/s2 at 4g max
-  OxApp::l_accel->set_val(Y,(double)a.y * 0.122 / 1000.0 * 9.80665);
-  OxApp::l_accel->set_val(Z,(double)a.z * 0.122 / 1000.0 * 9.80665);
+  OxApp::l_accel->set_val(X,(double)a.x / a_mag); 
+  OxApp::l_accel->set_val(Y,(double)a.y / a_mag);
+  OxApp::l_accel->set_val(Z,(double)a.z / a_mag);
   readGyro();
   OxApp::l_gyro->set_val(X,(double)g.x * 8.75 / 1000.0 * M_PI / 180.0); // rad/s at 245 max dps
   OxApp::l_gyro->set_val(Y,(double)g.y * 8.75 / 1000.0 * M_PI / 180.0);
@@ -252,6 +331,8 @@ void LSM6::rw_device() {
 
   
 }
+
+
 
 // Private Methods //////////////////////////////////////////////////////////////
 

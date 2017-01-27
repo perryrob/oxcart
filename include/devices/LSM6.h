@@ -89,6 +89,9 @@ class LSM6 : public OxI2CDevice {
 
   vector<int16_t> a; // accelerometer readings
   vector<int16_t> g; // gyro readings
+
+  vector<double> a_bias; // accelerometer readings
+  vector<double> g_bias; // gyro readings
   
   uint8_t last_status; // status of last I2C transmission
   
@@ -113,6 +116,8 @@ class LSM6 : public OxI2CDevice {
   uint16_t getTimeout(void);
   bool timeoutOccurred(void);
 
+  void callibrate();
+
   void rw_device();
   
   // vector functions
@@ -127,6 +132,10 @@ class LSM6 : public OxI2CDevice {
   
   uint16_t io_timeout;
   bool did_timeout;
+  
+  bool callibrated;
+
+  double a_mag;
   
   int16_t testReg(uint8_t address, regAddr reg);
 };
