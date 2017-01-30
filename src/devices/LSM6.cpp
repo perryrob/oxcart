@@ -320,6 +320,14 @@ void LSM6::rw_device() {
     callibrate();
   }
 
+  /**
+     Signs are negative to put the IMU into a NED coordinate system
+     
+     X is longitudinal
+     Y points right
+     Z points down.
+
+   */
   readAcc();
   OxApp::l_accel->set_val(X,(double)a.x / a_mag); 
   OxApp::l_accel->set_val(Y,(double)a.y / a_mag);

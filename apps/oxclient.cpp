@@ -56,11 +56,14 @@ int main(int argc, char * argv[] ){
                  OxApp::l_gyro->get_val(Z),
                  OxApp::l_mag->get_val(X),
                  OxApp::l_mag->get_val(Y),
-                 OxApp::l_mag->get_val(Z)
+                 OxApp::l_mag->get_val(Z),
+                 -360.0 / 18.0 * 3.14159 /180.0,
+                 25.7
                  );
 
                  
-      cout << "Mroll: " << mw.getRoll() << " Mpitch: " << mw.getPitch() <<
+      cout << "Mroll: " << mw.getRoll() << "GPS_ROLL: " << mw.getGPSRoll() <<
+        " Mpitch: " << mw.getPitch() <<
         " Myaw: " << mw.getYaw() << " Rate: " << sampling_rate << endl; 
 
      

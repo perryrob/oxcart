@@ -29,6 +29,7 @@ private:
     double roll;
     double pitch;
     double yaw;
+    double gps_roll;
     uint64_t current_time;
     uint64_t last_time;
 //-------------------------------------------------------------------------------------------
@@ -36,8 +37,9 @@ private:
 public:
     Madgwick(void);
     void begin(uint64_t now_ms);
-    void update(double gx, double gy, double gz, double ax, double ay, double az, double mx, double my, double mz);
+    void update(double gx, double gy, double gz, double ax, double ay, double az, double mx, double my, double mz, double gps_turn_rate=0.0, double TAS=0.0);
     double getRoll() { return roll;}
+    double getGPSRoll() { return gps_roll;}
     double getPitch() {return pitch;}
     double getYaw() {return yaw; }
 };

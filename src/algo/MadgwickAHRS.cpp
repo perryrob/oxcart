@@ -25,17 +25,17 @@
 //-------------------------------------------------------------------------------------------
 // Definitions
 
-#define GyroMeasError M_PI * (20.0f / 180.0f)
+#define GyroMeasError M_PI * (15.0f / 180.0f)
 #define beta sqrt(3.0f / 4.0f) * GyroMeasError   // compute beta
 
 #define sampleFreqDef   12.0f          // sample frequency in Hz
-#define betaDef         0.1f            // 2 * proportional gain
 
 
-//============================================================================================
+static const double GRAVITY = 9.80665;
+//===============================================================================
 // Functions
 
-//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // AHRS algorithm update
 
 Madgwick::Madgwick() {
@@ -49,9 +49,10 @@ Madgwick::Madgwick() {
 }
 void Madgwick::begin( uint64_t now_ms ) {
   deltat = (now_ms - last_time) * 0.001;
-  last_time = now_ms;
+  current_time = now_ms;
+  last_time = current_time;
 }
-void Madgwick::update(double ax, double ay, double az, double gx, double gy, double gz, double mx, double my, double mz)
+void Madgwick::update(double ax, double ay, double az, double gx, double gy, double gz, double mx, double my, double mz, double gps_turn_rate, double TAS)
  {
    double q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   // short name local variable for readability
    double norm;
@@ -82,6 +83,13 @@ void Madgwick::update(double ax, double ay, double az, double gx, double gy, dou
    double q3q3 = q3 * q3;
    double q3q4 = q3 * q4;
    double q4q4 = q4 * q4;
+
+   if (TAS > 10.0 && last_time != 0 && fabs(gps_turn_rate) > 0.0) {
+     double rad_a = gps_turn_rate * TAS;
+     double load_factor = sqrt(GRAVITY*GRAVITY + rad_a*rad_a  ) / GRAVITY;
+     gps_roll =  gps_turn_rate/ fabs(gps_turn_rate) * acos( 1 / load_factor ) ;
+     gps_roll *= 180.0 / M_PI;
+   }
    
    // Normalise accelerometer measurement
    norm = sqrt(ax * ax + ay * ay + az * az);
@@ -144,8 +152,8 @@ void Madgwick::update(double ax, double ay, double az, double gx, double gy, dou
    yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);   
    pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
    roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
-
-   pitch *= 180.0 / M_PI;
+   
+   pitch *= -180.0 / M_PI;
    yaw   *= 180.0 / M_PI; 
    yaw   -= 10.0; // Approx. Declination at Tucson, AZ
    roll  *= 180.0f / M_PI;
