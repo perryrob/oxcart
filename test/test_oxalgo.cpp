@@ -30,6 +30,7 @@ int main(int argc, char *argv[] ) {
     if (  OxApp::get_time_ms() - start > 1000 ) break;
     algo.run_algo();
   }
+  cerr << algo.count << endl;
   assert( algo.count == 11 );
   return 0;
 
