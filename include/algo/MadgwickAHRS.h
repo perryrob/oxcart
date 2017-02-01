@@ -1,6 +1,6 @@
-//=============================================================================================
+//===============================================================================
 // MadgwickAHRS.h
-//=============================================================================================
+//===============================================================================
 //
 // Implementation of Madgwick's IMU and AHRS algorithms.
 // See: http://www.x-io.co.uk/open-source-imu-and-ahrs-algorithms/
@@ -12,16 +12,17 @@
 // Date			Author          Notes
 // 29/09/2011	SOH Madgwick    Initial release
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
+// 01/31/2017   perryr          integrated into oxcart
 //
-//=============================================================================================
+//===============================================================================
 #ifndef MadgwickAHRS_h
 #define MadgwickAHRS_h
 #include <math.h>
-
+#include "oxalgo.h"
 #include <stdint.h>
-//--------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Variable declaration
-class Madgwick{
+class Madgwick : public OxAlgo {
 private:
     double beta;				// algorithm gain
     double q[4];
@@ -32,15 +33,20 @@ private:
     double gps_roll;
     uint64_t current_time;
     uint64_t last_time;
-//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Function declarations
 public:
-    Madgwick(void);
+    Madgwick();
     void begin(uint64_t now_ms);
-    void update(double gx, double gy, double gz, double ax, double ay, double az, double mx, double my, double mz, double gps_turn_rate=0.0, double TAS=0.0);
+    void update(double ax, double ay, double az,
+                double gx, double gy, double gz,
+                double mx, double my, double mz,
+                double gps_turn_rate=0.0, double TAS=0.0);
+    
     double getRoll() { return roll;}
     double getGPSRoll() { return gps_roll;}
     double getPitch() {return pitch;}
     double getYaw() {return yaw; }
+    void run_algo();
 };
 #endif

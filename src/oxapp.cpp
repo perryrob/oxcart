@@ -5,12 +5,15 @@ bip::managed_shared_memory * OxApp::shm = 0;
 
 NamedStore<int32_t> * OxApp::l_pressure = new NamedStore<int32_t>(3);
 NamedStore<float> * OxApp::l_temp = new NamedStore<float>(3);
-NamedStore<float> * OxApp::l_alt = new NamedStore<float>( 1);
 NamedStore<double> * OxApp::l_accel = new NamedStore<double>(3);
 NamedStore<double> * OxApp::l_gyro = new NamedStore<double>(3);
 NamedStore<double> * OxApp::l_mag = new NamedStore<double>(3);
 
 NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(9);
+
+NamedStore<double> * OxApp::algo_mad_euler = new NamedStore<double>(4);
+NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(4);
+NamedStore<double> * OxApp::algo_press = new NamedStore<double>(5);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -22,22 +25,27 @@ bip::managed_shared_memory * OxApp::create() {
 
     delete l_pressure;
     delete l_temp;
-    delete l_alt;
     delete l_accel;
     delete l_gyro;
     delete l_mag;
     
     delete l_gps_fix;
+
+    delete algo_mad_euler;
+    delete algo_mad_quat;
+    delete algo_press;
     
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
-    l_alt = new NamedStore<float>( "BMP085.alt", OxApp::shm, 1 );
     l_accel = new NamedStore<double>( "LSM6.accel", OxApp::shm, 3 );
     l_gyro = new NamedStore<double>( "LSM6.gyro", OxApp::shm, 3 );
     l_mag = new NamedStore<double>( "LIS3MDL.mag", OxApp::shm, 3 );
     
     l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 9 );
-    
+
+    algo_mad_euler = new NamedStore<double>( "ALGO.mad_euler", OxApp::shm, 4 );
+    algo_mad_quat = new NamedStore<double>( "ALGO.mad_quat", OxApp::shm, 4 );
+    algo_press = new NamedStore<double>( "ALGO.pressure", OxApp::shm, 5 );
   }
   return OxApp::shm;
 }
@@ -58,12 +66,15 @@ void OxApp::destroy() {
 
   delete l_pressure;
   delete l_temp;
-  delete l_alt;
   delete l_accel;
   delete l_gyro;
   delete l_mag;
   
   delete l_gps_fix;
+
+  delete algo_mad_euler;
+  delete algo_mad_quat;
+  delete algo_press;
   
   if (OxApp::shm != 0) {
   bip::shared_memory_object::remove( MEM_NAME.c_str() );

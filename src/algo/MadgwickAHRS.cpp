@@ -18,27 +18,25 @@
 
 //-------------------------------------------------------------------------------------------
 // Header files
-
+#include "oxapp.h"
 #include "algo/MadgwickAHRS.h"
 #include <math.h>
 
-//-------------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // Definitions
 
 #define GyroMeasError M_PI * (15.0f / 180.0f)
 #define beta sqrt(3.0f / 4.0f) * GyroMeasError   // compute beta
 
-#define sampleFreqDef   12.0f          // sample frequency in Hz
-
 
 static const double GRAVITY = 9.80665;
-//===============================================================================
+//==============================================================================
 // Functions
 
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 // AHRS algorithm update
-
-Madgwick::Madgwick() {
+// Preferred rate is 100 Hz
+Madgwick::Madgwick() : OxAlgo("Madgwick",10) {
   //	beta = betaDef;
 	q[0] = 1.0f;
 	q[1] = 0.0f;
@@ -54,7 +52,8 @@ void Madgwick::begin( uint64_t now_ms ) {
 }
 void Madgwick::update(double ax, double ay, double az, double gx, double gy, double gz, double mx, double my, double mz, double gps_turn_rate, double TAS)
  {
-   double q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   // short name local variable for readability
+   // short name local variable for readability
+   double q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   
    double norm;
    double hx, hy, _2bx, _2bz;
    double s1, s2, s3, s4;
@@ -159,4 +158,28 @@ void Madgwick::update(double ax, double ay, double az, double gx, double gy, dou
    roll  *= 180.0f / M_PI;
  }
  
-  
+void Madgwick::run_algo() {
+  begin( OxApp::get_time_ms() );
+  update( OxApp::l_accel->get_val(X),
+          OxApp::l_accel->get_val(Y),
+          OxApp::l_accel->get_val(Z),
+          OxApp::l_gyro->get_val(X),
+          OxApp::l_gyro->get_val(Y),
+          OxApp::l_gyro->get_val(Z),
+          OxApp::l_mag->get_val(X),
+          OxApp::l_mag->get_val(Y),
+          OxApp::l_mag->get_val(Z),
+          OxApp::l_gps_fix->get_val(TRACK_CHANGE),
+          OxApp::algo_press->get_val(TAS) 
+          );
+
+  OxApp::algo_mad_quat->set_val(A,q[0]);
+  OxApp::algo_mad_quat->set_val(B,q[1]);
+  OxApp::algo_mad_quat->set_val(C,q[2]);
+  OxApp::algo_mad_quat->set_val(D,q[3]);
+
+  OxApp::algo_mad_euler->set_val(ROLL,roll);
+  OxApp::algo_mad_euler->set_val(GPS_ROLL,gps_roll);
+  OxApp::algo_mad_euler->set_val(PITCH,pitch);
+  OxApp::algo_mad_euler->set_val(YAW,yaw);
+}

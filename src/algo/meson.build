@@ -1,5 +1,6 @@
 oxcart_algo_sources = [ 
-    'MadgwickAHRS.cpp'
+    'MadgwickAHRS.cpp',
+    'airdata.cpp'
 ]
 
 

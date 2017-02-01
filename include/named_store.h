@@ -5,17 +5,53 @@
 #include <string.h>
 #include "ns.h"
 
+/****************************************
+  static NamedStore<int32_t> *l_pressure;
+  static NamedStore<float> *l_temp;
+  static NamedStore<float> *l_alt;
+  static NamedStore<double> *l_accel;
+  static NamedStore<double> *l_gyro;
+  static NamedStore<double> *l_mag;
+  
+  static NamedStore<double> *l_gps_fix;
+
+  static NamedStore<double> *algo_mad_euler;
+  static NamedStore<double> *algo_mad_quat;
+  static NamedStore<double> *algo_press;
+  
+*/
+
+// LSM6.accel LSM6.gyro LIS3MDL.mag
 static const unsigned int X=0;
 static const unsigned int Y=1;
 static const unsigned int Z=2;
+
 static const unsigned int V=0;
-static const unsigned int BMP_ALTITUDE=0;
+
+// ALGO.pressure
+static const unsigned int TE=0;
+static const unsigned int AIRSPEED=1;
+static const unsigned int TAS=2;
+static const unsigned int ALTITUDE=3;
+static const unsigned int TE_ALTITUDE=4;
+//BMP085.pressure
 static const unsigned int BMP_TE=0;
 static const unsigned int BMP_PITOT=1;
 static const unsigned int BMP_STATIC=2;
 
+// ALGO.mad_euler
+static const unsigned int ROLL=0;
+static const unsigned int GPS_ROLL=1;
+static const unsigned int PITCH=2;
+static const unsigned int YAW=3;
 
+// ALGO.mad_quat
+static const unsigned int A=0;
+static const unsigned int B=1;
+static const unsigned int C=2;
+static const unsigned int D=3;
 
+// Multiplexer
 static const unsigned int CH1=0;
 static const unsigned int CH2=1;
 static const unsigned int CH3=2;
@@ -25,6 +61,7 @@ static const unsigned int CH6=5;
 static const unsigned int CH7=6;
 static const unsigned int CH8=7;
 
+//GPS.fix
 static const unsigned int LONGITUDE=0;
 static const unsigned int LATITUDE=1;
 static const unsigned int GPS_ALTITUDE=2;

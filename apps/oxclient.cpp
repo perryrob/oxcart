@@ -9,8 +9,6 @@
 
 #include <iostream>
 
-#include "algo/MadgwickAHRS.h"
-
 using namespace std;
 
 static bool KEEP_GOING = true;
@@ -38,35 +36,22 @@ int main(int argc, char * argv[] ){
   double sampling_rate=(double)OxApp::get_time_ms();
 
   
-  Madgwick mw;
-
-           
   while( KEEP_GOING ) {    
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
       i2c_last_time =  OxApp::l_gyro->get_time(X);
       sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
+      cout <<  "-------------------- " << endl;
+      cout << "Mroll: " <<  OxApp::algo_mad_euler->get_val(ROLL) <<
+        " GPS_ROLL: " << OxApp::algo_mad_euler->get_val(GPS_ROLL) <<
+        " Mpitch: " << OxApp::algo_mad_euler->get_val(PITCH) <<
+        " Myaw: " <<  OxApp::algo_mad_euler->get_val(YAW) << endl; 
 
-      mw.begin( OxApp::get_time_ms() );
-
-      mw.update( OxApp::l_accel->get_val(X),
-                 OxApp::l_accel->get_val(Y),
-                 OxApp::l_accel->get_val(Z),
-                 OxApp::l_gyro->get_val(X),
-                 OxApp::l_gyro->get_val(Y),
-                 OxApp::l_gyro->get_val(Z),
-                 OxApp::l_mag->get_val(X),
-                 OxApp::l_mag->get_val(Y),
-                 OxApp::l_mag->get_val(Z),
-                 -360.0 / 18.0 * 3.14159 /180.0,
-                 25.7
-                 );
-
-                 
-      cout << "Mroll: " << mw.getRoll() << "GPS_ROLL: " << mw.getGPSRoll() <<
-        " Mpitch: " << mw.getPitch() <<
-        " Myaw: " << mw.getYaw() << " Rate: " << sampling_rate << endl; 
-
-     
+      cout << OxApp::algo_mad_quat->get_val(A) << " " <<
+        OxApp::algo_mad_quat->get_val(B) << " " <<
+        OxApp::algo_mad_quat->get_val(C) << " " <<
+        OxApp::algo_mad_quat->get_val(D) << " " <<
+        "-------------------- " << endl;
+      
       cout << OxApp::l_gyro->get_val(X) << " " << OxApp::l_gyro->get_val(Y) << 
         " " << OxApp::l_gyro->get_val(Z) <<" rad/s" <<  endl;
       cout << OxApp::l_accel->get_val(X) << " " << OxApp::l_accel->get_val(Y) << 
@@ -74,7 +59,7 @@ int main(int argc, char * argv[] ){
       cout << OxApp::l_mag->get_val(X) << " " << OxApp::l_mag->get_val(Y) << 
         " " << OxApp::l_mag->get_val(Z) << " gauss" << endl;
       cout <<  "-------------------- " << endl;
-      cout << OxApp::l_alt->get_val(BMP_ALTITUDE) << "m " <<
+      cout << OxApp::algo_press->get_val(ALTITUDE) << "m " <<
         OxApp::l_pressure->get_val(BMP_STATIC) << "pa " <<
         OxApp::l_temp->get_val(BMP_STATIC) << "C " << endl;
       cout <<  "-------------------- " << sampling_rate << endl;

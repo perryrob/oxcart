@@ -38,6 +38,10 @@ public:
   static NamedStore<double> *l_mag;
   
   static NamedStore<double> *l_gps_fix;
+
+  static NamedStore<double> *algo_mad_euler;
+  static NamedStore<double> *algo_mad_quat;
+  static NamedStore<double> *algo_press;
   
   ~OxApp(){};
   

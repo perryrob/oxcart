@@ -280,6 +280,7 @@ void BMP085::rw_device() {
     case TCA9548A_CH1:
       OxApp::l_pressure->set_val(BMP_TE,lastP);
       OxApp::l_temp->set_val(BMP_TE,lastT);
+      OxApp::algo_press->set_val(TE_ALTITUDE,lastA);
       BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " TE channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
@@ -292,7 +293,7 @@ void BMP085::rw_device() {
     case TCA9548A_CH3:
       OxApp::l_pressure->set_val(CH3,lastP);
       OxApp::l_temp->set_val(CH3,lastT);
-      OxApp::l_alt->set_val(BMP_ALTITUDE,lastA);
+      OxApp::algo_press->set_val(ALTITUDE,lastA);
       BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " STATIC channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
