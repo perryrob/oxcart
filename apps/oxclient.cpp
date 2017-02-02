@@ -49,8 +49,16 @@ int main(int argc, char * argv[] ){
       cout << OxApp::algo_mad_quat->get_val(A) << " " <<
         OxApp::algo_mad_quat->get_val(B) << " " <<
         OxApp::algo_mad_quat->get_val(C) << " " <<
-        OxApp::algo_mad_quat->get_val(D) << " " <<
+        OxApp::algo_mad_quat->get_val(D) << " " << endl <<
         "-------------------- " << endl;
+
+      cout << OxApp::algo_press_rate->get_val(PRESSURE_TE) << " Pa/s " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_AIRSPEED) << " m/s^2 " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_TAS) << " m/s^2 " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_ALTITUDE) << " STATIC m/s " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) << " TE m/s " << 
+        OxApp::algo_misc_rate->get_val(GPS_ACCELERATION) <<" GPS acell m/s^2" << 
+        endl << "-----------------------" << endl;
       
       cout << OxApp::l_gyro->get_val(X) << " " << OxApp::l_gyro->get_val(Y) << 
         " " << OxApp::l_gyro->get_val(Z) <<" rad/s" <<  endl;
@@ -65,11 +73,11 @@ int main(int argc, char * argv[] ){
       cout <<  "-------------------- " << sampling_rate << endl;
       cout << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
         OxApp::l_gps_fix->get_val(LATITUDE) << " " << 
-        OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << "m " << 
-        OxApp::l_gps_fix->get_val(SPEED) << "m/s " << 
-        OxApp::l_gps_fix->get_val(VERT_SPEED) << "m/s " << 
-        OxApp::l_gps_fix->get_val(TRACK) << "rad " <<
-        OxApp::l_gps_fix->get_val(TRACK_CHANGE) << "rad/s mode:" << 
+        OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << " m " << 
+        OxApp::l_gps_fix->get_val(SPEED) << " m/s " << 
+        OxApp::l_gps_fix->get_val(VERT_SPEED) << " m/s " << 
+        OxApp::l_gps_fix->get_val(TRACK) << " rad " <<
+        OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode:" << 
         OxApp::l_gps_fix->get_val(MODE) << endl;
       if (gps_last_time < OxApp::l_gps_fix->get_time(LONGITUDE) ) {
         sampling_rate = OxApp::l_gps_fix->get_time(LONGITUDE) - gps_last_time ;

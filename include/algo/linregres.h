@@ -14,6 +14,7 @@ public:
   int get_depth() { return x_que.size(); }
 
   double slope();
+  double slope_per_sec() { return slope() * 1000.0; } 
   bool update(const double &X, const double &Y);
 
   ~LinRegres() {}

@@ -18,6 +18,9 @@
   static NamedStore<double> *algo_mad_euler;
   static NamedStore<double> *algo_mad_quat;
   static NamedStore<double> *algo_press;
+  static NamedStore<double> *algo_press_rate;
+
+  static NamedStore<double> *algo_gps_rate;
   
 */
 
@@ -34,6 +37,14 @@ static const unsigned int AIRSPEED=1;
 static const unsigned int TAS=2;
 static const unsigned int ALTITUDE=3;
 static const unsigned int TE_ALTITUDE=4;
+
+// ALGO.press_rate
+static const unsigned int PRESSURE_TE=0;
+static const unsigned int PRESSURE_AIRSPEED=1;
+static const unsigned int PRESSURE_TAS=2;
+static const unsigned int PRESSURE_ALTITUDE=3;
+static const unsigned int PRESSURE_TE_ALTITUDE=4;
+
 //BMP085.pressure
 static const unsigned int BMP_TE=0;
 static const unsigned int BMP_PITOT=1;
@@ -72,7 +83,8 @@ static const unsigned int TRACK_CHANGE=6;
 static const unsigned int TIME=7;
 static const unsigned int MODE=8;
 
-
+//ALGO.misc_rate
+static const unsigned int GPS_ACCELERATION=0;
 
 
 template <class STORE_T> class NamedStore {

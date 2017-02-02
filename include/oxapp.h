@@ -42,6 +42,9 @@ public:
   static NamedStore<double> *algo_mad_euler;
   static NamedStore<double> *algo_mad_quat;
   static NamedStore<double> *algo_press;
+  static NamedStore<double> *algo_press_rate;
+
+  static NamedStore<double> *algo_misc_rate;
   
   ~OxApp(){};
   

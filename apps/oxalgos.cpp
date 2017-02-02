@@ -3,6 +3,8 @@
 #include "oxalgothread.h"
 
 #include "algo/MadgwickAHRS.h"
+#include "algo/total_energy.h"
+#include "algo/misc_rate.h"
 
 
 #include <signal.h>
@@ -23,9 +25,14 @@ int main(int argc, char * argv[] ){
 
   OxAlgoThread algo_thread; 
   Madgwick mw;
+  TotalEnergy te;
+  MiscRate mr;
   
   
   algo_thread.add_algo(&mw);
+  algo_thread.add_algo(&te);
+  algo_thread.add_algo(&mr);
+
   algo_thread.run();
   
   struct sigaction sigIntHandler;

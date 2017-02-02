@@ -14,6 +14,9 @@ NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(9);
 NamedStore<double> * OxApp::algo_mad_euler = new NamedStore<double>(4);
 NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(4);
 NamedStore<double> * OxApp::algo_press = new NamedStore<double>(5);
+NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(5);
+
+NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(1);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -34,6 +37,9 @@ bip::managed_shared_memory * OxApp::create() {
     delete algo_mad_euler;
     delete algo_mad_quat;
     delete algo_press;
+    delete algo_press_rate;
+
+    delete algo_misc_rate;
     
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
@@ -46,6 +52,9 @@ bip::managed_shared_memory * OxApp::create() {
     algo_mad_euler = new NamedStore<double>( "ALGO.mad_euler", OxApp::shm, 4 );
     algo_mad_quat = new NamedStore<double>( "ALGO.mad_quat", OxApp::shm, 4 );
     algo_press = new NamedStore<double>( "ALGO.pressure", OxApp::shm, 5 );
+    algo_press_rate = new NamedStore<double>("ALGO.pressure_rate",OxApp::shm,5);
+
+    algo_misc_rate = new NamedStore<double>("ALGO.misc_rate",OxApp::shm,1);
   }
   return OxApp::shm;
 }
@@ -75,6 +84,9 @@ void OxApp::destroy() {
   delete algo_mad_euler;
   delete algo_mad_quat;
   delete algo_press;
+  delete algo_press_rate;
+
+  delete algo_misc_rate;
   
   if (OxApp::shm != 0) {
   bip::shared_memory_object::remove( MEM_NAME.c_str() );

@@ -1,7 +1,9 @@
 oxcart_algo_sources = [ 
     'MadgwickAHRS.cpp',
     'airdata.cpp',
-    'linregres.cpp'
+    'linregres.cpp',
+    'total_energy.cpp',
+    'misc_rate.cpp'
 ]
 
 
