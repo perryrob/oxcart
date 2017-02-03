@@ -156,5 +156,23 @@ int main(int argc, char *argv[] ) {
   }
   cerr << mw.getRoll() << " " << mw.getGPSRoll() << " " << 0 << endl;
   assert( fabs(mw.getRoll() - mw.getGPSRoll()) < 1.0 );
+  mw.reset();
+  for( uint64_t i = 1000; i < 5000; i = i + 100) {
+    mw.begin( i );
+    mw.update( 1.2,
+               0.0852967,
+               sqrt(9.8056 * 9.8056 + 2.5 * 2.5),
+               -0.0105374,
+               0.00137445,
+               0.00503964,
+               0.770681,
+               -0.46273,
+               -0.15551,
+               0.0,
+               25.7,
+               2.5); // sent in from GPS
+  }
+  cerr << mw.getRoll() << " " << mw.getGPSRoll() << " " << mw.getPitch() << endl;
+  assert( mw.getPitch() < - 7.5 );
   return 0;
 }
