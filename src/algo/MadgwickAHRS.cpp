@@ -37,7 +37,9 @@ static const double GRAVITY = 9.80665;
 // AHRS algorithm update
 // Preferred rate is 100 Hz
 Madgwick::Madgwick() : OxAlgo("Madgwick",10) {
-  //	beta = betaDef;
+  reset();
+}
+void Madgwick::reset() {
 	q[0] = 1.0f;
 	q[1] = 0.0f;
 	q[2] = 0.0f;
@@ -50,7 +52,11 @@ void Madgwick::begin( uint64_t now_ms ) {
   current_time = now_ms;
   last_time = current_time;
 }
-void Madgwick::update(double ax, double ay, double az, double gx, double gy, double gz, double mx, double my, double mz, double gps_turn_rate, double TAS)
+void Madgwick::update(double ax, double ay, double az, 
+                      double gx, double gy, double gz, 
+                      double mx, double my, double mz, 
+                      double gps_turn_rate, double TAS, 
+                      double longitudinal_accel)
  {
    // short name local variable for readability
    double q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   
@@ -82,12 +88,14 @@ void Madgwick::update(double ax, double ay, double az, double gx, double gy, dou
    double q3q3 = q3 * q3;
    double q3q4 = q3 * q4;
    double q4q4 = q4 * q4;
+   double rad_a = gps_turn_rate * TAS;
 
-   if (TAS > 10.0 && last_time != 0 && fabs(gps_turn_rate) > 0.0) {
-     double rad_a = gps_turn_rate * TAS;
-     double load_factor = sqrt(GRAVITY*GRAVITY + rad_a*rad_a  ) / GRAVITY;
-     gps_roll =  gps_turn_rate/ fabs(gps_turn_rate) * acos( 1 / load_factor ) ;
-     gps_roll *= 180.0 / M_PI;
+   gps_roll = atan( rad_a / GRAVITY ) * 180.0 / M_PI;
+
+   ax -= longitudinal_accel;
+   ay += rad_a;
+   if (fabs(az) != 0.0) {
+     az = az/fabs(az) * GRAVITY;
    }
    
    // Normalise accelerometer measurement

@@ -38,10 +38,12 @@ private:
 public:
     Madgwick();
     void begin(uint64_t now_ms);
+    void reset();
     void update(double ax, double ay, double az,
                 double gx, double gy, double gz,
                 double mx, double my, double mz,
-                double gps_turn_rate=0.0, double TAS=0.0);
+                double gps_turn_rate=0.0, double TAS=0.0,
+                double longitudinal_accel=0.0);
     
     double getRoll() { return roll;}
     double getGPSRoll() { return gps_roll;}
