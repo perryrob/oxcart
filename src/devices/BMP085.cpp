@@ -262,6 +262,24 @@ void BMP085::rw_device() {
   if (is_device_failed()) {
     BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<<get_name()<< " channel: " <<
       (int)(((TCA9548A*)get_multiplexer())->get_channel());
+    if (is_multiplexed()) {
+      switch(((TCA9548A*)get_multiplexer())->get_channel() ) {
+      case TCA9548A_CH1:
+        OxApp::l_pressure->set_val(BMP_TE,0);
+        OxApp::l_temp->set_val(BMP_TE,0);
+        OxApp::algo_press->set_val(TE_ALTITUDE,0);
+        break;
+      case TCA9548A_CH2:
+        OxApp::l_pressure->set_val(BMP_PITOT,0);
+        OxApp::l_temp->set_val(BMP_PITOT,0);
+        break;
+      case TCA9548A_CH3:
+        OxApp::l_pressure->set_val(BMP_STATIC,0);
+        OxApp::l_temp->set_val(BMP_STATIC,0);
+        OxApp::algo_press->set_val(ALTITUDE,0);
+        break;        
+      }
+    }
     return;
   }
   if ( ! begin(BMP085_STANDARD) ) {
@@ -291,8 +309,8 @@ void BMP085::rw_device() {
         (int)(((TCA9548A*)get_multiplexer())->get_channel());
       break;
     case TCA9548A_CH3:
-      OxApp::l_pressure->set_val(CH3,lastP);
-      OxApp::l_temp->set_val(CH3,lastT);
+      OxApp::l_pressure->set_val(BMP_STATIC,lastP);
+      OxApp::l_temp->set_val(BMP_STATIC,lastT);
       OxApp::algo_press->set_val(ALTITUDE,lastA);
       BOOST_LOG_TRIVIAL(debug) << "Device read: "<<get_name()<< " STATIC channel: " <<
         (int)(((TCA9548A*)get_multiplexer())->get_channel());

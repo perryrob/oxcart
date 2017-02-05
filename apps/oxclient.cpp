@@ -32,7 +32,6 @@ int main(int argc, char * argv[] ){
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   uint64_t i2c_last_time=0;
-  uint64_t gps_last_time=0;
   double sampling_rate=(double)OxApp::get_time_ms();
 
   
@@ -40,38 +39,48 @@ int main(int argc, char * argv[] ){
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
       i2c_last_time =  OxApp::l_gyro->get_time(X);
       sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
-      cout <<  "-------------------- " << endl;
+      cout <<  ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
       cout << "Mroll: " <<  OxApp::algo_mad_euler->get_val(ROLL) <<
         " GPS_ROLL: " << OxApp::algo_mad_euler->get_val(GPS_ROLL) <<
         " Mpitch: " << OxApp::algo_mad_euler->get_val(PITCH) <<
         " Myaw: " <<  OxApp::algo_mad_euler->get_val(YAW) << endl; 
 
-      cout << OxApp::algo_mad_quat->get_val(A) << " " <<
+      cout << "Quaternion: " << OxApp::algo_mad_quat->get_val(A) << " " <<
         OxApp::algo_mad_quat->get_val(B) << " " <<
         OxApp::algo_mad_quat->get_val(C) << " " <<
         OxApp::algo_mad_quat->get_val(D) << " " << endl <<
         "-------------------- " << endl;
-
-      cout << OxApp::algo_press_rate->get_val(PRESSURE_TE) << " Pa/s " <<
-        OxApp::algo_press_rate->get_val(PRESSURE_AIRSPEED) << " m/s^2 " <<
-        OxApp::algo_press_rate->get_val(PRESSURE_TAS) << " m/s^2 " <<
-        OxApp::algo_press_rate->get_val(PRESSURE_ALTITUDE) << " STATIC m/s " <<
-        OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) << " TE m/s " << 
-        OxApp::algo_misc_rate->get_val(GPS_ACCELERATION) <<" GPS acell m/s^2" << 
+      cout<<"TE: "<<OxApp::algo_press_rate->get_val(PRESSURE_TE) <<
+        " Pa/s IAS: " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_AIRSPEED) << " m/s^2 TAS: " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_TAS) << " m/s^2 Static: " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_ALTITUDE) << " m/s TEa: " <<
+        OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) << " m/s GPS: "<< 
+        OxApp::algo_misc_rate->get_val(GPS_ACCELERATION) <<" accel m/s^2 "<< 
+        OxApp::algo_misc_rate->get_val(PITCH_RATE) <<" pitch rate m/s^2" << 
         endl << "-----------------------" << endl;
       
-      cout << OxApp::l_gyro->get_val(X) << " " << OxApp::l_gyro->get_val(Y) << 
+      cout << "Gyros: " << OxApp::l_gyro->get_val(X) << " " << 
+        OxApp::l_gyro->get_val(Y) << 
         " " << OxApp::l_gyro->get_val(Z) <<" rad/s" <<  endl;
-      cout << OxApp::l_accel->get_val(X) << " " << OxApp::l_accel->get_val(Y) << 
+      cout <<"Accel: " <<  OxApp::l_accel->get_val(X) << " " << 
+        OxApp::l_accel->get_val(Y) << 
         " " << OxApp::l_accel->get_val(Z) << " m/s2" << endl;
-      cout << OxApp::l_mag->get_val(X) << " " << OxApp::l_mag->get_val(Y) << 
+      cout << "Mag: " << OxApp::l_mag->get_val(X) << " " << 
+        OxApp::l_mag->get_val(Y) << 
         " " << OxApp::l_mag->get_val(Z) << " gauss" << endl;
       cout <<  "-------------------- " << endl;
-      cout << OxApp::algo_press->get_val(ALTITUDE) << "m " <<
-        OxApp::l_pressure->get_val(BMP_STATIC) << "pa " <<
-        OxApp::l_temp->get_val(BMP_STATIC) << "C " << endl;
+      cout << "TE: " << OxApp::l_pressure->get_val(BMP_TE)<<" pa "<<
+        OxApp::algo_press->get_val(TE_ALTITUDE) << " m " <<
+        OxApp::l_temp->get_val(BMP_TE) << " C" << endl <<
+        "pitot: " << OxApp::l_pressure->get_val(BMP_PITOT)<< " pa "<<
+         OxApp::algo_press->get_val(AIRSPEED)<< " m/s "<< 
+        OxApp::l_temp->get_val(BMP_PITOT) << " C" << endl <<
+        "static: " << OxApp::l_pressure->get_val(BMP_STATIC)<< " pa "<<
+          OxApp::algo_press->get_val(ALTITUDE) << " m " <<
+          OxApp::l_temp->get_val(BMP_STATIC) << " C" << endl;
       cout <<  "-------------------- " << sampling_rate << endl;
-      cout << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
+      cout << "GPS: " << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
         OxApp::l_gps_fix->get_val(LATITUDE) << " " << 
         OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << " m " << 
         OxApp::l_gps_fix->get_val(SPEED) << " m/s " << 
@@ -79,13 +88,7 @@ int main(int argc, char * argv[] ){
         OxApp::l_gps_fix->get_val(TRACK) << " rad " <<
         OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode:" << 
         OxApp::l_gps_fix->get_val(MODE) << endl;
-      if (gps_last_time < OxApp::l_gps_fix->get_time(LONGITUDE) ) {
-        sampling_rate = OxApp::l_gps_fix->get_time(LONGITUDE) - gps_last_time ;
-        gps_last_time = OxApp::l_gps_fix->get_time(LONGITUDE);
-        cout <<  "-------------------- " << sampling_rate << endl;
-      } else {
-        cout <<  "-------------------- " << endl;
-      }
+      cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
     }
     
     b::this_thread::sleep(b::posix_time::milliseconds(5));

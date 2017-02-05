@@ -15,37 +15,42 @@ TotalEnergy::TotalEnergy() : OxAlgo( "Total Energy",100 ) {
 
 void TotalEnergy::run_algo() {
 
-  TE_linear_regression->update(OxApp::algo_press->get_time(TE),
-                               OxApp::algo_press->get_val(TE));
-  if (TE_linear_regression->ready()) {
-    OxApp::algo_press_rate->set_val(PRESSURE_TE, 
-                                    TE_linear_regression->slope_per_sec());
-  }
   AIRSPEED_linear_regression->update(OxApp::algo_press->get_time(AIRSPEED),
-                               OxApp::algo_press->get_val(AIRSPEED));
+                                     OxApp::algo_press->get_val(AIRSPEED));
   if (AIRSPEED_linear_regression->ready()) {
     OxApp::algo_press_rate->set_val(PRESSURE_AIRSPEED, 
-                                    AIRSPEED_linear_regression->slope_per_sec());
+                                   AIRSPEED_linear_regression->slope_per_sec());
   }
+  
   TAS_linear_regression->update(OxApp::algo_press->get_time(TAS),
                                OxApp::algo_press->get_val(TAS));
   if (TAS_linear_regression->ready()) {
     OxApp::algo_press_rate->set_val(PRESSURE_TAS, 
                                     TAS_linear_regression->slope_per_sec());
   }
+
   ALTITUDE_linear_regression->update(OxApp::algo_press->get_time(ALTITUDE),
                                OxApp::algo_press->get_val(ALTITUDE));
-
   if (ALTITUDE_linear_regression->ready()) {
     OxApp::algo_press_rate->set_val(PRESSURE_ALTITUDE, 
-                                    ALTITUDE_linear_regression->slope_per_sec());
-
+                                ALTITUDE_linear_regression->slope_per_sec());
   }
-  TE_ALTITUDE_linear_regression->update(OxApp::algo_press->get_time(TE_ALTITUDE),
+  /**
+   * This isn't setting the correct values, hmmmmmm.
+   */
+  TE_linear_regression->update(OxApp::algo_press->get_time(BMP_TE),
+                               OxApp::algo_press->get_val(BMP_TE));
+  if (TE_linear_regression->ready()) {
+    OxApp::algo_press_rate->set_val(PRESSURE_TE,
+                                    TE_linear_regression->slope_per_sec());
+  }
+  
+  TE_ALTITUDE_linear_regression->update(
+                               OxApp::algo_press->get_time(TE_ALTITUDE),
                                OxApp::algo_press->get_val(TE_ALTITUDE));
   if (TE_ALTITUDE_linear_regression->ready()) {
     OxApp::algo_press_rate->set_val(PRESSURE_TE_ALTITUDE, 
-                                    TE_linear_regression->slope_per_sec());
+                                    TE_ALTITUDE_linear_regression->slope_per_sec());
   }
 }
 

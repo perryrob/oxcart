@@ -6,7 +6,7 @@
 const double RHO = 1.225;
 const double R   = 287.1;
 
-class Airdata : OxAlgo {
+class Airdata : public OxAlgo {
 
 public:
   Airdata() : OxAlgo( "Airdata",100 ) {};

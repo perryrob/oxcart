@@ -85,6 +85,7 @@ static const unsigned int MODE=8;
 
 //ALGO.misc_rate
 static const unsigned int GPS_ACCELERATION=0;
+static const unsigned int PITCH_RATE=1;
 
 
 template <class STORE_T> class NamedStore {

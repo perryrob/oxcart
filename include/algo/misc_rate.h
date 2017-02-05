@@ -15,6 +15,7 @@ public:
  private:
 
   LinRegres * GPS_ACCEL_linear_regression;
+  LinRegres * PITCH_RATE_linear_regression;
 
 };
 #endif

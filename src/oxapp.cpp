@@ -16,7 +16,7 @@ NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(4);
 NamedStore<double> * OxApp::algo_press = new NamedStore<double>(5);
 NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(5);
 
-NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(1);
+NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(2);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -54,7 +54,7 @@ bip::managed_shared_memory * OxApp::create() {
     algo_press = new NamedStore<double>( "ALGO.pressure", OxApp::shm, 5 );
     algo_press_rate = new NamedStore<double>("ALGO.pressure_rate",OxApp::shm,5);
 
-    algo_misc_rate = new NamedStore<double>("ALGO.misc_rate",OxApp::shm,1);
+    algo_misc_rate = new NamedStore<double>("ALGO.misc_rate",OxApp::shm,2);
   }
   return OxApp::shm;
 }

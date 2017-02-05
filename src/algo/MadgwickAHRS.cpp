@@ -13,10 +13,11 @@
 // 29/09/2011	SOH Madgwick    Initial release
 // 02/10/2011	SOH Madgwick	Optimised for reduced CPU load
 // 19/02/2012	SOH Madgwick	Magnetometer measurement is normalised
+// 01/31/2017   perryr          integrated into oxcart
 //
-//=============================================================================================
+//===============================================================================
 
-//-------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 // Header files
 #include "oxapp.h"
 #include "algo/MadgwickAHRS.h"
@@ -56,7 +57,8 @@ void Madgwick::update(double ax, double ay, double az,
                       double gx, double gy, double gz, 
                       double mx, double my, double mz, 
                       double gps_turn_rate, double TAS, 
-                      double longitudinal_accel)
+                      double longitudinal_accel,
+                      double pitch_rate)
  {
    // short name local variable for readability
    double q1 = q[0], q2 = q[1], q3 = q[2], q4 = q[3];   
@@ -97,7 +99,8 @@ void Madgwick::update(double ax, double ay, double az,
    if (fabs(az) != 0.0) {
      az = az/fabs(az) * GRAVITY;
    }
-   
+   az += pitch_rate * TAS;
+
    // Normalise accelerometer measurement
    norm = sqrt(ax * ax + ay * ay + az * az);
    if (norm == 0.0f) return; // handle NaN
@@ -178,7 +181,8 @@ void Madgwick::run_algo() {
           OxApp::l_mag->get_val(Y),
           OxApp::l_mag->get_val(Z),
           OxApp::l_gps_fix->get_val(TRACK_CHANGE),
-          OxApp::algo_press->get_val(TAS) 
+          OxApp::algo_press->get_val(TAS),
+          OxApp::algo_misc_rate->get_val(GPS_ACCELERATION)
           );
 
   OxApp::algo_mad_quat->set_val(A,q[0]);

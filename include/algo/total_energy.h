@@ -1,5 +1,5 @@
-#ifndef __AIRDATA_H__
-#define __AIRDATA_H__
+#ifndef __TOTAL_ENERGY_H__
+#define __TOTAL_ENERGY_H__
 
 #include "oxalgo.h"
 #include "algo/linregres.h"

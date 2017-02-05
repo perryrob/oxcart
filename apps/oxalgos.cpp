@@ -4,6 +4,7 @@
 
 #include "algo/MadgwickAHRS.h"
 #include "algo/total_energy.h"
+#include "algo/airdata.h"
 #include "algo/misc_rate.h"
 
 
@@ -27,9 +28,10 @@ int main(int argc, char * argv[] ){
   Madgwick mw;
   TotalEnergy te;
   MiscRate mr;
-  
+  Airdata a;
   
   algo_thread.add_algo(&mw);
+  algo_thread.add_algo(&a);
   algo_thread.add_algo(&te);
   algo_thread.add_algo(&mr);
 
