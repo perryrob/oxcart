@@ -289,9 +289,8 @@ void BMP085::rw_device() {
     return;
   }
 
-  readTemperature();// celsius
-  readAltitude();  // meters
-  readPressure(); // In pascals
+  readAltitude();  // meters I get temp and pascals with this single read
+  readTemperature();
 
   if (is_multiplexed()) {
     switch(((TCA9548A*)get_multiplexer())->get_channel() ) {

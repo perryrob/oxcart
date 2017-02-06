@@ -38,8 +38,8 @@ void TotalEnergy::run_algo() {
   /**
    * This isn't setting the correct values, hmmmmmm.
    */
-  TE_linear_regression->update(OxApp::algo_press->get_time(BMP_TE),
-                               OxApp::algo_press->get_val(BMP_TE));
+  TE_linear_regression->update( OxApp::l_pressure->get_time(BMP_TE),
+                                OxApp::l_pressure->get_val(BMP_TE));
   if (TE_linear_regression->ready()) {
     OxApp::algo_press_rate->set_val(PRESSURE_TE,
                                     TE_linear_regression->slope_per_sec());
