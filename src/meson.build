@@ -12,7 +12,8 @@ oxcart_sources = [
     'blue_comm.cpp',
     'oxbluebus.cpp',
     'oxalgothread.cpp',
-    'oxalgo.cpp'
+    'oxalgo.cpp',
+    'gpsdclient.cpp'
 ]
 
 boost_dep=dependency('boost', version: '>=1.58')

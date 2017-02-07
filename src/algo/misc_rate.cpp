@@ -1,4 +1,4 @@
-#include <math.h>
+#include "constants.h"
 #include "oxapp.h"
 #include "algo/misc_rate.h"
 #include "trivial_log.h"
@@ -21,13 +21,17 @@ void MiscRate::run_algo() {
 
 
   PITCH_RATE_linear_regression->update(OxApp::algo_mad_euler->get_time(PITCH),
-                                       OxApp::algo_mad_euler->get_val(PITCH)*M_PI /180.0);
+                                       OxApp::algo_mad_euler->get_val(PITCH)*DEG_RAD);
 
   if (PITCH_RATE_linear_regression->ready()) {
    OxApp::algo_misc_rate->set_val(PITCH_RATE,
                                  PITCH_RATE_linear_regression->slope_per_sec());
   }
-
+  OxApp::algo_misc_rate->set_val(LOAD_FACTOR,
+                  sqrt(OxApp::l_accel->get_val(X)*OxApp::l_accel->get_val(X) +
+                       OxApp::l_accel->get_val(Y)*OxApp::l_accel->get_val(Y) +
+                       OxApp::l_accel->get_val(Z)*OxApp::l_accel->get_val(Z) )/
+                                 SI_GRAVITY);
 }
 
 MiscRate::~MiscRate() {

@@ -29,3 +29,12 @@ executable('oxalgos',
            ],
            link_with : [oxlib,ox_device_lib,ox_algo_lib]
 )
+executable('gpspipe',
+           'gpspipe.cpp',
+           include_directories : inc,
+           dependencies : [
+               thread_dep,rt_dep,
+               bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep
+           ],
+           link_with : [oxlib,ox_device_lib]
+)

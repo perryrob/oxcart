@@ -85,6 +85,8 @@ int main(int argc, char *argv[] ) {
   OxGPSDbus bus;
   GPS gps;
 
+  gps.NMEA();
+
   bus.add_device( &gps );
 
   bus.run();

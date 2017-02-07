@@ -57,8 +57,12 @@ int main(int argc, char * argv[] ){
         OxApp::algo_press_rate->get_val(PRESSURE_ALTITUDE) << " m/s TEa: " <<
         OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) << " m/s GPS: "<< 
         OxApp::algo_misc_rate->get_val(GPS_ACCELERATION) <<" accel m/s^2 "<< 
-        OxApp::algo_misc_rate->get_val(PITCH_RATE) <<" pitch rate m/s^2" << 
+        OxApp::algo_misc_rate->get_val(PITCH_RATE) <<" pitch rate m/s^2 Load:"<< 
+        OxApp::algo_misc_rate->get_val(LOAD_FACTOR) <<" g" << 
         endl << "-----------------------" << endl;
+      cout <<  "-------------------- " << endl <<
+        OxApp::GPRMC->get_str() << OxApp::GPGGA->get_str() <<
+        "-----------------------" << endl;
       
       cout << "Gyros: " << OxApp::l_gyro->get_val(X) << " " << 
         OxApp::l_gyro->get_val(Y) << 

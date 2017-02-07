@@ -86,7 +86,9 @@ static const unsigned int MODE=8;
 //ALGO.misc_rate
 static const unsigned int GPS_ACCELERATION=0;
 static const unsigned int PITCH_RATE=1;
+static const unsigned int LOAD_FACTOR=2;
 
+//GPS.NMEA
 
 template <class STORE_T> class NamedStore {
 
@@ -100,10 +102,19 @@ public:
               bip::managed_shared_memory *shm,
               const unsigned int &dimension );
 
+  NamedStore( char const * name,
+              bip::managed_shared_memory *shm,
+              const unsigned int &size,
+              STORE_T initial_value);
+
+
   NamedStore(const NamedStore& rhs);
 
   ~NamedStore();
 
+  void set_str( const STORE_T * str,unsigned int size);
+  STORE_T * get_str();
+  
   void set_val( unsigned int index, STORE_T val );
   STORE_T get_val( unsigned int index );
   uint64_t get_time( unsigned int index );

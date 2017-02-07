@@ -16,7 +16,10 @@ NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(4);
 NamedStore<double> * OxApp::algo_press = new NamedStore<double>(5);
 NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(5);
 
-NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(2);
+NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(3);
+
+NamedStore<char> * OxApp::GPRMC = new NamedStore<char>(1024);
+NamedStore<char> * OxApp::GPGGA = new NamedStore<char>(1024);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -41,6 +44,11 @@ bip::managed_shared_memory * OxApp::create() {
 
     delete algo_misc_rate;
     
+    delete GPRMC;
+    delete GPGGA;
+
+
+    
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
     l_accel = new NamedStore<double>( "LSM6.accel", OxApp::shm, 3 );
@@ -54,7 +62,11 @@ bip::managed_shared_memory * OxApp::create() {
     algo_press = new NamedStore<double>( "ALGO.pressure", OxApp::shm, 5 );
     algo_press_rate = new NamedStore<double>("ALGO.pressure_rate",OxApp::shm,5);
 
-    algo_misc_rate = new NamedStore<double>("ALGO.misc_rate",OxApp::shm,2);
+    algo_misc_rate = new NamedStore<double>("ALGO.misc_rate",OxApp::shm,3);
+
+    GPRMC = new NamedStore<char>("GPS.NMEA.gprmc",OxApp::shm,1024,0);
+    GPGGA = new NamedStore<char>("GPS.NMEA.gpgga",OxApp::shm,1024,0);
+
   }
   return OxApp::shm;
 }
@@ -87,6 +99,9 @@ void OxApp::destroy() {
   delete algo_press_rate;
 
   delete algo_misc_rate;
+
+  delete GPRMC;
+  delete GPGGA;
   
   if (OxApp::shm != 0) {
   bip::shared_memory_object::remove( MEM_NAME.c_str() );

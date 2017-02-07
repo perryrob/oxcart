@@ -19,6 +19,7 @@
 
 //-------------------------------------------------------------------------------
 // Header files
+#include "constants.h"
 #include "oxapp.h"
 #include "algo/MadgwickAHRS.h"
 #include <math.h>
@@ -29,8 +30,6 @@
 #define GyroMeasError M_PI * (15.0f / 180.0f)
 #define beta sqrt(3.0f / 4.0f) * GyroMeasError   // compute beta
 
-
-static const double GRAVITY = 9.80665;
 //==============================================================================
 // Functions
 
@@ -92,12 +91,12 @@ void Madgwick::update(double ax, double ay, double az,
    double q4q4 = q4 * q4;
    double rad_a = gps_turn_rate * TAS;
 
-   gps_roll = atan( rad_a / GRAVITY ) * 180.0 / M_PI;
+   gps_roll = atan( rad_a / SI_GRAVITY ) * RAD_DEG;
 
    ax -= longitudinal_accel;
    ay += rad_a;
    if (fabs(az) != 0.0) {
-     az = az/fabs(az) * GRAVITY;
+     az = az/fabs(az) * SI_GRAVITY;
    }
    az += pitch_rate * TAS;
 
@@ -163,10 +162,10 @@ void Madgwick::update(double ax, double ay, double az,
    pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
    roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
    
-   pitch *= -180.0 / M_PI;
-   yaw   *= 180.0 / M_PI; 
+   pitch *= -RAD_DEG;
+   yaw   *= RAD_DEG; 
    yaw   -= 10.0; // Approx. Declination at Tucson, AZ
-   roll  *= 180.0f / M_PI;
+   roll  *= RAD_DEG;
  }
  
 void Madgwick::run_algo() {

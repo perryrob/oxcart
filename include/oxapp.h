@@ -45,6 +45,9 @@ public:
   static NamedStore<double> *algo_press_rate;
 
   static NamedStore<double> *algo_misc_rate;
+
+  static NamedStore<char> *GPRMC;
+  static NamedStore<char> *GPGGA;
   
   ~OxApp(){};
   

@@ -3,9 +3,12 @@
 #include <limits>
 #include "trivial_log.h"
 
-LinRegres::LinRegres( double x_window_ms ): x_window_ms(x_window_ms) {}
+LinRegres::LinRegres( double x_window_ms ): x_window_ms(x_window_ms),
+                                            a(0.0),q(0.0),r(0.0),h(0.0),
+                                                     use_filter(false) {}
 
 double LinRegres::slope() {
+
 
   if( ! ready() ) return std::numeric_limits<double>::quiet_NaN();
 
@@ -19,7 +22,32 @@ double LinRegres::slope() {
     numerator += (x_que[i] - avgX) * (y_que[i] - avgY);
     denominator += (x_que[i] - avgX) * (x_que[i] - avgX);
   }
-  return numerator / denominator;
+
+  double current_slope = numerator / denominator;
+
+  if (use_filter) {
+    // http://stackoverflow.com/questions/33384112/kalman-filter-one-dimensional-several-approaches
+    last_x = a * last_x;
+    last_p = a * last_p * a + q;
+    
+    double y = current_slope - h*last_x;
+    double kg = last_p * h / ( h * last_p * h  + r );
+    last_x = last_x + kg * y;
+    last_p = (1.0 - kg * h) * last_p;
+    last_slope = last_x;
+    return last_slope;
+
+  } else {
+    return current_slope;
+  }
+}
+
+void  LinRegres::set_filter(double a,double q,double r,double h){
+  this->a=a;
+  this->q=q;
+  this->r=r;
+  this->h=h;
+  use_filter = true;
 }
 
 bool LinRegres::ready() {
