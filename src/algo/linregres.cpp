@@ -3,9 +3,10 @@
 #include <limits>
 #include "trivial_log.h"
 
-LinRegres::LinRegres( double x_window_ms ): x_window_ms(x_window_ms),
+LinRegres::LinRegres( double x_window_ms ): last_x(0.0),last_p(0.0),
+                                            x_window_ms(x_window_ms),
                                             a(0.0),q(0.0),r(0.0),h(0.0),
-                                                     use_filter(false) {}
+                                            use_filter(false) {}
 
 double LinRegres::slope() {
 
@@ -32,10 +33,11 @@ double LinRegres::slope() {
     
     double y = current_slope - h*last_x;
     double kg = last_p * h / ( h * last_p * h  + r );
+
     last_x = last_x + kg * y;
     last_p = (1.0 - kg * h) * last_p;
-    last_slope = last_x;
-    return last_slope;
+
+    return last_x;
 
   } else {
     return current_slope;

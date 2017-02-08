@@ -21,7 +21,7 @@ public:
   ~LinRegres() {}
 
 private:
-  double last_slope,last_p,last_x;
+  double last_p,last_x;
   double x_window_ms;
   std::deque<double> x_que;
   std::deque<double> y_que;

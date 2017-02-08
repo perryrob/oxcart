@@ -9,7 +9,7 @@ public:
 
   KOBO() : OxBlueDevice( "KOBO" ) {}
   void rw_device();
-  ~KOBO();
+  ~KOBO() {};
 
 };
 

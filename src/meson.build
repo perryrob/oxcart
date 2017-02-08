@@ -26,6 +26,7 @@ bt_logs = cpp.find_library('boost_log_setup', required : true)
 bt_dt = cpp.find_library('boost_date_time', required : true)
 bt_chrono = cpp.find_library('boost_chrono', required : true)
 bt_f = cpp.find_library('boost_filesystem', required : true)
+bt_po = cpp.find_library('boost_program_options', required : true)
 gpsd_dep = cpp.find_library('gps', required : true)
 bluetooth_dep = cpp.find_library('bluetooth', required : true)
 

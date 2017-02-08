@@ -10,6 +10,7 @@
 #include "oxGPSDbus.h"
 
 #include <signal.h>
+#include <cstdlib>
 
 #include "trivial_log.h"
 
@@ -91,13 +92,12 @@ Start the device threads
 
   sigaction(SIGINT, &sigIntHandler, NULL);
 
-
   while( KEEP_GOING ) {
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   }
 
   i2c.stop();
   gps_bus.stop();
- OxApp::destroy();
+  OxApp::destroy();
 
 }

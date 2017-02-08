@@ -3,7 +3,8 @@ oxcart_device_sources = [
     'TCA9548A.cpp',
     'LSM6.cpp',
     'GPS.cpp',
-    'LIS3MDL.cpp'
+    'LIS3MDL.cpp',
+    'KOBO.cpp'
 ]
 
 

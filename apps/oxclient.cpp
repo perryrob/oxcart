@@ -1,7 +1,11 @@
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
-
+#include <boost/program_options.hpp>
 #include "oxapp.h"
+
+#include "oxbluebus.h"
+#include "oxBlueDevice.h"
+#include "devices/KOBO.h"
 
 #include <signal.h>
 
@@ -15,14 +19,42 @@ static bool KEEP_GOING = true;
 
 void control_c(int s) {
   KEEP_GOING = false;
+  cout << endl;
 }
 
 int main(int argc, char * argv[] ){
+  // http://www.radmangames.com/programming/how-to-use-boost-program_options
+  namespace po = boost::program_options; 
+  po::options_description desc("Options"); 
+  desc.add_options() 
+    ("help,h", "Print help messages")
+    ("debug,d", "Print tons of debug stuff. Essentially disable init_prod log.")
+    ("destroy", "Purge shared memory")
+    ("kobo,k", "Sends mesages to KOBO bluetooth default 00:06:66:73:E6:0D"); 
+ 
+  po::variables_map vm; 
 
-  init_production_log();
 
+  po::store(po::parse_command_line(argc, argv, desc),  
+            vm);
+
+  if ( vm.count("help")  ) { 
+      cout << "Basic Command Line Parameter App" << endl 
+           << desc << endl; 
+      return 0; 
+  }
+  if ( !vm.count("debug")  ) { 
+     init_production_log();
+   }
+   
   OxApp::create();
 
+  if (vm.count("destroy")  ) { 
+    OxApp::destroy();
+    return 0;
+  }
+ 
+  
   struct sigaction sigIntHandler;
 
   sigIntHandler.sa_handler =  control_c;
@@ -35,7 +67,7 @@ int main(int argc, char * argv[] ){
   double sampling_rate=(double)OxApp::get_time_ms();
 
   
-  while( KEEP_GOING ) {    
+  while( KEEP_GOING && ! vm.count("kobo")) {    
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
       i2c_last_time =  OxApp::l_gyro->get_time(X);
       sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
@@ -96,6 +128,19 @@ int main(int argc, char * argv[] ){
     }
     
     b::this_thread::sleep(b::posix_time::milliseconds(5));
+  } // local client printing to screen
+  
+  if ( vm.count("kobo")) {
+    string remote_device = "00:06:66:73:E6:0D";
+    OxBluebus bus( remote_device ,1 ,1);
+    KOBO kobo;
+
+    bus.add_device( &kobo );
+    bus.run();
+    while( KEEP_GOING ) {
+      b::this_thread::sleep(b::posix_time::milliseconds(100));      
+    }
+    bus.stop();
   }
-  cout << endl;
+  return 0;
 }
