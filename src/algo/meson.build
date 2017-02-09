@@ -3,7 +3,9 @@ oxcart_algo_sources = [
     'airdata.cpp',
     'linregres.cpp',
     'total_energy.cpp',
-    'misc_rate.cpp'
+    'misc_rate.cpp',
+    'polar.cpp',
+    'checksum.cpp'
 ]
 
 

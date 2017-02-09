@@ -31,7 +31,16 @@ test_cksum_exe = executable('cksum', 'test_cksum.cpp',
                                       bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
+test_polar_exe = executable('polar', 'test_polar.cpp',
+                                  include_directories : inc,
+                                  link_with : [oxlib,ox_algo_lib],
+                                  dependencies :  [
+                                      thread_dep,rt_dep,
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
+                                  ])
+
 test('madg', test_Madg_exe)
 test('airdata', test_airdata_exe)
 test('linregres', test_linregres_exe)
 test('nmea_cksum', test_cksum_exe)
+test('polar', test_polar_exe)

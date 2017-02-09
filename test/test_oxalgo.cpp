@@ -31,7 +31,8 @@ int main(int argc, char *argv[] ) {
     algo.run_algo();
   }
   cerr << algo.count << endl;
-  assert( algo.count == 11 );
+  assert( algo.count > 5 );
+  assert( algo.count <  15);
   return 0;
 
 }

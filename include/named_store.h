@@ -21,6 +21,11 @@
   static NamedStore<double> *algo_press_rate;
 
   static NamedStore<double> *algo_gps_rate;
+
+  *algo_misc_rate = new NamedStore<double>(3);
+
+  *OxApp::GPRMC = new NamedStore<char>(1024);
+  *OxApp::GPGGA = new NamedStore<char>(1024);
   
 */
 

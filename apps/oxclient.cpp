@@ -7,11 +7,15 @@
 #include "oxBlueDevice.h"
 #include "devices/KOBO.h"
 
+#include "algo/polar.h"
+#include "algo/checksum.h"
+
 #include <signal.h>
 
 #include "trivial_log.h"
 
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -66,6 +70,7 @@ int main(int argc, char * argv[] ){
   uint64_t i2c_last_time=0;
   double sampling_rate=(double)OxApp::get_time_ms();
 
+  Polar polar;
   
   while( KEEP_GOING && ! vm.count("kobo")) {    
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
@@ -125,6 +130,39 @@ int main(int argc, char * argv[] ){
         OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode:" << 
         OxApp::l_gps_fix->get_val(MODE) << endl;
       cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
+      stringstream PGRMZ;
+      stringstream PITV3;
+      stringstream PITV4;
+
+      PGRMZ<<"PGRMZ,"<< OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << "," << "f" <<
+        "," << "1";
+      Checksum PGRMZck(PGRMZ);
+      
+      PITV3 << "PITV3," << OxApp::algo_mad_euler->get_val( ROLL ) << "," <<
+        OxApp::algo_mad_euler->get_val( PITCH ) << "," <<
+        OxApp::algo_mad_euler->get_val( YAW ) << "," <<
+        OxApp::algo_press->get_val(AIRSPEED) << "," <<
+        OxApp::algo_misc_rate->get_val(LOAD_FACTOR);
+      Checksum PITV3ck(PITV3);
+  
+      PITV4 << "PITV4," << OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) <<
+        "," << OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) - 
+        polar.sink_rate( OxApp::algo_press->get_val(AIRSPEED)) << "," <<
+        OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) - 
+        polar.sink_rate( OxApp::algo_press->get_val(AIRSPEED)) << "," <<
+        OxApp::algo_press->get_val(PRESSURE_ALTITUDE) << "," <<
+        OxApp::algo_press->get_val(PRESSURE_TE_ALTITUDE) << "," <<
+        OxApp::algo_press->get_val(PRESSURE_TE_ALTITUDE) ;
+      Checksum PITV4ck(PITV4);
+      
+      string GPRMC( OxApp::GPRMC->get_str() );
+      string GPGGA( OxApp::GPGGA->get_str() );
+  
+      BOOST_LOG_TRIVIAL(debug) << GPRMC;
+      BOOST_LOG_TRIVIAL(debug) << GPGGA;
+      BOOST_LOG_TRIVIAL(debug) << PGRMZck.get_sentence();
+      BOOST_LOG_TRIVIAL(debug) << PITV3ck.get_sentence();
+      BOOST_LOG_TRIVIAL(debug) << PITV4ck.get_sentence();
     }
     
     b::this_thread::sleep(b::posix_time::milliseconds(5));

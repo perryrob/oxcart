@@ -16,7 +16,7 @@ ox_device_lib = shared_library(
         thread_dep,rt_dep,
         bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
     ],
-    link_with : oxlib,
+    link_with : [oxlib,ox_algo_lib],
     install : true
 )
 
