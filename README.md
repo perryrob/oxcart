@@ -103,3 +103,5 @@ sudo chmod 0600 $SWAP/swapfile
 sudo mkswap $SWAP/swapfile
 sudo swapon $SWAP/swapfile
 
+DTED
+https://e4ftl01.cr.usgs.gov/SRTM/SRTMGL3.003/2000.02.11

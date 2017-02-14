@@ -4,7 +4,8 @@ oxcart_device_sources = [
     'LSM6.cpp',
     'GPS.cpp',
     'LIS3MDL.cpp',
-    'KOBO.cpp'
+    'KOBO.cpp',
+    'ARDUINO_DISP.cpp'
 ]
 
 

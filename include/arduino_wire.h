@@ -72,7 +72,7 @@ public:
 	 *			3:received NACK on transmit of data
 	 *			4:other error
 	 */
-	int endTransmission(unsigned char = true);
+	int endTransmission(unsigned char = false);
 
 	/**
 	 * Used to request bytes from a slave device, given by . The bytes may 

@@ -2,7 +2,7 @@
  * ArduinoWire.cpp
  *
  * Implementation of the ArduinoWire class
- *
+ * http://stackoverflow.com/questions/9974592/i2c-slave-ioctl-purpose
  *  Created on: Apr 4, 2016
  *      Author: mario
  *      Highly modified by perryr
@@ -41,20 +41,17 @@ void ArduinoWire::begin(const uint8_t address){
   this->txAddress = address;
 }
 void ArduinoWire::beginTransmission(const uint8_t address){
-  
+
   if (this->fd == 0) {
     this->fd = open(this->i2c_bus, O_RDWR);
   }
 
   if (this->fd < 0) {
     std::cerr << "Could not open i2c device. " << this->fd << std::endl;
-    exit(1);
   }  
-
   if (ioctl(this->fd, I2C_SLAVE, address) < 0) {
     std::cerr<<"Could not communicate with slave device at address: "<<txAddress<<std::endl;
-    exit(1);
-  } 
+  }
   begin(address);
 }
 

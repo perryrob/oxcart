@@ -8,12 +8,15 @@ class KOBO : public OxBlueDevice {
 
 public:
 
-  KOBO() : OxBlueDevice( "KOBO" ) {}
+ KOBO(uint64_t interval=100) : OxBlueDevice( "KOBO" ),
+    interval(interval), last_run(0) {}
   void rw_device();
   ~KOBO() {};
 
  private:
   Polar polar;
+  uint64_t interval;
+  uint64_t last_run;
 
 };
 

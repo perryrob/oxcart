@@ -48,7 +48,7 @@ void GPS::NMEA() {
     r = select(gpsdata.gps_fd+1, &fds, NULL, NULL, &tv);
 
     if (r == -1 && errno != EINTR) {
-      BOOST_LOG_TRIVIAL(error) << "gpspipe: select error";
+      BOOST_LOG_TRIVIAL(error) << "gpspipe: select error: " << r;
       break;
     } else if (r == 0)
       continue;
@@ -85,7 +85,7 @@ void GPS::NMEA() {
 		if (errno == EAGAIN)
           continue;
 		else {
-            BOOST_LOG_TRIVIAL(error) <<  "gpspipe: read error";
+          BOOST_LOG_TRIVIAL(error) <<  "gpspipe: read error " << r;
             break;
         }
       } 

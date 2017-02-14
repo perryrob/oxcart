@@ -11,6 +11,9 @@ using namespace std;
 
 void KOBO::rw_device() {
 
+  if( (OxApp::get_time_ms() - last_run) < interval ) return;
+  last_run = OxApp::get_time_ms();
+
   stringstream PGRMZ;
   stringstream PITV3;
   stringstream PITV4;
@@ -39,18 +42,19 @@ void KOBO::rw_device() {
   string GPRMC( OxApp::GPRMC->get_str() );
   string GPGGA( OxApp::GPGGA->get_str() );
 
-  bus->write( GPRMC );
-  bus->write( GPGGA );
+  if( bus->is_open() ) {
+    bus->write( GPRMC );
+    bus->write( GPGGA );
 
-  bus->write( PGRMZck.get_sentence() );
-  bus->write( PITV3ck.get_sentence() );
-  bus->write( PITV4ck.get_sentence() );
-  
+    bus->write( PGRMZck.get_sentence() );
+    bus->write( PITV3ck.get_sentence() );
+    bus->write( PITV4ck.get_sentence() );
+  }
+
   BOOST_LOG_TRIVIAL(debug) << GPRMC;
   BOOST_LOG_TRIVIAL(debug) << GPGGA;
   BOOST_LOG_TRIVIAL(debug) << PGRMZck.get_sentence();
   BOOST_LOG_TRIVIAL(debug) << PITV3ck.get_sentence();
   BOOST_LOG_TRIVIAL(debug) << PITV4ck.get_sentence();
 
-  b::this_thread::sleep(b::posix_time::milliseconds(100));
 }
