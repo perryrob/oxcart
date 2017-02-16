@@ -16,7 +16,7 @@ oxcart_sources = [
     'gpsdclient.cpp'
 ]
 
-LIB_DIRS=['/usr/lib']
+LIB_DIRS=['/usr/lib','/usr/local/lib']
 
 if meson.is_cross_build()
     LIB_DIRS=['/usr/lib','/usr/local/arm-linux-gnueabihf/lib']
