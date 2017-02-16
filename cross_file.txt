@@ -1,0 +1,21 @@
+[binaries]
+c = '/usr/bin/arm-linux-gnueabihf-gcc'
+cpp = '/usr/bin/arm-linux-gnueabihf-g++'
+ar = '/usr/bin/arm-linux-gnueabihf-ar'
+as = '/usr/bin/arm-linux-gnueabihf-as'
+ld = '/usr/bin/arm-linux-gnueabihf-ld'
+nm = '/usr/bin/arm-linux-gnueabihf-nm'
+strip = '/usr/bin/arm-linux-gnueabihf-strip'
+pkgconfig = '/usr/bin/arm-linux-gnueabihf-pkg-config'
+
+[host_machine]
+system = 'linux'
+cpu_family = 'arm'
+cpu = 'armv7'
+endian = 'little'
+
+[properties]
+root = '/usr/local/arm-linux-gnueabihf'
+has_function_printf = true
+has_function_hfkerhisadf = false
+BOOST_ROOT = '/usr/local/arm-linux-gnueabihf'

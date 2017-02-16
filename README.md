@@ -105,3 +105,29 @@ sudo swapon $SWAP/swapfile
 
 DTED
 https://e4ftl01.cr.usgs.gov/SRTM/SRTMGL3.003/2000.02.11
+
+CROSS BUILD
+===========
+
+build boost.
+set BOOST_ROOT=/usr/local/arm
+sudo ./b2 install --prefix=/usr/local/arm --with-atomic --with-chrono --with-log --with-program_options --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=shared toolset=gcc-arm
+
+* GPSD
+======
+get env.sh sourced
+scons wordsize=32 snapshot=off arch=arm sample=shell
+scons wordsize=32 snapshot=off arch=arm sample=shell prefix=/usr/local/arm-linux-gnueabihf install
+
+TOOL_HOME=/usr
+export TOOL_PREFIX=${TOOL_HOME}/bin/arm-linux-gnueabihf
+export CXX=$TOOL_PREFIX-g++
+export AR=$TOOL_PREFIX-ar
+export RANLIB=$TOOL_PREFIX-ranlib
+export CC=$TOOL_PREFIX-gcc
+export LD=$TOOL_PREFIX-ld
+export STRIP=$TOOL_PREFIX-strip
+export LDFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
+export LINKFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
+
+meson build --cross-file cross_file.txt
