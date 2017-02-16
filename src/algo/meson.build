@@ -18,5 +18,6 @@ ox_algo_lib = shared_library(
         bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep
     ],
     link_with : oxlib,
-    install : true
+    install : INSTALL,
+    install_dir : LIB_INSTALL_DIR
 )

@@ -6,9 +6,18 @@ project(
 
 cpp = meson.get_compiler('cpp')
 
+LIB_DIRS=['/usr/lib','/usr/local/lib']
 INCLUDE_DIRS=['include']
+INSTALL=true
+
+BIN_INSTALL_DIR='/home/perryr/oxcart/bin'
+LIB_INSTALL_DIR='/home/perryr/oxcart/lib'
+INCLUDE_INSTALL_DIR='/home/perryr/oxcart/include'
+
 if meson.is_cross_build()
    INCLUDE_DIRS=['include','/usr/local/arm-linux-gnueabihf/include']
+   LIB_DIRS=['/usr/lib','/usr/local/arm-linux-gnueabihf/lib']
+   INSTALL=false
 endif
 
 inc = include_directories(INCLUDE_DIRS)

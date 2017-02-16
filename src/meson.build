@@ -45,7 +45,8 @@ oxlib = shared_library(
         thread_dep,rt_dep,
         bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,bluetooth_dep,bt_chrono
 ],
-    install : true
+    install : INSTALL,
+    install_dir : LIB_INSTALL_DIR
 )
 
 subdir('algo')
