@@ -5,7 +5,13 @@ project(
 )
 
 cpp = meson.get_compiler('cpp')
-inc = include_directories(['include','/usr/local/arm-linux-gnueabihf/include'])
+
+INCLUDE_DIRS=['include']
+if meson.is_cross_build()
+   INCLUDE_DIRS=['include','/usr/local/arm-linux-gnueabihf/include']
+endif
+
+inc = include_directories(INCLUDE_DIRS)
 
 add_global_arguments('-std=c++11', language : 'cpp')
 add_global_arguments('-g', language : 'cpp')
