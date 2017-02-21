@@ -10,6 +10,7 @@
 
 #include <sys/ioctl.h>
 #include <fcntl.h>
+#include <errno.h>
 #include <linux/i2c-dev.h>
 #include <linux/types.h>
 #include <iostream>
@@ -17,7 +18,7 @@
 #include <stdlib.h>
 
 #include "arduino_wire.h"
-#include "smbus.h"
+// #include "smbus.h"
 
 char * ArduinoWire::i2c_bus = 0;
 
@@ -48,7 +49,8 @@ void ArduinoWire::beginTransmission(const uint8_t address){
 
   if (this->fd < 0) {
     std::cerr << "Could not open i2c device. " << this->fd << std::endl;
-  }  
+  } 
+
   if (ioctl(this->fd, I2C_SLAVE, address) < 0) {
     std::cerr<<"Could not communicate with slave device at address: "<<txAddress<<std::endl;
   }
@@ -73,28 +75,42 @@ int ArduinoWire::endTransmission(unsigned char stop){
   int bytes_written = 0; 
   int res = 0;
 
-  uint8_t reg =  txBuffer[0];
+  if ( txBuffer.size() == 0 ) return 0;
 
   if ( txBuffer.size() == 1 ) {
-    res = i2c_smbus_write_byte(this->fd, reg );
+    res = i2c_smbus_write_byte(this->fd, txBuffer[0] );
     if (res == 0) {
       bytes_written = 1; // Just the control register
     } else {
-      std::cerr<<"Byte not written...retcode : "<< res << std::endl;
+      int errsv = errno;
+      std::cerr<<"Byte not written...retcode : "<< res << " " <<  errsv << std::endl;
       return -1;
     }
   }
-  else {
-    bytes_written = 1; // account for the control register
-    for (unsigned int i=1; i < txBuffer.size(); i++) {
-      res += i2c_smbus_write_byte_data(this->fd,reg, txBuffer[i]);
-      if (res == 0) {
-        ++bytes_written;
-      }
-      else {
-        std::cerr<<"Byte(s) not written...retcode : "<< res << std::endl;
-        return -1;
-      }
+  else if ( txBuffer.size() == 2 ) {
+    res = i2c_smbus_write_byte_data(this->fd, txBuffer[0], txBuffer[1]);
+    if (res == 0) {
+      bytes_written = 2;
+    }
+    else {
+      std::cerr<<"Byte(s) not written...retcode : "<< res << std::endl;
+      return -1;
+    }
+  } else {
+    uint8_t buff[32];
+    for (unsigned int i=1; i < txBuffer.size(); ++i ) {
+      buff[i-1] = txBuffer[i];
+    }
+    res = i2c_smbus_write_i2c_block_data(this->fd,txBuffer[0],txBuffer.size()-1,
+                                         buff);
+    if (res == 0) {
+      bytes_written = txBuffer.size();
+    }
+    else {
+      int errsv = errno;
+      std::cerr<<"block Byte(s) not written...retcode : "<< res << " " << 
+        errsv << std::endl;
+      return -1;
     }
   }
   if (txBuffer.size() > 0 && bytes_written != (int)txBuffer.size() ) {

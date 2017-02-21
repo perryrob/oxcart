@@ -219,6 +219,7 @@ float BMP085::readAltitude(float sealevelPressure) {
 /*********************************************************************/
 
 uint8_t BMP085::read8(uint8_t a) {
+  BOOST_LOG_TRIVIAL(debug) << "read8";
   uint8_t ret;
 
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
@@ -234,6 +235,7 @@ uint8_t BMP085::read8(uint8_t a) {
 }
 
 uint16_t BMP085::read16(uint8_t a) {
+  BOOST_LOG_TRIVIAL(debug) << "read16";
   uint16_t ret = 0;
 
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
@@ -252,6 +254,7 @@ uint16_t BMP085::read16(uint8_t a) {
 }
 
 void BMP085::write8(uint8_t a, uint8_t d) {
+  BOOST_LOG_TRIVIAL(debug) << "write8";
   Wire->beginTransmission(BMP085_I2CADDR); // start transmission to device 
   Wire->write(a); // sends register address to read from
   Wire->write(d);  // write data

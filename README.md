@@ -131,3 +131,6 @@ export LDFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
 export LINKFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
 
 meson build --cross-file cross_file.txt
+
+### Needed for userspace i2c dev.
+sudo apt-get install libi2c-dev

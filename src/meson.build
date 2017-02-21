@@ -2,7 +2,6 @@ oxcart_sources = [
     'trivial_log.cpp',
     'named_store.cpp',
     'oxmem.cpp',
-    'smbus.cpp',
     'arduino_core.cpp',
     'arduino_wire.cpp',
     'oxapp.cpp',
