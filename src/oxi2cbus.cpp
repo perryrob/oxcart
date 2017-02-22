@@ -22,7 +22,7 @@ void OxI2CBus::threaded_task() {
 
 
 void OxI2CBus::run() {
-  BOOST_LOG_TRIVIAL(debug) <<  "run called";
+  BOOST_LOG_TRIVIAL(debug) <<  "OxI2CBus::run() called";
   keep_running = true;
   thr = new b::thread(b::bind(&OxI2CBus::threaded_task, this));
   BOOST_LOG_TRIVIAL(debug) <<  "thread new";
@@ -45,7 +45,11 @@ void OxI2CBus::add_device( OxI2CDevice *device ) {
 }
   
 OxI2CBus::~OxI2CBus() {
-  keep_running = false;
-  delete thr;
+  if ( keep_running ) {
+    BOOST_LOG_TRIVIAL(debug) <<  "~OxI2CBus, deleting thread..." << 
+      keep_running << " " << thr;
+    keep_running = false;
+    delete thr;
+  }
   devices.clear();
 }

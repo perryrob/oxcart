@@ -9,6 +9,8 @@
 #include "named_store.h"
 #include "ns.h"
 
+static const std::string OX_VERSION="OX 1.0"; 
+
 static const std::string MEM_NAME="OXCART_V1"; 
 static const unsigned int MEM_SIZE=64000;
 
@@ -48,7 +50,8 @@ public:
 
   static NamedStore<char> *GPRMC;
   static NamedStore<char> *GPGGA;
-  
+
+
   ~OxApp(){};
   
 private:

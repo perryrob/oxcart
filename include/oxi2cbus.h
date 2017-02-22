@@ -14,11 +14,10 @@ class OxI2CBus : public ArduinoWire {
 
 public:
 
-  OxI2CBus() : keep_running(false) {}
+ OxI2CBus() : keep_running(false), thr(0) {}
 
-  OxI2CBus(const char * i2c_bus) : ArduinoWire( i2c_bus ) {
-    keep_running = false;
-  }
+ OxI2CBus(const char * i2c_bus) : ArduinoWire( i2c_bus ),
+    keep_running(false), thr(0) {}
 
   void run();
   void stop();
@@ -32,7 +31,7 @@ private:
 
   bool keep_running;
   
-  b::thread * thr=0;
+  b::thread * thr;
   std::deque<OxI2CDevice *> devices;
 
   void threaded_task();

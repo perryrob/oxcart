@@ -134,3 +134,12 @@ meson build --cross-file cross_file.txt
 
 ### Needed for userspace i2c dev.
 sudo apt-get install libi2c-dev
+
+
+### SCENARIOS
+
+Build all libraries, upload and monitor arduino
+
+unset AUTO_RESTART
+
+ninja && ../remote_install.sh lib && ../remote_install.sh arduino_monitor

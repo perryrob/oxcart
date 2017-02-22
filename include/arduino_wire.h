@@ -29,6 +29,7 @@ class ArduinoWire {
 	bool activeDevice;
 	bool is_master;
 
+    unsigned long funcs;
 
 public:
 	ArduinoWire();
@@ -78,7 +79,7 @@ public:
 	 * Used to request bytes from a slave device, given by . The bytes may 
      * then be retrieved with the available() and read() functions.
 	 */
-	int requestFrom(int address, unsigned int read_len, bool releaseBus = true);
+	int requestFrom(int address, unsigned int read_len, bool releaseBus = false);
 	int available();
 	uint8_t read();
     /**
