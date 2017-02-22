@@ -7,20 +7,24 @@ if [ "$(uname -n)" = "wildcat" ]; then
     SRC_DIR=/home/perryr/proj/oxcart
 
     REMOTE=bone
-    echo "Stopping remote apps..."
-    ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh stop' > /dev/null 2>&1
     
     case "$1" in
     
     lib)
+        echo "Stopping remote apps..."
+        ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh stop' > /dev/null 2>&1
         scp -q ${SRC_DIR}/build/src/*.so ${REMOTE}:${DST_DIR}/lib/.
         echo "cp -> ${SRC_DIR}/build/src/*.so ${REMOTE}:${DST_DIR}/lib/."
         scp -q ${SRC_DIR}/build/src/algo/*.so ${REMOTE}:${DST_DIR}/lib/.
         echo "cp -> ${SRC_DIR}/build/src/algo/*.so ${REMOTE}:${DST_DIR}/lib/."
         scp -q ${SRC_DIR}/build/src/devices/*.so ${REMOTE}:${DST_DIR}/lib/.
         echo "cp -> ${SRC_DIR}/build/src/devices*.so ${REMOTE}:${DST_DIR}/lib/."
+        ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh start' > /dev/null 2>&1
+        echo "Start remote apps..."
         ;;
     bin)
+        echo "Stopping remote apps..."
+        ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh stop' > /dev/null 2>&1
         scp -q ${SRC_DIR}/build/apps/oxalgos ${REMOTE}:${DST_DIR}/bin/.
         echo "cp -> ${SRC_DIR}/build/apps/oxalgos ${REMOTE}:${DST_DIR}/bin/."
         scp -q ${SRC_DIR}/build/apps/oxcart_d ${REMOTE}:${DST_DIR}/bin/.
@@ -29,7 +33,8 @@ if [ "$(uname -n)" = "wildcat" ]; then
         echo "cp -> ${SRC_DIR}/build/apps/oxclient ${REMOTE}:${DST_DIR}/bin/."
         scp -q ${SRC_DIR}/apps/ox.sh ${REMOTE}:${DST_DIR}/bin/.
         echo "cp -> ${SRC_DIR}/apps/ox.sh ${REMOTE}:${DST_DIR}/bin/."
-
+        ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh start' > /dev/null 2>&1
+        echo "Start remote apps..."
         ;;
     test)
          scp -rq ${SRC_DIR}/build/test ${REMOTE}:${DST_DIR}/.
@@ -48,8 +53,7 @@ if [ "$(uname -n)" = "wildcat" ]; then
         echo " done."
         ;;
     esac
-    echo "Start remote apps..."
-    ssh $REMOTE '/home/perryr/oxcart/bin/ox.sh start' > /dev/null 2>&1
+
     
 else
     echo "Nothing to do on $(uname -n)"

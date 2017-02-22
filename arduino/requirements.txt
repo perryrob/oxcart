@@ -1,0 +1,9 @@
+bottle==0.12.10
+click==5.1
+colorama==0.3.7
+lockfile==0.12.2
+pkg-resources==0.0.0
+platformio==3.2.1
+pyserial==3.2.1
+requests==2.12.4
+semantic-version==2.6.0
