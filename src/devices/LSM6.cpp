@@ -38,7 +38,7 @@ LSM6::LSM6()  : OxI2CDevice( "LSM6DS33")
 
   a_mag = 0.0;
 
-  initialize=false;
+  initialize=true;
 
 
 }
@@ -126,10 +126,7 @@ void LSM6::enableDefault(void)
     if( initialize ) {
       // Reset device
       writeReg(CTRL3_C, 0x84);
-      delay(100);
-      initialize=true;
-    } else {
-      writeReg(CTRL3_C, 0x40);
+      initialize=false;
     }
 
     BOOST_LOG_TRIVIAL(debug) << "device_DS33" ;
@@ -325,21 +322,23 @@ void LSM6::callibrate() {
 
 
 void LSM6::rw_device() {
+  
+    if (is_device_failed()) {
+      BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
+      return;
+    }
+    
+    if ( initialize ) {
+      if (! init() ) {
+        BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
+        set_device_failed();
+        return;
+      }
 
-  if (is_device_failed()) {
-    BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
-    return;
-  }
-
-  if (! init() ) {
-    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
-    set_device_failed();
-    return;
-  }
-
-  if (! callibrated) {
-    callibrate();
-  }
+      if (! callibrated) {
+        callibrate();
+      }
+    }
 
   /**
      Signs are negative to put the IMU into a NED coordinate system
