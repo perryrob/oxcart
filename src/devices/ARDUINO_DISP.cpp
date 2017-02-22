@@ -17,29 +17,39 @@ void BMP085::write8(uint8_t a, uint8_t d) {
 void ARDUINO_DISP::rw_device() {
   BOOST_LOG_TRIVIAL(debug) << "start rw_device()";
 
-  Wire->beginTransmission(I2CADDR); // start transmission to device
+  Wire->beginTransmission(ARDUINO_I2CADDR); // start transmission to device
   Wire->write(LED_1_ON);
   Wire->endTransmission();
-
-  Wire->beginTransmission(I2CADDR);
+  BOOST_LOG_TRIVIAL(debug) << "LED_1_on";
+    
+  Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write(LED_2_ON);
   Wire->endTransmission();
-
-  Wire->beginTransmission(I2CADDR);
+  BOOST_LOG_TRIVIAL(debug) << "LED_2_on";
+  
+  Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write(LED_3_ON);
   Wire->endTransmission();
-
-  Wire->beginTransmission(I2CADDR);
+  BOOST_LOG_TRIVIAL(debug) << "LED_3_on";
+  
+  Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write(LED_1_OFF);
   Wire->endTransmission();
-
-  Wire->beginTransmission(I2CADDR);
+  BOOST_LOG_TRIVIAL(debug) << "LED_1_off";
+  
+  Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write(LED_2_OFF);
   Wire->endTransmission();
+  BOOST_LOG_TRIVIAL(debug) << "LED_2_off";
 
-  Wire->beginTransmission(I2CADDR);
+  Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write(LED_3_OFF);  
   Wire->endTransmission();
-  
+  BOOST_LOG_TRIVIAL(debug) << "LED_3_off";
+
+  Wire->beginTransmission(ARDUINO_I2CADDR);
+  Wire->write(0x0);  
+  Wire->endTransmission();
+
   BOOST_LOG_TRIVIAL(debug) << "end rw_device()";
 }

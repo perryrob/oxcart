@@ -17,12 +17,12 @@ Adafruit_SharpMem display(SCK, MOSI, SS);
 #define BLACK 0
 #define WHITE 1
 
-#define LED_1_OFF 0x10
-#define LED_2_OFF 0x20
-#define LED_3_OFF 0x30
-#define LED_1_ON  0x11
-#define LED_2_ON  0x21
-#define LED_3_ON  0x31
+#define LED_1_OFF 0x11
+#define LED_2_OFF 0x12
+#define LED_3_OFF 0x13
+#define LED_1_ON  0x14
+#define LED_2_ON  0x15
+#define LED_3_ON  0x16
 
 
 #define LED_1_PIN  13

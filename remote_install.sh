@@ -40,6 +40,15 @@ if [ "$(uname -n)" = "wildcat" ]; then
          scp -rq ${SRC_DIR}/build/test ${REMOTE}:${DST_DIR}/.
          echo "cp -> ${SRC_DIR}/build/test ${REMOTE}:${DST_DIR}/."
          ;;
+    arduino)
+        pushd ${SRC_DIR}/arduino
+        . ./env/bin/activate
+        pushd oxcart
+        platformio run -t upload &&  sleep 1 && platformio device monitor
+        deactivate
+        popd
+        popd
+        ;;
     include)
         scp -rq ${SRC_DIR}/include/* ${REMOTE}:${DST_DIR}/include/.
         echo "cp -> ${SRC_DIR}/include/* ${REMOTE}:${DST_DIR}/include/."
