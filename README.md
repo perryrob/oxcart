@@ -1,7 +1,7 @@
 Introduction
 ============
 
-Very rough still indevelopment source code. Notes below are for me alone. The plan is to clean everything up so the cross build setup and isntallation are repeatable.
+Very rough still in-development source code. Notes below are for me alone. The plan is to clean everything up so the cross build setup and isntallation are repeatable.
 
 ***** USE AT YOUR OWN RISK ******
 
