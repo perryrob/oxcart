@@ -20,8 +20,14 @@ void ARDUINO_DISP::rw_device() {
     Wire->endTransmission();
     init=false;
   }
-  write_string( 0, 0, 2, OX_VERSION );
+  write_string( 30, 0, 1, OX_VERSION );
 
+  if((OxApp::get_time_ms() - OxApp::l_gps_fix->get_time(TIME)) > 5000) {
+    led_on( 1, true ); 
+  } else {
+    led_on( 1, false ); 
+  }
+  
   /***
    * This is needed to pad the I2C writes
    */

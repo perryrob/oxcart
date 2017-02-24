@@ -1,10 +1,16 @@
+INTRODUCTION
+============
+
+Very rough 
+
+
 BUILD
 =====
 meson build && cd build && ninja
 
 
 OXCART
-======
+==================
 Open-XC-Airborne-Realtime-Telemetry
 
 oxcart - main
@@ -36,9 +42,6 @@ LSM6DS33 - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
            switched device
 
 GPS - Read this from GPSD SHM
-
-
-oxtran - encapsulates oxdev_serial, sends data to XCSoar 
 
 
 

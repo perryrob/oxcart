@@ -9,7 +9,7 @@ TotalEnergy::TotalEnergy() : OxAlgo( "Total Energy",100 ) {
     AIRSPEED_linear_regression = new LinRegres( 1000 );
     TAS_linear_regression = new LinRegres( 1000 );
     ALTITUDE_linear_regression = new LinRegres( 2500 );
-    TE_ALTITUDE_linear_regression = new LinRegres( 2500 );
+    TE_ALTITUDE_linear_regression = new LinRegres( 4000 );
 
     TE_ALTITUDE_linear_regression->set_filter(1.0,
                                              0.2,
