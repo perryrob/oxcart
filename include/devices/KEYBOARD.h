@@ -3,6 +3,7 @@
 
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/thread.hpp>
+#include "key_mapper.h"
 #include "oxBlueDevice.h"
 #include "ns.h"
 
@@ -27,6 +28,7 @@ private:
   int device_fd;
   bool failed;
   bool keep_running;
+  KeyMapper key_mapper;
   b::thread * thr=0;
 };
 #endif

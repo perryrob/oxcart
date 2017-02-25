@@ -95,6 +95,12 @@ static const unsigned int LOAD_FACTOR=2;
 
 //GPS.NMEA
 
+//manual_vals
+static const unsigned int MCREADY=0;
+static const unsigned int WING_LOADING=1;
+static const unsigned int MISC=2;
+
+
 template <class STORE_T> class NamedStore {
 
 public:

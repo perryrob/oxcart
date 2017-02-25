@@ -18,8 +18,12 @@ NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(5);
 
 NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(3);
 
+NamedStore<double> * OxApp::manual_vals = new NamedStore<double>(3);
+
 NamedStore<char> * OxApp::GPRMC = new NamedStore<char>(1024);
 NamedStore<char> * OxApp::GPGGA = new NamedStore<char>(1024);
+
+NamedStore<char> * OxApp::KEYBOARD_BUFFER = new NamedStore<char>(1024);
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -42,12 +46,11 @@ bip::managed_shared_memory * OxApp::create() {
     delete algo_press;
     delete algo_press_rate;
 
-    delete algo_misc_rate;
-    
     delete GPRMC;
     delete GPGGA;
 
-
+    delete algo_misc_rate;
+    delete KEYBOARD_BUFFER;
     
     l_pressure = new NamedStore<int32_t>( "BMP085.pressure", OxApp::shm, 3 );
     l_temp = new NamedStore<float>( "BMP085.temp", OxApp::shm, 3 );
@@ -66,6 +69,9 @@ bip::managed_shared_memory * OxApp::create() {
 
     GPRMC = new NamedStore<char>("GPS.NMEA.gprmc",OxApp::shm,1024,0);
     GPGGA = new NamedStore<char>("GPS.NMEA.gpgga",OxApp::shm,1024,0);
+
+    manual_vals = new NamedStore<double>("manual_vals",OxApp::shm,3);
+    KEYBOARD_BUFFER = new NamedStore<char>("KEYBOARD_BUFFER",OxApp::shm,1024,0);
 
   }
   return OxApp::shm;
@@ -99,14 +105,17 @@ void OxApp::destroy() {
   delete algo_press_rate;
 
   delete algo_misc_rate;
-
+  
   delete GPRMC;
   delete GPGGA;
-  
+
+  delete manual_vals;
+  delete KEYBOARD_BUFFER;
+    
   if (OxApp::shm != 0) {
-  bip::shared_memory_object::remove( MEM_NAME.c_str() );
-  delete OxApp::shm;
-  OxApp::shm = 0;
+    bip::shared_memory_object::remove( MEM_NAME.c_str() );
+    delete OxApp::shm;
+    OxApp::shm = 0;
   }
 }
 

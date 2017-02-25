@@ -47,9 +47,11 @@ public:
   static NamedStore<double> *algo_press_rate;
 
   static NamedStore<double> *algo_misc_rate;
+  static NamedStore<double> *manual_vals;
 
   static NamedStore<char> *GPRMC;
   static NamedStore<char> *GPGGA;
+  static NamedStore<char> *KEYBOARD_BUFFER;
 
 
   ~OxApp(){};

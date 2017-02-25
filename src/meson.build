@@ -12,7 +12,8 @@ oxcart_sources = [
     'oxbluebus.cpp',
     'oxalgothread.cpp',
     'oxalgo.cpp',
-    'gpsdclient.cpp'
+    'gpsdclient.cpp',
+    'key_mapper.cpp'
 ]
 
 LIB_DIRS=['/usr/lib','/usr/local/lib']

@@ -23,7 +23,16 @@ int main(int argc, char * argv[] ){
   init_production_log();
  
   OxApp::create();
+  
+  /************************************************************
+   *
+   * Initialize any shared mem values
+   *
+   */
+  OxApp::manual_vals->set_val(MCREADY,2.0);
+  OxApp::manual_vals->set_val(WING_LOADING,1.0);
 
+  
   OxAlgoThread algo_thread; 
   Madgwick mw;
   TotalEnergy te;

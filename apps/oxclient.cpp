@@ -129,6 +129,9 @@ int main(int argc, char * argv[] ){
         OxApp::l_gps_fix->get_val(TRACK) << " rad " <<
         OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode:" << 
         OxApp::l_gps_fix->get_val(MODE) << endl;
+      cout <<  "-------------------- " << endl;
+      cout << "McReady:     " << OxApp::manual_vals->get_val(MCREADY) << endl;
+      cout << "WingLoading: " << OxApp::manual_vals->get_val(WING_LOADING) << endl;
       cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
       stringstream PGRMZ;
       stringstream PITV3;
