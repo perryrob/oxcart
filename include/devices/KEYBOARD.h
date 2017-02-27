@@ -25,10 +25,13 @@ public:
 
 private:
   void threaded_task();
+  void open_keyboard();
+  std::string buffer;
   int device_fd;
   bool failed;
   bool keep_running;
   KeyMapper key_mapper;
+  std::string device;
   b::thread * thr=0;
 };
 #endif

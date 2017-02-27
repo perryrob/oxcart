@@ -1,4 +1,4 @@
-
+#include "oxapp.h"
 #include "devices/KEYBOARD.h"
 #include "trivial_log.h"
 
@@ -14,17 +14,30 @@
 https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-codes.h
 */
 KEYBOARD::KEYBOARD(const char * dev) {
-  device_fd = open(dev, O_RDONLY);
+  device = dev;
+  failed = true;
+  buffer = "";
+  OxApp::KEYBOARD_BUFFER->set_str(buffer.c_str(),buffer.size());
+}
+void KEYBOARD::open_keyboard() {
   do {
+    device_fd = open(device.c_str(), O_RDONLY);
     if (device_fd == -1) {
-      BOOST_LOG_TRIVIAL(error) << "Cannot open: " << dev<< " "<< strerror(errno);
+      BOOST_LOG_TRIVIAL(error) << "Cannot open: " << device << " "<< strerror(errno);
       failed = true;
+    } else {
+      failed = false;
+      break;
     }
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   } while( failed ) ;
-}
+  BOOST_LOG_TRIVIAL(debug) << "Opened keyboard..";
 
+}
 void KEYBOARD::threaded_task() {
+
+  if (failed) open_keyboard();
+
   struct input_event ev;
   ssize_t n;
   while (keep_running) {
@@ -47,10 +60,17 @@ void KEYBOARD::threaded_task() {
         if ( (uint8_t)c == 0 ) {
           uint8_t cmd = key_mapper.get_action_from_code( (uint8_t)ev.code );
           switch( cmd ) {
-          case KEY_STOP:
-            break;
+          case  KEY_BACKSPACE:
+            if ( buffer.size() > 0) {
+              buffer.pop_back();
+            }
+            break;            
           }
+        } else {
+          buffer.push_back(c);
         }
+        OxApp::KEYBOARD_BUFFER->set_str(buffer.c_str(),buffer.size()+1);
+        BOOST_LOG_TRIVIAL(debug) << OxApp::KEYBOARD_BUFFER->get_str();
       }
     }    
   }

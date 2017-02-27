@@ -153,100 +153,132 @@ uint8_t KeyMapper::get_action_from_code( uint8_t code ) {
   switch(code) {
  case KEY_ESC:
     BOOST_LOG_TRIVIAL(debug) << "KEY_ESC";
+    return code;
     break;
  case KEY_ENTER:
     BOOST_LOG_TRIVIAL(debug) << "KEY_ENTER";
+    return code;
     break;
  case KEY_BACKSPACE:
     BOOST_LOG_TRIVIAL(debug) << "KEY_BACKSPACE";
+    return code;
     break;
   case KEY_F1:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F1";
+    return code;
     break;
  case KEY_F2:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F2";
+    return code;
     break;
  case KEY_F3:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F3";
+    return code;
     break;
  case KEY_F4:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F4";
+    return code;
     break;
  case KEY_F5:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F5";
+    return code;
     break;
  case KEY_F6:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F6";
+    return code;
     break;
  case KEY_F7:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F7";
+    return code;
     break;
  case KEY_F8:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F8";
+    return code;
     break;
  case KEY_F9:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F9";
+    return code;
     break;
  case KEY_F10:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F10";
+    return code;
     break;
  case KEY_F11:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F11";
+    return code;
     break;
  case KEY_F12:
     BOOST_LOG_TRIVIAL(debug) << "KEY_F12";
+    return code;
     break;
  case KEY_NUMLOCK:
     BOOST_LOG_TRIVIAL(debug) << "KEY_NUMLOCK";
+    return code;
     break;
   case KEY_HOME:
         BOOST_LOG_TRIVIAL(debug) << "KEY_HOME";
-    break;
+        return code;
+        break;
   case KEY_UP:
         BOOST_LOG_TRIVIAL(debug) << "KEY_UP";
-    break;
+        return code;
+        break;
   case KEY_PAGEUP:
         BOOST_LOG_TRIVIAL(debug) << "KEY_PAGEUP";
-    break;
+        return code;
+        break;
   case KEY_LEFT:
         BOOST_LOG_TRIVIAL(debug) << "KEY_LEFT";
-    break;
+        return code;
+        break;
   case KEY_RIGHT:
         BOOST_LOG_TRIVIAL(debug) << "KEY_RIGHT";
-    break;
+        return code;
+        break;
   case KEY_END:
         BOOST_LOG_TRIVIAL(debug) << "KEY_END";
-    break;
+        return code;
+        break;
   case KEY_DOWN:
         BOOST_LOG_TRIVIAL(debug) << "KEY_DOWN";
-    break;
+        return code;
+        break;
   case KEY_PAGEDOWN:
         BOOST_LOG_TRIVIAL(debug) << "KEY_PAGEDOWN";
-    break;
+        return code;
+        break;
   case KEY_INSERT:
         BOOST_LOG_TRIVIAL(debug) << "KEY_INSERT";
-    break;
+        return code;
+        break;
   case KEY_DELETE:
         BOOST_LOG_TRIVIAL(debug) << "KEY_DELETE";
-    break;
+        return code;
+        break;
   case KEY_MUTE:
         BOOST_LOG_TRIVIAL(debug) << "KEY_MUTE";
-    break;
+        return code;
+        break;
   case KEY_VOLUMEDOWN:
         BOOST_LOG_TRIVIAL(debug) << "KEY_VOLUMEDOWN";
-    break;
+        return code;
+        break;
   case KEY_VOLUMEUP:
         BOOST_LOG_TRIVIAL(debug) << "KEY_VOLUMEUP";
-    break;
+        return code;
+        break;
   case KEY_POWER:
         BOOST_LOG_TRIVIAL(debug) << "KEY_POWER";
-    break;
+        return code;
+        break;
   case KEY_PAUSE:
         BOOST_LOG_TRIVIAL(debug) << "KEY_PAUSE";
-    break;
+        return code;
+        break;
   case KEY_STOP:
         BOOST_LOG_TRIVIAL(debug) << "KEY_STOP";
-    break;
+        return code;
+        break;
   }
   return 0;
 }
