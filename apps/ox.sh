@@ -10,6 +10,7 @@ oxalgos
 
 KILL_APPS="oxcart_d
 oxalgos
+oxclient
 "
 
 
@@ -17,8 +18,16 @@ case "$1" in
 
     start)
         for app in ${START_APPS}; do
-            nohup ${EXE_PATH}/${app} > ${app}.out 2> ${app}.err < /dev/null &
+            ${EXE_PATH}/${app} &
         done
+        ;;
+    kobo)
+        ${EXE_PATH}/oxclient -k &
+        ;;
+    start_all)
+        $0 start
+        sleep 1
+        $0 kobo
         ;;
     restart)
         $0 stop
