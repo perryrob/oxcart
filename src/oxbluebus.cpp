@@ -1,8 +1,8 @@
 #include "oxbluebus.h"
 #include "trivial_log.h"
 
-OxBluebus::OxBluebus(std::string &address, int channel, int max_attempts ) : 
-  BlueComm(address, channel, max_attempts),
+OxBluebus::OxBluebus(std::string &address, int channel) : 
+  BlueComm(address, channel),
   keep_running(false) {
   open();
 }
@@ -11,7 +11,9 @@ void OxBluebus::threaded_task() {
   while (keep_running) {
     for( std::deque<OxBlueDevice*>::iterator itr = devices.begin();
          itr != devices.end(); ++itr ) {
-      (*itr)->rw_device();
+      if ( is_open() ) {
+        (*itr)->rw_device();
+      }
     }
     b::this_thread::yield();
   }
@@ -43,5 +45,5 @@ OxBluebus::~OxBluebus() {
   keep_running = false;
   delete thr;
   devices.clear();
-  close();
+  close_it();
 }

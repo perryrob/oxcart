@@ -15,7 +15,7 @@ class OxBluebus : public BlueComm {
 public:
 
   OxBluebus(){}
-  OxBluebus(std::string &address, int channel, int max_attempts=5);
+  OxBluebus(std::string &address, int channel);
 
   void run();
   void stop();

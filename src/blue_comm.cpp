@@ -2,11 +2,7 @@
 #include "blue_comm.h"
 #include "trivial_log.h"
 
-BlueComm::BlueComm(std::string &address, int channel,
-                   int max_attempts):sock(0),_is_open(false),
-                                     reconnect_attempts(0) {
-  MAX_ATTEMPTS=max_attempts;
-
+BlueComm::BlueComm(std::string &address, int channel ):sock(0),_is_open(false) {
   this->address = address;
   
   if(hci_devinfo(0, &di) < 0)  {
@@ -19,12 +15,10 @@ BlueComm::BlueComm(std::string &address, int channel,
 
   raddr.rc_family = AF_BLUETOOTH;
   str2ba(this->address.c_str(),&raddr.rc_bdaddr);
-  raddr.rc_channel = channel;  
+  raddr.rc_channel = channel;
 
 }
 bool BlueComm::open() {
-
-  _is_open = true;
 
   if( (sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
     BOOST_LOG_TRIVIAL(error) << "Socket OPEN failed.";
@@ -42,24 +36,24 @@ bool BlueComm::open() {
 
   if(connect(sock, (struct sockaddr *)&raddr, sizeof(raddr)) < 0) {
     BOOST_LOG_TRIVIAL(error) << "Socket connect failed: " << address ;
-    shutdown( sock, SHUT_RDWR );
     _is_open = false;
+  } else {
+    _is_open = true;
   }
   
-  if(! _is_open && reconnect_attempts < MAX_ATTEMPTS) {
-    close();
-    BOOST_LOG_TRIVIAL(error) << "Attempting to reconnect: "<<reconnect_attempts;
-    ++reconnect_attempts;
-    return open();
-  } else {
-    reconnect_attempts = 0;
-  }
-
+  if(! _is_open) {
+    BOOST_LOG_TRIVIAL(error) << "Attempting to reconnect(open)";
+    close( sock );
+    if (this->open() ) {
+      BOOST_LOG_TRIVIAL(error) << "Reconnected!";
+    }
+  } 
+  _is_open = true;
   return _is_open;
 
 }
-bool BlueComm::close() {
-
+bool BlueComm::close_it() {
+  close( sock );
   if (_is_open) {
     shutdown( sock, SHUT_RDWR );
     sock=0;
@@ -72,18 +66,14 @@ int BlueComm::read( char * buffer ){
 
   int bytes_rec=-1;
 
-  if(_is_open && reconnect_attempts < MAX_ATTEMPTS ) {
+  if(_is_open) {
     bytes_rec = recv(sock, buffer, sizeof buffer, 0);
     if( bytes_rec < 0) {
-      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt: " << bytes_rec ;
+      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt...(read) ";
       // close and try to reconnect
-      close();
       open();
-      ++reconnect_attempts;
       return read( buffer ); // try again for at least MAX_ATTEMPTS
-    } else {
-      reconnect_attempts = 0;
-    }
+    } 
   }
   return bytes_rec;
 
@@ -99,23 +89,18 @@ int BlueComm::write( std::string &msg) {
 
   int bytes_sent=-1;
 
-  if(_is_open && reconnect_attempts < MAX_ATTEMPTS ) {
+  if(_is_open) {
     bytes_sent = send(sock,msg.c_str(),msg.size(),0);
     if( bytes_sent < 0) {
-      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt: " << bytes_sent ;
-      // close and try to reconnect
-      close();
+      BOOST_LOG_TRIVIAL(error) << "Reconnect attempt....(write)" ;
       open();
-      ++reconnect_attempts;
       return write( msg ); // try again for at least MAX_ATTEMPTS
-    } else {
-      reconnect_attempts = 0;
-    }
+    } 
   }
   return bytes_sent;
 }
 BlueComm::~BlueComm(){
-  close();
+  close_it();
 }
 
 

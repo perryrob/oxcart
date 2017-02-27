@@ -6,6 +6,7 @@
 #include <cassert>
 #include <iostream>
 #include "named_store.h"
+#include "oxapp.h"
 
 using namespace std;
 

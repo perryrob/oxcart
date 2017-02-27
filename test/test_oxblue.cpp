@@ -33,7 +33,7 @@ int main(int argc, char *argv[] ) {
   string remote_device = "00:06:66:73:E6:0D";
 
   
-  OxBluebus bus( remote_device ,1 ,1);
+  OxBluebus bus( remote_device ,1 );
   TestBlueDevice test_device( "Test Device" );
   
   bus.add_device( &test_device );

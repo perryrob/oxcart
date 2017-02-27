@@ -173,7 +173,7 @@ int main(int argc, char * argv[] ){
   
   if ( vm.count("kobo")) {
     string remote_device = "00:06:66:73:E6:0D";
-    OxBluebus bus( remote_device ,1 ,1);
+    OxBluebus bus( remote_device , 1);
     KOBO kobo;
 
     bus.add_device( &kobo );
@@ -181,6 +181,7 @@ int main(int argc, char * argv[] ){
     while( KEEP_GOING ) {
       b::this_thread::sleep(b::posix_time::milliseconds(100));      
     }
+    cout << "Stop...." << endl;
     bus.stop();
   }
   return 0;
