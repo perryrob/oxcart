@@ -29,8 +29,8 @@ int main(int argc, char * argv[] ){
    * Initialize any shared mem values
    *
    */
-  OxApp::manual_vals->set_val(MCREADY,0.0);
-  OxApp::manual_vals->set_val(WING_LOADING,1.0);
+  OxApp::manual_double_vals->set_val(MCREADY,0.0);
+  OxApp::manual_double_vals->set_val(WING_LOADING,1.0);
 
   
   OxAlgoThread algo_thread; 

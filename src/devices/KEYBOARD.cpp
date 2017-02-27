@@ -4,7 +4,6 @@
 
 #include <stdlib.h>
 #include <unistd.h>
-#include <fcntl.h>
 #include <errno.h>
 #include <linux/input.h>
 #include <string.h>
@@ -18,8 +17,11 @@ KEYBOARD::KEYBOARD(const char * dev) {
   failed = true;
   buffer = "";
   OxApp::KEYBOARD_BUFFER->set_str(buffer.c_str(),buffer.size());
+  OxApp::manual_int_vals->set_val( DISP_CMD,0 );
+  OxApp::manual_int_vals->set_val( DISP_PAGE_NO, 0 );
 }
 void KEYBOARD::open_keyboard() {
+
   do {
     device_fd = open(device.c_str(), O_RDONLY);
     if (device_fd == -1) {
@@ -31,6 +33,12 @@ void KEYBOARD::open_keyboard() {
     }
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   } while( failed ) ;
+
+  FD_ZERO(&set); /* clear the set */
+  FD_SET(device_fd, &set); /* add our file descriptor to the set */
+
+  timeout.tv_sec = 1;
+
   BOOST_LOG_TRIVIAL(debug) << "Opened keyboard..";
 
 }
@@ -41,7 +49,16 @@ void KEYBOARD::threaded_task() {
   struct input_event ev;
   ssize_t n;
   while (keep_running) {
-    n = read( device_fd, &ev, sizeof ev);
+    rv = select(device_fd + 1, &set, NULL, NULL, &timeout);
+    if(rv == -1)
+      perror("select"); /* an error accured */
+    else if(rv == 0) {
+      FD_ZERO(&set); /* clear the set */
+      FD_SET(device_fd, &set); /* add our file descriptor to the set */
+      timeout.tv_sec = 1;
+      continue;      
+    } else
+      n = read( device_fd, &ev, sizeof ev);
     if (n == (ssize_t)-1) {
       if (errno == EINTR)
         continue;
@@ -64,7 +81,13 @@ void KEYBOARD::threaded_task() {
             if ( buffer.size() > 0) {
               buffer.pop_back();
             }
-            break;            
+            break;
+          case KEY_ENTER:
+            OxApp::manual_int_vals->set_val( SYS_CMD, KEY_ENTER );
+            break;
+          case KEY_ESC:
+            buffer = "";
+            break;
           }
         } else {
           buffer.push_back(c);
@@ -82,6 +105,7 @@ void KEYBOARD::run() {
 }
 void KEYBOARD::stop() {
   keep_running = false;
+  close(device_fd);
   thr->join();
   delete thr;
   thr = 0;

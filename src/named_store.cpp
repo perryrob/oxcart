@@ -133,5 +133,6 @@ template class NamedStore<float>;
 template class NamedStore<char>;
 
 template class NamedStore<int16_t>;
+template class NamedStore<uint16_t>;
 template class NamedStore<uint64_t>;
 

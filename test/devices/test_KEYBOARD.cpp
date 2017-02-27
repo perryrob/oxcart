@@ -22,9 +22,20 @@ int main(int argc, char *argv[] ) {
 
   KEYBOARD k("/dev/input/event1");
 
+  OxApp::manual_int_vals->set_val( SYS_CMD,0 ); 
+  
+  int MAX_COUNT=100;
+  int count = 0;
+  
   k.run();
-  b::this_thread::sleep(b::posix_time::milliseconds(100000));
+  while( OxApp::manual_int_vals->get_val( SYS_CMD ) == 0 ) {
+    b::this_thread::sleep(b::posix_time::milliseconds(100));
+    ++count;
+    if (count == MAX_COUNT )
+      OxApp::manual_int_vals->set_val( SYS_CMD,1 ); 
+  }
+  BOOST_LOG_TRIVIAL(debug) << "stopping...";
   k.stop();
-    
+  OxApp::manual_int_vals->set_val( SYS_CMD,0 ); 
   return 0;
 }

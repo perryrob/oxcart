@@ -79,10 +79,14 @@ static const unsigned int LOAD_FACTOR=2;
 
 //GPS.NMEA
 
-//manual_vals
+//manual_double_vals
 static const unsigned int MCREADY=0;
 static const unsigned int WING_LOADING=1;
-static const unsigned int MISC=2;
+
+//manual_int_vals
+static const unsigned int DISP_PAGE_NO=0;
+static const unsigned int DISP_CMD=1;
+static const unsigned int SYS_CMD=2;
 
 
 typedef b::posix_time::ptime Time;
@@ -102,6 +106,8 @@ public:
   }
 
   static uint64_t get_time_ms();
+  static void get_time_str(std::string &s);
+
 
   static NamedStore<int32_t> *l_pressure;
   static NamedStore<float> *l_temp;
@@ -118,7 +124,8 @@ public:
   static NamedStore<double> *algo_press_rate;
 
   static NamedStore<double> *algo_misc_rate;
-  static NamedStore<double> *manual_vals;
+  static NamedStore<double> *manual_double_vals;
+  static NamedStore<uint16_t> *manual_int_vals;
 
   static NamedStore<char> *GPRMC;
   static NamedStore<char> *GPGGA;
@@ -128,7 +135,7 @@ public:
   ~OxApp(){};
   
 private:
-  
+
   static bip::managed_shared_memory * shm;
 
 };

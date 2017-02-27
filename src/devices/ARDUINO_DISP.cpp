@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string>
 #include <vector>
+#include <ctime>
 #include "trivial_log.h"
 
 ARDUINO_DISP::ARDUINO_DISP()  : OxI2CDevice( "ARDUINO_DISP"), init(true) {}
@@ -20,13 +21,8 @@ void ARDUINO_DISP::rw_device() {
     Wire->endTransmission();
     init=false;
   }
-  write_string( 30, 0, 1, OX_VERSION );
 
-  if((OxApp::get_time_ms() - OxApp::l_gps_fix->get_time(TIME)) > 5000) {
-    led_on( 1, true ); 
-  } else {
-    led_on( 1, false ); 
-  }
+  render_page();
   
   /***
    * This is needed to pad the I2C writes
@@ -113,5 +109,41 @@ void ARDUINO_DISP::write_string( uint8_t x, uint8_t y,
   uint8_t *p = &vec[0];
   Wire->write( p, vec.size() );
   Wire->endTransmission();
+
+}
+
+void ARDUINO_DISP::render_page() {
+
+  if((OxApp::get_time_ms() - OxApp::l_gps_fix->get_time(TIME)) > 5000) {
+    led_on( 1, true ); 
+  } else {
+    led_on( 1, false ); 
+  }
+
+  if ( OxApp::manual_int_vals->get_val( DISP_CMD ) != 0 ) {
+
+    if (OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) < 0)
+      OxApp::manual_int_vals->set_val( DISP_PAGE_NO, 0 );
+
+    if (OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) > MAX_PAGES)
+      OxApp::manual_int_vals->set_val( DISP_PAGE_NO, 0 );
+
+    Wire->beginTransmission(ARDUINO_I2CADDR);
+    Wire->write(CLEAR_CMD);  
+    Wire->endTransmission();
+
+    OxApp::manual_int_vals->set_val( DISP_CMD,0 );
+  }
+
+  switch( OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) ) {
+
+  case 0:
+    write_string( 30, 0, 1, OX_VERSION );
+    std::string tmp_str;
+    OxApp::get_time_str( tmp_str );
+    write_string( 0, 10, 1, tmp_str );
+    break;
+    
+  }
 
 }

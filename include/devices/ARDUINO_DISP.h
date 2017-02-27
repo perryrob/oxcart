@@ -23,14 +23,18 @@
 
 #define ARDUINO_I2CADDR 0x20
 
+static const uint8_t MAX_PAGES=1;
+
 class ARDUINO_DISP : public OxI2CDevice {
 
  public:
   ARDUINO_DISP();
 
+  void render_page();
+  
   void rw_device();
   ~ARDUINO_DISP() {} 
-    
+  
  private:
   void led_on( uint8_t LED, bool on );
   void write_string( uint8_t x, uint8_t y, uint8_t size, const std::string &msg);

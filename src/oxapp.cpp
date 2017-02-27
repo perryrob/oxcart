@@ -1,4 +1,8 @@
 #include "oxapp.h"
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <ctime>
 #include <boost/interprocess/managed_shared_memory.hpp>
 
 
@@ -19,12 +23,14 @@ NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(5);
 
 NamedStore<double> * OxApp::algo_misc_rate = new NamedStore<double>(3);
 
-NamedStore<double> * OxApp::manual_vals = new NamedStore<double>(3);
+NamedStore<double> * OxApp::manual_double_vals = new NamedStore<double>(5);
+NamedStore<uint16_t> * OxApp::manual_int_vals = new NamedStore<uint16_t>(5);
 
 NamedStore<char> * OxApp::GPRMC = new NamedStore<char>(1024);
 NamedStore<char> * OxApp::GPGGA = new NamedStore<char>(1024);
 
 NamedStore<char> * OxApp::KEYBOARD_BUFFER = new NamedStore<char>(1024);
+
 
 bip::managed_shared_memory * OxApp::create() {
   //Create or open shared memory segment.
@@ -46,6 +52,9 @@ bip::managed_shared_memory * OxApp::create() {
     delete algo_mad_quat;
     delete algo_press;
     delete algo_press_rate;
+
+    delete manual_double_vals;
+    delete manual_int_vals;
 
     delete GPRMC;
     delete GPGGA;
@@ -71,7 +80,12 @@ bip::managed_shared_memory * OxApp::create() {
     GPRMC = new NamedStore<char>("GPS.NMEA.gprmc",OxApp::shm,1024,0);
     GPGGA = new NamedStore<char>("GPS.NMEA.gpgga",OxApp::shm,1024,0);
 
-    manual_vals = new NamedStore<double>("manual_vals",OxApp::shm,3);
+    manual_double_vals = new NamedStore<double>("manual_double_vals",
+                                                OxApp::shm,4);
+
+    manual_int_vals = new NamedStore<uint16_t>("manual_int_vals",
+                                                OxApp::shm,4);
+
     KEYBOARD_BUFFER = new NamedStore<char>("KEYBOARD_BUFFER",OxApp::shm,1024,0);
 
   }
@@ -84,7 +98,14 @@ uint64_t OxApp::get_time_ms() {
     b::chrono::milliseconds milliSecs = b::chrono::duration_cast<b::chrono::milliseconds>(sec);
     return (uint64_t)milliSecs.count();
   }
+void OxApp::get_time_str(std::string & s) {
+  auto t = std::time(nullptr);
+  auto tm = *std::localtime(&t);
 
+  std::ostringstream oss;
+  oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+  s.assign( oss.str() );
+}
 /************************************************************
  * Careful calling destroy, since it nukes the entire shared
  * memory pool. This should only be called when all apps are
@@ -107,12 +128,15 @@ void OxApp::destroy() {
 
   delete algo_misc_rate;
   
+  delete manual_double_vals;
+  delete manual_int_vals;
+
+
   delete GPRMC;
   delete GPGGA;
 
-  delete manual_vals;
   delete KEYBOARD_BUFFER;
-    
+
   if (OxApp::shm != 0) {
     bip::shared_memory_object::remove( MEM_NAME.c_str() );
     delete OxApp::shm;

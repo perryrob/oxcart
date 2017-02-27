@@ -3,6 +3,12 @@
 
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/thread.hpp>
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/select.h>
+
 #include "key_mapper.h"
 #include "oxBlueDevice.h"
 #include "ns.h"
@@ -31,6 +37,9 @@ private:
   bool failed;
   bool keep_running;
   KeyMapper key_mapper;
+  int rv;
+  struct timeval timeout;
+  fd_set set;
   std::string device;
   b::thread * thr=0;
 };

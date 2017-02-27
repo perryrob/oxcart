@@ -39,7 +39,7 @@ void KOBO::rw_device() {
     fixed << 0.950 << "," <<
     fixed << 0.0 << "," <<
     0 << "," <<
-    fixed << OxApp::manual_vals->get_val(MCREADY);
+    fixed << OxApp::manual_double_vals->get_val(MCREADY);
   Checksum PITV5ck(PITV5);
    
   PITV4 << "PITV4," << OxApp::algo_press_rate->get_val(PRESSURE_TE_ALTITUDE) <<
