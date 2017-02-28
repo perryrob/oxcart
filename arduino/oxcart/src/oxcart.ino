@@ -46,7 +46,7 @@ char buff[32];
 void PrintHex8(uint8_t data ) {
   Serial.print("0x"); 
   if (data<0x10) {Serial.print("0");} 
-  Serial.println(data,HEX); 
+  Serial.print(data,HEX); 
 }
 
 void setup(void) 
@@ -74,12 +74,7 @@ void setup(void)
 
 void loop(void) 
 {
-
-  // Screen must be erefreshed at least once per second
-  if (millis() - LAST_REFRESH > 500 ) {
-    display.refresh();    
-    LAST_REFRESH = millis();
-  }
+  delay(100);
 }
 
 void receiveEvent(size_t count) {
@@ -94,27 +89,27 @@ void receiveEvent(size_t count) {
     switch(cmd) {
     case LED_1_OFF:
         digitalWrite(LED_1_PIN, 0);
-        Serial.println("LED 1 OFF");
+        Serial.println(" LED 1 OFF");
         break;
     case LED_2_OFF:
       digitalWrite(LED_2_PIN, 0);
-      Serial.println("LED 2 OFF");
+      Serial.println(" LED 2 OFF");
       break;
     case LED_3_OFF:
       digitalWrite(LED_3_PIN, 0);
-      Serial.println("LED 3 OFF");
+      Serial.println(" LED 3 OFF");
       break;          
     case LED_1_ON:
       digitalWrite(LED_1_PIN, 1);
-      Serial.println("LED 1 ON");
+      Serial.println(" LED 1 ON");
       break;
     case LED_2_ON:
       digitalWrite(LED_2_PIN, 1);
-      Serial.println("LED 2 ON");
+      Serial.println(" LED 2 ON");
       break;
     case LED_3_ON:
       digitalWrite(LED_3_PIN, 1);
-      Serial.println("LED 3 ON");
+      Serial.println(" LED 3 ON");
       break;          
     case TXT_CMD:
       /************************************************************
@@ -129,21 +124,23 @@ void receiveEvent(size_t count) {
       memset( buff, 0, 32);
       for(uint8_t i=0; Wire.available(); ++i) {
         buff[i] = char(Wire.readByte());
-        Serial.print( buff[i] );
       }
-      Serial.println("");
       display.setTextSize(size);
       display.setTextColor(color);
       display.setCursor(x,y);
       display.println(buff);
-      Serial.println("TEXT CMD");
-      break;
+      display.refresh();
+      Serial.print( " TXT CMD: color: ");
+      Serial.print( color );
+      Serial.print( " msg: ");
+      Serial.println( buff );
+     break;
     case CLEAR_CMD:
       digitalWrite(LED_1_PIN, 0);
       digitalWrite(LED_2_PIN, 0);
       digitalWrite(LED_3_PIN, 0);
       display.clearDisplay();
-      Serial.println("CLEAR CMD");
+      Serial.println(" CLEAR CMD");
       break;
     }
   }

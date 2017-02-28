@@ -103,7 +103,7 @@ void OxApp::get_time_str(std::string & s) {
   auto tm = *std::localtime(&t);
 
   std::ostringstream oss;
-  oss << std::put_time(&tm, "%d-%m-%Y %H-%M-%S");
+  oss << std::put_time(&tm, "%m/%d  %H:%M:%S");
   s.assign( oss.str() );
 }
 /************************************************************

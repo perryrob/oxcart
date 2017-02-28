@@ -7,7 +7,8 @@
 #include <ctime>
 #include "trivial_log.h"
 
-ARDUINO_DISP::ARDUINO_DISP()  : OxI2CDevice( "ARDUINO_DISP"), init(true) {}
+ARDUINO_DISP::ARDUINO_DISP()  : OxI2CDevice( "ARDUINO_DISP"), init(true),
+                                last_update(0) {}
 
 void ARDUINO_DISP::rw_device() {
   BOOST_LOG_TRIVIAL(debug) << "start rw_device()";
@@ -20,9 +21,15 @@ void ARDUINO_DISP::rw_device() {
     Wire->write(CLEAR_CMD);  
     Wire->endTransmission();
     init=false;
+    last_update = OxApp::get_time_ms();
+    render_page();
   }
-
-  render_page();
+  if( OxApp::get_time_ms() - last_update > 500 ) {
+    render_page();
+    last_update = OxApp::get_time_ms();
+  } else {
+    return;
+  }
   
   /***
    * This is needed to pad the I2C writes
@@ -82,10 +89,8 @@ void ARDUINO_DISP::write_string( uint8_t x, uint8_t y,
   uint16_t index = ((uint16_t)x << 8) | y;
 
   auto search = display_text.find( index );
+
   if( search != display_text.end() ) {
-    display_text[index] = msg;
-    display_size[index] = size;
-  } else {
     std::string old_msg = display_text[index];
     uint8_t old_size =  display_size[index];
     Wire->beginTransmission(ARDUINO_I2CADDR);
@@ -93,23 +98,30 @@ void ARDUINO_DISP::write_string( uint8_t x, uint8_t y,
     Wire->write( x );
     Wire->write( y );
     Wire->write( old_size );
-    Wire->write( 0x01 );
+    Wire->write( 1 );
     std::vector<uint8_t> vec(old_msg.begin(), old_msg.end());
     uint8_t *p = &vec[0];
     Wire->write( p, vec.size() );
     Wire->endTransmission();
   }
+
+  display_text[index] = msg;
+  display_size[index] = size;
+
   Wire->beginTransmission(ARDUINO_I2CADDR);
   Wire->write( TXT_CMD );
   Wire->write( x );
   Wire->write( y );
   Wire->write( size );
-  Wire->write( 0x00 );
+  Wire->write( 0 );
   std::vector<uint8_t> vec(msg.begin(), msg.end());
   uint8_t *p = &vec[0];
   Wire->write( p, vec.size() );
   Wire->endTransmission();
 
+  Wire->beginTransmission(ARDUINO_I2CADDR);
+  Wire->write(0x0);  
+  Wire->endTransmission();
 }
 
 void ARDUINO_DISP::render_page() {

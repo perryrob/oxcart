@@ -39,6 +39,7 @@ class ARDUINO_DISP : public OxI2CDevice {
   void led_on( uint8_t LED, bool on );
   void write_string( uint8_t x, uint8_t y, uint8_t size, const std::string &msg);
   bool init;
+  uint64_t last_update;
   std::map<uint16_t,std::string> display_text;
   std::map<uint16_t,uint8_t> display_size;
 };

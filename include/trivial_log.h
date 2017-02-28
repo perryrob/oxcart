@@ -10,6 +10,7 @@
 namespace logging = boost::log;
 
 void init_log();
+void init_info_log();
 void init_production_log();
 
 #endif

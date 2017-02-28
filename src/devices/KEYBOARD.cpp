@@ -70,7 +70,9 @@ void KEYBOARD::threaded_task() {
         break;
       }
     if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2) {
-      printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
+      if ( ev.value == 1 ) {
+        printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
+      }
       // Key Released
       if ( ev.value == 1 ){
         char c = key_mapper.get_char_from_code( (uint8_t)ev.code );
