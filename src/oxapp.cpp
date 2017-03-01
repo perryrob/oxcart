@@ -14,7 +14,7 @@ NamedStore<double> * OxApp::l_accel = new NamedStore<double>(3);
 NamedStore<double> * OxApp::l_gyro = new NamedStore<double>(3);
 NamedStore<double> * OxApp::l_mag = new NamedStore<double>(3);
 
-NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(9);
+NamedStore<double> * OxApp::l_gps_fix = new NamedStore<double>(10);
 
 NamedStore<double> * OxApp::algo_mad_euler = new NamedStore<double>(4);
 NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(4);
@@ -68,7 +68,7 @@ bip::managed_shared_memory * OxApp::create() {
     l_gyro = new NamedStore<double>( "LSM6.gyro", OxApp::shm, 3 );
     l_mag = new NamedStore<double>( "LIS3MDL.mag", OxApp::shm, 3 );
     
-    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 9 );
+    l_gps_fix = new NamedStore<double>( "GPS.fix", OxApp::shm, 10 );
 
     algo_mad_euler = new NamedStore<double>( "ALGO.mad_euler", OxApp::shm, 4 );
     algo_mad_quat = new NamedStore<double>( "ALGO.mad_quat", OxApp::shm, 4 );

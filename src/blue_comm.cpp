@@ -1,6 +1,9 @@
-
+#include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp> 
 #include "blue_comm.h"
 #include "trivial_log.h"
+#include "ns.h"
 
 BlueComm::BlueComm(std::string &address, int channel ):sock(0),_is_open(false) {
   this->address = address;
@@ -43,6 +46,7 @@ bool BlueComm::open() {
   
   if(! _is_open) {
     BOOST_LOG_TRIVIAL(error) << "Attempting to reconnect(open)";
+    b::this_thread::sleep(b::posix_time::milliseconds(250));
     close( sock );
     if (this->open() ) {
       BOOST_LOG_TRIVIAL(error) << "Reconnected!";

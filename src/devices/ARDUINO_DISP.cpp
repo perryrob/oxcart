@@ -1,10 +1,12 @@
 #include "oxapp.h"
 #include "devices/ARDUINO_DISP.h"
 #include "devices/TCA9548A.h"
+#include "conversion.h"
 #include <math.h>
 #include <string>
 #include <vector>
 #include <ctime>
+#include <sstream>
 #include "trivial_log.h"
 
 ARDUINO_DISP::ARDUINO_DISP()  : OxI2CDevice( "ARDUINO_DISP"), init(true),
@@ -24,7 +26,7 @@ void ARDUINO_DISP::rw_device() {
     last_update = OxApp::get_time_ms();
     render_page();
   }
-  if( OxApp::get_time_ms() - last_update > 500 ) {
+  if( OxApp::get_time_ms() - last_update > 100 ) {
     render_page();
     last_update = OxApp::get_time_ms();
   } else {
@@ -126,7 +128,7 @@ void ARDUINO_DISP::write_string( uint8_t x, uint8_t y,
 
 void ARDUINO_DISP::render_page() {
 
-  if((OxApp::get_time_ms() - OxApp::l_gps_fix->get_time(TIME)) > 5000) {
+  if(OxApp::l_gps_fix->get_val(STATUS)==0) {
     led_on( 1, true ); 
   } else {
     led_on( 1, false ); 
@@ -151,11 +153,23 @@ void ARDUINO_DISP::render_page() {
 
   case 0:
     write_string( 30, 0, 1, OX_VERSION );
+    // Display the date and time
     std::string tmp_str;
     OxApp::get_time_str( tmp_str );
     write_string( 0, 10, 1, tmp_str );
-    break;
-    
+    std::stringstream ss;
+    // Show GPS mode
+    if(OxApp::l_gps_fix->get_val(STATUS)==0)
+      ss << "GPS: NO FIX";
+    if(OxApp::l_gps_fix->get_val(STATUS)==1)
+      ss << "GPS: FIX";
+    if(OxApp::l_gps_fix->get_val(STATUS)==2)
+      ss << "GPS: DGPS";
+    write_string( 0, 20, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "Altitude: " << 
+      Conv::feet(OxApp::algo_press->get_val(PRESSURE_ALTITUDE)) ;
+    break;    
   }
 
 }

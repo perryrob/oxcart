@@ -291,8 +291,8 @@ void BMP085::rw_device() {
     set_device_failed();
     return;
   }
-
-  readAltitude();  // meters I get temp and pascals with this single read
+  // meters I get temp and pascals with this single read
+  readAltitude((float)OxApp::manual_double_vals->get_val(SEA_LEVEL_PRESSURE));  
   readTemperature();
 
   if (is_multiplexed()) {

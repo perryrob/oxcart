@@ -71,6 +71,7 @@ static const unsigned int TRACK=5;
 static const unsigned int TRACK_CHANGE=6;
 static const unsigned int TIME=7;
 static const unsigned int MODE=8;
+static const unsigned int STATUS=9;
 
 //ALGO.misc_rate
 static const unsigned int GPS_ACCELERATION=0;
@@ -82,6 +83,7 @@ static const unsigned int LOAD_FACTOR=2;
 //manual_double_vals
 static const unsigned int MCREADY=0;
 static const unsigned int WING_LOADING=1;
+static const unsigned int SEA_LEVEL_PRESSURE=2;
 
 //manual_int_vals
 static const unsigned int DISP_PAGE_NO=0;

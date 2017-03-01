@@ -56,6 +56,7 @@ void GPS::NMEA() {
     /* reading directly from the socket avoids decode overhead */
     errno = 0;
     r = (int)read(gpsdata.gps_fd, buf, sizeof(buf));
+    
     if (r > 0) {
       int i = 0;
       int j = 0;
@@ -104,7 +105,9 @@ void GPS::rw_device() {
 
   new_gps_data = gpsd_shm->read();
 
-  if ( new_gps_data == 0 ) return;    
+  if ( new_gps_data == 0 ) return;
+
+  OxApp::l_gps_fix->set_val(STATUS,new_gps_data->status);
   
   bool new_update = false;
 

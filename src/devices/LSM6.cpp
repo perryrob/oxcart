@@ -125,7 +125,8 @@ void LSM6::enableDefault(void)
   {
     if( initialize ) {
       // Reset device
-      writeReg(CTRL3_C, 0x84);
+      // Don't do this. It seems to cause the unit to become unstable.
+      // writeReg(CTRL3_C, 0x84);
       initialize=false;
     }
 
@@ -201,6 +202,10 @@ void LSM6::readAcc(void)
   a.y = (int16_t)(yha << 8 | yla);
   a.z = (int16_t)(zha << 8 | zla);
 
+  BOOST_LOG_TRIVIAL(debug) << "a.x: " << a.x;
+  BOOST_LOG_TRIVIAL(debug) << "a.y: " << a.y;
+  BOOST_LOG_TRIVIAL(debug) << "a.z: " << a.z;
+
   
 }
 
@@ -262,7 +267,7 @@ void LSM6::vector_normalize(vector<float> *a)
 }
 
 void LSM6::callibrate() {  
-  int SAMPLES = 30;
+  int SAMPLES = 80;
 
   for( int i=0; i < SAMPLES; ++i ) {
     readGyro();

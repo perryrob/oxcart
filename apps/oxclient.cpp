@@ -2,7 +2,7 @@
 #include <boost/chrono.hpp>
 #include <boost/program_options.hpp>
 #include "oxapp.h"
-
+#include "conversion.h"
 #include "oxbluebus.h"
 #include "oxBlueDevice.h"
 #include "devices/KOBO.h"
@@ -96,7 +96,7 @@ int main(int argc, char * argv[] ){
         OxApp::algo_misc_rate->get_val(PITCH_RATE) <<" pitch rate m/s^2 Load:"<< 
         OxApp::algo_misc_rate->get_val(LOAD_FACTOR) <<" g" << 
         endl << "-----------------------" << endl;
-      cout <<  "-------------------- " << endl <<
+      cout <<
         OxApp::GPRMC->get_str() << OxApp::GPGGA->get_str() <<
         "-----------------------" << endl;
       
@@ -115,9 +115,12 @@ int main(int argc, char * argv[] ){
         OxApp::l_temp->get_val(BMP_TE) << " C" << endl <<
         "pitot: " << OxApp::l_pressure->get_val(BMP_PITOT)<< " pa "<<
          OxApp::algo_press->get_val(AIRSPEED)<< " m/s "<< 
+        Conv::knots(OxApp::algo_press->get_val(AIRSPEED)) << " kias " <<
+        Conv::knots(OxApp::algo_press->get_val(TAS)) << " ktas " <<
         OxApp::l_temp->get_val(BMP_PITOT) << " C" << endl <<
         "static: " << OxApp::l_pressure->get_val(BMP_STATIC)<< " pa "<<
           OxApp::algo_press->get_val(ALTITUDE) << " m " <<
+        Conv::feet(OxApp::algo_press->get_val(ALTITUDE)) << " ft " <<
           OxApp::l_temp->get_val(BMP_STATIC) << " C" << endl;
       cout <<  "-------------------- " << sampling_rate << endl;
       cout << "GPS: " << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
@@ -126,9 +129,9 @@ int main(int argc, char * argv[] ){
         OxApp::l_gps_fix->get_val(SPEED) << " m/s " << 
         OxApp::l_gps_fix->get_val(VERT_SPEED) << " m/s " << 
         OxApp::l_gps_fix->get_val(TRACK) << " rad " <<
-        OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode:" << 
-        OxApp::l_gps_fix->get_val(MODE) << endl;
-      cout <<  "-------------------- " << endl;
+        OxApp::l_gps_fix->get_val(TRACK_CHANGE) << " rad/s mode: " << 
+        OxApp::l_gps_fix->get_val(MODE) ;
+      cout <<  endl << "-------------------- " << endl;
       cout << "McReady:     " << OxApp::manual_double_vals->get_val(MCREADY) << 
         endl;
       cout << "WingLoading: " <<
