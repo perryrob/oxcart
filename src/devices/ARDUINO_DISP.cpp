@@ -167,8 +167,30 @@ void ARDUINO_DISP::render_page() {
       ss << "GPS: DGPS";
     write_string( 0, 20, 1, ss.str() );
     ss.str(std::string()); // clear
-    ss << "Altitude: " << 
-      Conv::feet(OxApp::algo_press->get_val(PRESSURE_ALTITUDE)) ;
+    ss.precision(0);
+    // Show Pressure Alt
+    ss << "Alt: " << std::fixed <<
+      Conv::feet(static_cast<double>(OxApp::algo_press->get_val(PRESSURE_ALTITUDE))) ;
+    write_string( 0, 30, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss.precision(2);
+    // Show Kolsman pressure
+    ss << "Pres: " << std::fixed <<
+      Conv::inches_merc(
+          static_cast<double>(OxApp::manual_double_vals->get_val(
+                                   SEA_LEVEL_PRESSURE)
+                              )
+                        );
+    write_string( 0, 40, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss.precision(0);
+    ss << "RPY: " << std::fixed << OxApp::algo_mad_euler->get_val(ROLL) <<
+      "," <<
+      std::fixed << OxApp::algo_mad_euler->get_val(PITCH) <<
+      "," <<
+      std::fixed << OxApp::algo_mad_euler->get_val(YAW);
+    write_string( 0, 50, 1, ss.str() );
+    ss.str(std::string()); // clear
     break;    
   }
 
