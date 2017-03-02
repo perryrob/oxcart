@@ -6,6 +6,7 @@
 #include "oxbluebus.h"
 #include "oxBlueDevice.h"
 #include "devices/KOBO.h"
+#include "devices/KEYBOARD.h"
 
 #include "algo/polar.h"
 #include "algo/checksum.h"
@@ -33,6 +34,7 @@ int main(int argc, char * argv[] ){
   desc.add_options() 
     ("help,h", "Print help messages")
     ("debug,d", "Print tons of debug stuff. Essentially disable init_prod log.")
+    ("info,i", "Print a little more quiet info log.")
     ("destroy", "Purge shared memory")
     ("kobo,k", "Sends mesages to KOBO bluetooth default 00:06:66:73:E6:0D"); 
  
@@ -49,7 +51,11 @@ int main(int argc, char * argv[] ){
   if ( !vm.count("debug")  ) { 
      init_production_log();
    }
-   
+
+  if ( vm.count("info")  ) { 
+     init_info_log();
+   }
+
   OxApp::create();
 
   if (vm.count("destroy")  ) { 
@@ -70,8 +76,12 @@ int main(int argc, char * argv[] ){
   double sampling_rate=(double)OxApp::get_time_ms();
 
   Polar polar;
+
+  KEYBOARD k("/dev/input/event1");
+  OxApp::manual_int_vals->set_val( SYS_CMD,0 );
+  k.run();
   
-  while( KEEP_GOING && ! vm.count("kobo")) {    
+  while( KEEP_GOING && ! vm.count("kobo") && ! vm.count("info") ) {    
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
       i2c_last_time =  OxApp::l_gyro->get_time(X);
       sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
@@ -81,7 +91,7 @@ int main(int argc, char * argv[] ){
         " Mpitch: " << OxApp::algo_mad_euler->get_val(PITCH) <<
         " Myaw: " <<  OxApp::algo_mad_euler->get_val(YAW) << endl; 
 
-      cout << "Quaternion: " << OxApp::algo_mad_quat->get_val(A) << " " <<
+      cout << "Quaternion: " << OxApp::algo_mad_quat->get_val(A) <<   " " <<
         OxApp::algo_mad_quat->get_val(B) << " " <<
         OxApp::algo_mad_quat->get_val(C) << " " <<
         OxApp::algo_mad_quat->get_val(D) << " " << endl <<
@@ -136,6 +146,8 @@ int main(int argc, char * argv[] ){
         endl;
       cout << "WingLoading: " <<
         OxApp::manual_double_vals->get_val(WING_LOADING) << endl;
+      cout << "> " << OxApp::KEYBOARD_BUFFER->get_str() << endl;
+
       cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
       stringstream PGRMZ;
       stringstream PITV3;
@@ -188,5 +200,12 @@ int main(int argc, char * argv[] ){
     cout << "Stop...." << endl;
     bus.stop();
   }
+  if ( vm.count("info")) {
+    while( KEEP_GOING ) {
+      b::this_thread::sleep(b::posix_time::milliseconds(100));      
+    }
+  }   
+  k.stop();
+  OxApp::manual_int_vals->set_val( SYS_CMD,0 ); 
   return 0;
 }

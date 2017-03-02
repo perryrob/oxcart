@@ -29,6 +29,7 @@ int main(int argc, char *argv[] ) {
   
   k.run();
   while( OxApp::manual_int_vals->get_val( SYS_CMD ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << OxApp::KEYBOARD_BUFFER->get_str();
     b::this_thread::sleep(b::posix_time::milliseconds(100));
     ++count;
     if (count == MAX_COUNT )

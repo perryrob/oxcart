@@ -9,16 +9,10 @@
 #include <sys/stat.h>
 #include <sys/select.h>
 
+#include "command_proc.h"
 #include "key_mapper.h"
 #include "oxBlueDevice.h"
 #include "ns.h"
-
-static const char *const evval[3] = {
-    "RELEASED",
-    "PRESSED ",
-    "REPEATED"
-};
-
 
 class KEYBOARD {
 
@@ -30,16 +24,15 @@ public:
   ~KEYBOARD() {};
 
 private:
+  CommandProc command_proc;
   void threaded_task();
   void open_keyboard();
-  std::string buffer;
   int device_fd;
   bool failed;
   bool keep_running;
-  KeyMapper key_mapper;
   int rv;
   struct timeval timeout;
-  fd_set set;
+  fd_set set;  
   std::string device;
   b::thread * thr=0;
 };

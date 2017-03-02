@@ -108,6 +108,12 @@ void GPS::rw_device() {
   if ( new_gps_data == 0 ) return;
 
   OxApp::l_gps_fix->set_val(STATUS,new_gps_data->status);
+
+  if( new_gps_data->status == 0 ) {
+    OxApp::system_status->set_val( LED_1 ,1);
+  } else {
+    OxApp::system_status->set_val( LED_1 ,0);
+  }
   
   bool new_update = false;
 

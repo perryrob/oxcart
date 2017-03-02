@@ -26,7 +26,7 @@ void ARDUINO_DISP::rw_device() {
     last_update = OxApp::get_time_ms();
     render_page();
   }
-  if( OxApp::get_time_ms() - last_update > 100 ) {
+  if( OxApp::get_time_ms() - last_update > 500 ) {
     render_page();
     last_update = OxApp::get_time_ms();
   } else {
@@ -128,11 +128,9 @@ void ARDUINO_DISP::write_string( uint8_t x, uint8_t y,
 
 void ARDUINO_DISP::render_page() {
 
-  if(OxApp::l_gps_fix->get_val(STATUS)==0) {
-    led_on( 1, true ); 
-  } else {
-    led_on( 1, false ); 
-  }
+  led_on( 1, (bool)OxApp::system_status->get_val( LED_1 ) );
+  led_on( 2, (bool)OxApp::system_status->get_val( LED_2 ) );
+  led_on( 3, (bool)OxApp::system_status->get_val( LED_3 ) );  
 
   if ( OxApp::manual_int_vals->get_val( DISP_CMD ) != 0 ) {
 
@@ -182,6 +180,14 @@ void ARDUINO_DISP::render_page() {
                               )
                         );
     write_string( 0, 40, 1, ss.str() );
+
+    ss.str(std::string()); // clear
+    ss.precision(1);
+    // Show TAS
+    ss << "TAS: " << std::fixed <<
+      Conv::knots(OxApp::algo_press->get_val(AIRSPEED));
+    write_string( 0, 50, 1, ss.str() );
+    
     ss.str(std::string()); // clear
     ss.precision(0);
     ss << "RPY: " << std::fixed << OxApp::algo_mad_euler->get_val(ROLL) <<
@@ -189,8 +195,14 @@ void ARDUINO_DISP::render_page() {
       std::fixed << OxApp::algo_mad_euler->get_val(PITCH) <<
       "," <<
       std::fixed << OxApp::algo_mad_euler->get_val(YAW);
-    write_string( 0, 50, 1, ss.str() );
+    write_string( 0, 60, 1, ss.str() );
     ss.str(std::string()); // clear
+    ss.precision(1);
+    ss << "G: " << std::fixed << OxApp::algo_misc_rate->get_val(LOAD_FACTOR);
+    write_string( 0, 70, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();
+    write_string( 0, 80, 1, ss.str() );
     break;    
   }
 

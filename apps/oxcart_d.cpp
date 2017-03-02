@@ -29,7 +29,6 @@ int main(int argc, char * argv[] ){
  
   OxApp::create();
 
-
   /************************************************************
    * Get the device buses up and running.
   */
@@ -79,7 +78,7 @@ int main(int argc, char * argv[] ){
   i2c.add_device(&p3); // pitot
   i2c.add_device(&s);
   i2c.add_device(&l);
-  i2c.add_device(&p3); // pitot
+  i2c.add_device(&s);
   i2c.add_device( &aurduino_disp );
   /************************************************************
    * Create the GPS object and add it to the gps serial bus

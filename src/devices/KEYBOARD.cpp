@@ -1,7 +1,6 @@
 #include "oxapp.h"
 #include "devices/KEYBOARD.h"
 #include "trivial_log.h"
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
@@ -15,10 +14,7 @@ https://github.com/torvalds/linux/blob/master/include/uapi/linux/input-event-cod
 KEYBOARD::KEYBOARD(const char * dev) {
   device = dev;
   failed = true;
-  buffer = "";
-  OxApp::KEYBOARD_BUFFER->set_str(buffer.c_str(),buffer.size());
-  OxApp::manual_int_vals->set_val( DISP_CMD,0 );
-  OxApp::manual_int_vals->set_val( DISP_PAGE_NO, 0 );
+  command_proc.init();
 }
 void KEYBOARD::open_keyboard() {
 
@@ -48,6 +44,7 @@ void KEYBOARD::threaded_task() {
 
   struct input_event ev;
   ssize_t n;
+  
   while (keep_running) {
     rv = select(device_fd + 1, &set, NULL, NULL, &timeout);
     if(rv == -1)
@@ -69,34 +66,11 @@ void KEYBOARD::threaded_task() {
         errno = EIO;
         break;
       }
+    /**
+     * Hand over to the command processor
+     */
     if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2) {
-      if ( ev.value == 1 ) {
-        printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
-      }
-      // Key Released
-      if ( ev.value == 1 ){
-        char c = key_mapper.get_char_from_code( (uint8_t)ev.code );
-        if ( (uint8_t)c == 0 ) {
-          uint8_t cmd = key_mapper.get_action_from_code( (uint8_t)ev.code );
-          switch( cmd ) {
-          case  KEY_BACKSPACE:
-            if ( buffer.size() > 0) {
-              buffer.pop_back();
-            }
-            break;
-          case KEY_ENTER:
-            OxApp::manual_int_vals->set_val( SYS_CMD, KEY_ENTER );
-            break;
-          case KEY_ESC:
-            buffer = "";
-            break;
-          }
-        } else {
-          buffer.push_back(c);
-        }
-        OxApp::KEYBOARD_BUFFER->set_str(buffer.c_str(),buffer.size()+1);
-        BOOST_LOG_TRIVIAL(debug) << OxApp::KEYBOARD_BUFFER->get_str();
-      }
+      command_proc.process_event( ev );
     }    
   }
 }

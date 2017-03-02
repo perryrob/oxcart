@@ -224,7 +224,7 @@ uint8_t KeyMapper::get_action_from_code( uint8_t code ) {
         return code;
         break;
   case KEY_PAGEUP:
-        BOOST_LOG_TRIVIAL(debug) << "KEY_PAGEUP";
+        BOOST_LOG_TRIVIAL(info) << "KEY_PAGEUP";
         return code;
         break;
   case KEY_LEFT:
@@ -244,7 +244,7 @@ uint8_t KeyMapper::get_action_from_code( uint8_t code ) {
         return code;
         break;
   case KEY_PAGEDOWN:
-        BOOST_LOG_TRIVIAL(debug) << "KEY_PAGEDOWN";
+        BOOST_LOG_TRIVIAL(info) << "KEY_PAGEDOWN";
         return code;
         break;
   case KEY_INSERT:
