@@ -131,7 +131,8 @@ int main(int argc, char * argv[] ){
         "static: " << OxApp::l_pressure->get_val(BMP_STATIC)<< " pa "<<
           OxApp::algo_press->get_val(ALTITUDE) << " m " <<
         Conv::feet(OxApp::algo_press->get_val(ALTITUDE)) << " ft " <<
-          OxApp::l_temp->get_val(BMP_STATIC) << " C" << endl;
+          OxApp::l_temp->get_val(BMP_STATIC) << " C " <<
+        OxApp::algo_press->get_val(LOCAL_RHO) << " ~" << endl;
       cout <<  "-------------------- " << sampling_rate << endl;
       cout << "GPS: " << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
         OxApp::l_gps_fix->get_val(LATITUDE) << " " << 

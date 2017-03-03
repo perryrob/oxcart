@@ -29,12 +29,13 @@ static const unsigned int Z=2;
 static const unsigned int V=0;
 
 // ALGO.pressure
-static const unsigned int ALGO_PRESS_SIZE=5;
+static const unsigned int ALGO_PRESS_SIZE=6;
 static const unsigned int TE=0;
 static const unsigned int AIRSPEED=1;
 static const unsigned int TAS=2;
 static const unsigned int ALTITUDE=3;
 static const unsigned int TE_ALTITUDE=4;
+static const unsigned int LOCAL_RHO=5;
 
 // ALGO.press_rate
 static const unsigned int ALGO_PRESS_RATE_SIZE=5;
@@ -96,10 +97,11 @@ static const unsigned int LOAD_FACTOR=2;
 //GPS.NMEA
 
 //manual_double_vals
-static const unsigned int MANUAL_DOUBLE_VALS=3;
+static const unsigned int MANUAL_DOUBLE_VALS=4;
 static const unsigned int MCREADY=0;
 static const unsigned int WING_LOADING=1;
 static const unsigned int SEA_LEVEL_PRESSURE=2;
+static const unsigned int PITCH_ADJUSTMENT=3;
 
 //manual_int_vals
 static const unsigned int MANUAL_INT_VALS=3;

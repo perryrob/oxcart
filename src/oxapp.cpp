@@ -5,7 +5,6 @@
 #include <ctime>
 #include <boost/interprocess/managed_shared_memory.hpp>
 
-
 bip::managed_shared_memory * OxApp::shm = 0;
 
 NamedStore<int32_t> * OxApp::l_pressure = new NamedStore<int32_t>(

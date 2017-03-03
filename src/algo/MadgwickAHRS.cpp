@@ -191,6 +191,7 @@ void Madgwick::run_algo() {
 
   OxApp::algo_mad_euler->set_val(ROLL,roll);
   OxApp::algo_mad_euler->set_val(GPS_ROLL,gps_roll);
-  OxApp::algo_mad_euler->set_val(PITCH,pitch);
+  OxApp::algo_mad_euler->set_val(PITCH,
+         pitch + OxApp::manual_double_vals->get_val(PITCH_ADJUSTMENT));
   OxApp::algo_mad_euler->set_val(YAW,yaw);
 }

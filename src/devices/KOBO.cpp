@@ -1,4 +1,5 @@
 #include "oxapp.h"
+#include "constants.h"
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
 #include "devices/KOBO.h"
@@ -33,10 +34,11 @@ void KOBO::rw_device() {
 
   PITV5.precision(3);
 
+  
   PITV5 << "PITV5," <<
     fixed << 0.0 << "," <<
     fixed << 0.0 << "," <<
-    fixed << 0.950 << "," <<
+    fixed << sqrt( OxApp::algo_press->get_val(LOCAL_RHO) / SI_RHO ) << "," <<
     fixed << 0.0 << "," <<
     0 << "," <<
     fixed << OxApp::manual_double_vals->get_val(MCREADY);
