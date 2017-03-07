@@ -71,14 +71,16 @@ int main(int argc, char * argv[] ){
    * Add the devices  to the I2C bus
    */  
   i2c.add_device(&s);
+  i2c.add_device(&l);
   i2c.add_device(&p1);  // te
-  i2c.add_device(&s);   
+  i2c.add_device(&s);
+  i2c.add_device(&l);
   i2c.add_device(&p2); // static / alt
   i2c.add_device(&s);
+  i2c.add_device(&l);
   i2c.add_device(&p3); // pitot
   i2c.add_device(&s);
   i2c.add_device(&l);
-  i2c.add_device(&s);
   i2c.add_device( &aurduino_disp );
   /************************************************************
    * Create the GPS object and add it to the gps serial bus
