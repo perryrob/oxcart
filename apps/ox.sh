@@ -1,6 +1,7 @@
 #!/bin/bash
 
-BASE_PATH=/home/perryr/oxcart/
+HOMEPATH=/home/perryr
+BASE_PATH=${HOMEPATH}/oxcart/
 export LD_LIBRARY_PATH=${BASE_PATH}/lib:$LD_LIBRARY_PATH
 EXE_PATH=${BASE_PATH}/bin
 
@@ -13,7 +14,21 @@ oxalgos
 oxclient
 "
 
+################################################################################
+#
+# Check for a possible software upgrade on the SD card. If so, untar and
+# copy into position.
+#
+UPGRADE_FILE="/mnt/sdcard/OXCART.tar.gz"
 
+if [ -f "${UPGRADE_FILE}" ]; then
+    pushd ${HOMEPATH}
+    /bin/tar xfz ${UPGRADE_FILE}
+    chmod ug+x ${EXE_PATH}/ox.sh
+    rm ${UPGRADE_FILE}
+    popd
+fi
+################################################################################
 case "$1" in
 
     start)
@@ -22,6 +37,7 @@ case "$1" in
         done
         ;;
     kobo)
+        # ${EXE_PATH}/oxclient -k -o &
         ${EXE_PATH}/oxclient -k &
         ;;
     start_all)
