@@ -5,6 +5,7 @@
 #include "conversion.h"
 #include "oxbluebus.h"
 #include "oxBlueDevice.h"
+#include "output.h"
 #include "devices/KOBO.h"
 #include "devices/KEYBOARD.h"
 
@@ -21,6 +22,9 @@
 using namespace std;
 
 static bool KEEP_GOING = true;
+static bool OUTPUT = false;
+
+
 
 void control_c(int s) {
   KEEP_GOING = false;
@@ -36,6 +40,7 @@ int main(int argc, char * argv[] ){
     ("debug,d", "Print tons of debug stuff. Essentially disable init_prod log.")
     ("info,i", "Print a little more quiet info log.")
     ("destroy", "Purge shared memory")
+    ("output,o", "Output raw date from sensors.")
     ("kobo,k", "Sends mesages to KOBO bluetooth default 00:06:66:73:E6:0D"); 
  
   po::variables_map vm; 
@@ -54,6 +59,11 @@ int main(int argc, char * argv[] ){
 
   if ( vm.count("info")  ) { 
      init_info_log();
+   }
+
+  if ( vm.count("output")  ) {
+    cout << "Output: enabled.." << endl;
+    OUTPUT = true;
    }
 
   OxApp::create();
@@ -189,10 +199,15 @@ int main(int argc, char * argv[] ){
   } // local client printing to screen
   
   if ( vm.count("kobo")) {
+    cout << "Kobo: enabled.." << endl;
+    Output o(FILE_MODE,BASIC_LEVEL);
+    if( OUTPUT ) {
+      cout << "Output: started...." << endl;
+      o.run();
+    }
     string remote_device = "00:06:66:73:E6:0D";
     OxBluebus bus( remote_device , 1);
     KOBO kobo;
-
     bus.add_device( &kobo );
     bus.run();
     while( KEEP_GOING ) {
@@ -200,12 +215,14 @@ int main(int argc, char * argv[] ){
     }
     cout << "Stop...." << endl;
     bus.stop();
-  }
+  
   if ( vm.count("info")) {
     while( KEEP_GOING ) {
       b::this_thread::sleep(b::posix_time::milliseconds(100));      
     }
-  }   
+  }
+  if( OUTPUT ) o.stop();
+  }
   k.stop();
   OxApp::manual_int_vals->set_val( SYS_CMD,0 ); 
   return 0;

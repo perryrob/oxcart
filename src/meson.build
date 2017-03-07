@@ -14,7 +14,8 @@ oxcart_sources = [
     'oxalgo.cpp',
     'gpsdclient.cpp',
     'key_mapper.cpp',
-    'command_proc.cpp'
+    'command_proc.cpp',
+    'output.cpp'
 ]
 
 LIB_DIRS=['/usr/lib','/usr/local/lib']
