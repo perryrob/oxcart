@@ -1,151 +1,68 @@
 INTRODUCTION
 ============
 
-Very rough still in-development source code. Notes below are for me alone. The plan is to clean everything up so the cross build setup and isntallation are repeatable.
+Very rough still in-development source code. The plan is to clean everything up so the cross build setup and isntallation are repeatable. 3/8/2017 These instructions are not for the novice...yet!
+
+The goal of this project is to provide a high performance computing platform that is installed in a sailplane. It has an IMU, 3 air data sensors, GPS, simple display and of course the Beaglebone Black single board computer. There are similar projects like the BlueFly vario and production products like the Vaulter Vario (http://s624368771.online.de/homepage/index.php/produkte/vaulter), The KOBO.cpp file outputs the Vaulter NMEA streams that seem to work great with an unmodified XCSoar 6.8 installation.
+
+The bluetooth interface communicates to an XCSoar (https://www.xcsoar.org)  device, currently a KOBO eReader that is modified to communicate using SPP bluetooth.
 
 ***** USE AT YOUR OWN RISK ******
 
-
-
-BUILD
-=====
-meson build && cd build && ninja
-
-
-OXCART
-==================
-Open-XC-Airborne-Realtime-Telemetry
-
-oxcart - main
-
-* oxapp - contains the named shared memory manager
-
-* oxmem - reads and writes to shaxsred mem
-
-* oxbus - base virtual device class Threaded
-
-ox_wire - implements an Arduino like i2c communication singleton class
-
-oxdev_i2c - inherits from oxdev opens Wire (ox_wire) singleton if needed.
-
-oxdev_i2c_switch - inherits from oxdev opens Wire singleton if needed
-                   adds oxdev_i2c devices attached to switch.
-
-oxdev_serial - inherits from oxdev ( GPS reader with write methods )
-
-ox_display - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
-             switched device
-
-* named_store - shared mem base class to store 
-
-BMP85 - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
-        switched device
-
-LSM6DS33 - inherits from oxdev_i2c, encapsulates oxdev_i2c_switch
-           switched device
-
-GPS - Read this from GPSD SHM
-
-
-
-Boost SH MEM
-============
-http://stackoverflow.com/questions/33513051/structures-and-vectors-in-boost-shared-memory
-http://coliru.stacked-crooked.com/a/0ab21481b69d87bb
-
-http://www.makelinux.net/alp/035
-
-ipcs -m 
-
-0x00000000 1627649   user    640       25600     0 
-
-ipcrm shm 1627649 ## To remove a memory segment
-
-
-BUILD
-=====
-Meson http://mesonbuild.com/documentation.html
-sudo apt-get install python3 ninja-build
-
-git clone git://github.com/mesonbuild/meson
-sudo python3 setup.py install
-sudo chown root.perryr /usr/local/bin/meson
-sudo chown -R root.perryr /usr/local/lib/python3.5/dist-packages/mesonbuild
-
-Gotta git ninja
-===============
-git clone git://github.com/ninja-build/ninja.git && cd ninja
-./configure.py --bootstrap
-sudo cp ninja /usr/bin/
-
-mkdir build
-meson build
-cd build
-ninja
-
-Implementation notes
-====================
-
-i2c = ArduinoWire::OxI2CBus( const char * address )
-i2c.add_device( OxDevice )
-i2c.run()  // starts thread that loops though devices and calls read_sensor
-
-
-TODO
-====
-Still need to add the named_store implementation to the OxDevice or device class itself.....
-Still need to add the multiplexing device.
-
-
-UPDATE 1/6/2016
-===============
-Compiler dying with internal compiler error. Turns out that there is no swap. SO I created one on the SD Card
-
-export SWAP=/mnt/sdcard/swap
-
-sudo mkdir -p $SWAP
-sudo dd if=/dev/zero of=$SWAP/swapfile bs=1M count=1024
-sudo chmod 0600 $SWAP/swapfile
-sudo mkswap $SWAP/swapfile
-sudo swapon $SWAP/swapfile
-
-DTED
-https://e4ftl01.cr.usgs.gov/SRTM/SRTMGL3.003/2000.02.11
-
-CROSS BUILD
-===========
-
-build boost.
-set BOOST_ROOT=/usr/local/arm
-sudo ./b2 install --prefix=/usr/local/arm --with-atomic --with-chrono --with-log --with-program_options --with-date_time --with-filesystem --with-regex --with-serialization --with-thread --with-system --no-samples --no-tests toolset=gcc-arm link=shared toolset=gcc-arm
-
-* GPSD
+CONOPS
 ======
-get env.sh sourced
-scons wordsize=32 snapshot=off arch=arm sample=shell
-scons wordsize=32 snapshot=off arch=arm sample=shell prefix=/usr/local/arm-linux-gnueabihf install
 
-TOOL_HOME=/usr
-export TOOL_PREFIX=${TOOL_HOME}/bin/arm-linux-gnueabihf
-export CXX=$TOOL_PREFIX-g++
-export AR=$TOOL_PREFIX-ar
-export RANLIB=$TOOL_PREFIX-ranlib
-export CC=$TOOL_PREFIX-gcc
-export LD=$TOOL_PREFIX-ld
-export STRIP=$TOOL_PREFIX-strip
-export LDFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
-export LINKFLAGS="-L/usr/local/arm-linux-gnueabihf/lib"
+The software has 3 main components that run as separate user space programs. The oxcart_d program manages all of the sensors and writes their values into a shared memory space. All sensors are read using I2C (400kHz)  except the GPS. The program oxalgos reads the shared memory sensor values and then runs these through filters and linear regression algorithms. It's important to note that all sensor readings and algorithm calculations are timestamped in echoch milliseconds so rates are easily calculated. The final software component is oxclient. It can read the shared memory space and output values to a shell or with the -k argument connect to the bluetooth bus and send data to the KOB reader.
 
-meson build --cross-file cross_file.txt
+BUILDING
+========
 
-### Needed for userspace i2c dev.
-sudo apt-get install libi2c-dev
+The system is currently being built on a linux Ubuntu 16.04 64 bit system using the ARM toolchain and cros compiler. I install the native arm libraries and includes in /usr/local/arm-linux-gnueabihf. The cross compiler is installed using the usual Ubuntu apt software manager. I also use the latest meson and ninja build tools. I compile and install those locally on the build host linux computer.
+
+Boost (1.58) is cross compiled and installed on the host using the prefix /usr/local/arm-linux-gnueabihf. 
 
 
-### SCENARIOS
+Setting Up the beaglebone
+=========================
 
-Build all libraries, upload and monitor arduino
+Main instructions to install latest ubuntu onto the beaglebone
 
-unset AUTO_RESTART
+http://elinux.org/BeagleBoardUbuntu#eMMC:_All_BeagleBone_Varients_with_eMMC
 
-ninja && ../remote_install.sh lib && ../remote_install.sh arduino_monitor
+Download the image
+------------------
+wget https://rcn-ee.com/rootfs/2017-01-23/flasher/BBB-eMMC-flasher-ubuntu-16.04.1-console-armhf-2017-01-23-2gb.img.xz
+
+Create the SD card following the instructions above
+---------------------------------------------------
+xzcat BBB-eMMC-flasher-ubuntu-16.04.1-console-armhf-2017-01-23-2gb.img.xz | sudo dd of=/dev/sdX
+
+
+Additional Notes
+----------------
+Then install boost binaries for 1.58 sudo apt-get install libboost-all-dev
+
+Install GPSD and chrony. Not that it may be wise to build the latest GPSD from source.
+
+
+Hardware BOM
+============
+
+$68.00 (1) Beaglebone: https://www.digikey.com/products/en/development-boards-kits-programmers/33?k=beaglebone&newproducts=1
+
+$4.95  (2) https://www.adafruit.com/products/706    
+$19.90 (2) https://www.adafruit.com/products/572    
+$6.95  (1) https://www.adafruit.com/products/2717
+$29.85 (3) https://www.adafruit.com/products/2651 *
+$13.95 (1) https://www.adafruit.com/products/2419
+$39.95 (1) https://www.adafruit.com/products/1393
+$12.95 (1) https://www.adafruit.com/products/960
+$3.95  (1)  https://www.adafruit.com/products/851
+$14.95 (1) https://www.pololu.com/product/2574
+$15.95 (1) https://www.pololu.com/product/2738
+
+* replacements for BMP85
+
+Still need box and misc hardware wire and solder ~$20.00
+
+~$250.00 as of 3/8/2017
