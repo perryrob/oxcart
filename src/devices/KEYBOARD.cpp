@@ -17,11 +17,16 @@ KEYBOARD::KEYBOARD(const char * dev) {
   command_proc.init();
 }
 void KEYBOARD::open_keyboard() {
-
+  bool not_reported = true;
   do {
     device_fd = open(device.c_str(), O_RDONLY);
     if (device_fd == -1) {
-      BOOST_LOG_TRIVIAL(error) << "Cannot open: " << device << " "<< strerror(errno);
+      OxApp::system_status->set_val( LED_2,1 );
+      if ( not_reported ) {
+        BOOST_LOG_TRIVIAL(error) << "Cannot open: " <<
+          device << " "<< strerror(errno);
+        not_reported = false;
+      }
       failed = true;
     } else {
       failed = false;
@@ -36,7 +41,7 @@ void KEYBOARD::open_keyboard() {
   timeout.tv_sec = 1;
 
   BOOST_LOG_TRIVIAL(debug) << "Opened keyboard..";
-
+  OxApp::system_status->set_val( LED_2,0 );
 }
 void KEYBOARD::threaded_task() {
 

@@ -111,7 +111,7 @@ static const unsigned int SYS_CMD=2;
 
 
 // status
-static const unsigned int STATUS_SIZE=10;
+static const unsigned int STATUS_SIZE=11;
 static const unsigned int GPS_STAT=0;
 static const unsigned int LSM6_STAT=1;
 static const unsigned int LIS3MDL_STAT=2;
@@ -122,6 +122,7 @@ static const unsigned int OXCLIENT_STAT=6;
 static const unsigned int LED_1=7;
 static const unsigned int LED_2=8;
 static const unsigned int LED_3=9;
+static const unsigned int OUTPUT=10;
 
 typedef b::posix_time::ptime Time;
 typedef b::posix_time::time_duration TimeDuration;

@@ -18,13 +18,11 @@ void CommandProc::init() {
   CMD=DO_NOTHING;
 }
 void CommandProc::process_event( struct input_event &ev ) {
-
-  if ( ev.value == 1 ) {
-    printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
-  }
   // Key Released
   if ( ev.value == 1 ){
     char c = key_mapper.get_char_from_code( (uint8_t)ev.code );
+    BOOST_LOG_TRIVIAL( debug ) << evval[ev.value] << " " <<
+      (int)ev.code << " " << c;
     if ( (uint8_t)c == 0 ) {
       uint8_t cmd = key_mapper.get_action_from_code( (uint8_t)ev.code );
       cmd_pressed = cmd;
@@ -92,6 +90,13 @@ void CommandProc::process_command() {
     OxApp::system_status->set_val( LED_3,1 );
     BOOST_LOG_TRIVIAL(info) << "REBOOT";
     system("sudo systemctl reboot");
+  }
+  if(cmd_pressed == KEY_ENTER && cmd_string.compare( "OUTPUT" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "OUTPUT";
+    if ( OxApp::system_status->get_val( OUTPUT) == 1 ) 
+      OxApp::system_status->set_val( OUTPUT,0 );
+    else
+      OxApp::system_status->set_val( OUTPUT,1 );
   }
 
   /**

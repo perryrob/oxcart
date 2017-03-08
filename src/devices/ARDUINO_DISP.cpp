@@ -199,6 +199,13 @@ void ARDUINO_DISP::render_page() {
     ss.str(std::string()); // clear
     ss.precision(1);
     ss << "G: " << std::fixed << OxApp::algo_misc_rate->get_val(LOAD_FACTOR);
+    
+    if ( OxApp::system_status->get_val( OUTPUT) ) {
+      ss << " data:ON";
+    } else {
+      ss << " data:OFF";
+    }
+    
     write_string( 0, 70, 1, ss.str() );
     ss.str(std::string()); // clear
     ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();

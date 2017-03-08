@@ -105,6 +105,9 @@ int main(int argc, char * argv[] ){
   while( KEEP_GOING ) {
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   }
+  OxApp::system_status->set_val( LED_1,0 );
+  OxApp::system_status->set_val( LED_2,0 );
+  OxApp::system_status->set_val( LED_3,0 );
 
   i2c.stop();
   gps_bus.stop();

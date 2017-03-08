@@ -21,8 +21,9 @@ void KOBO::rw_device() {
   stringstream PITV3;
   stringstream PITV4;
 
-  PGRMZ << "PGRMZ," << OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << "," << "m" <<
-    "," << "1";
+  PGRMZ << "PGRMZ," << OxApp::algo_press->get_val(PRESSURE_ALTITUDE) << "," <<
+    "m" <<
+    "," << "2";
   Checksum PGRMZck(PGRMZ);
   
   PITV3 << "PITV3," << OxApp::algo_mad_euler->get_val( ROLL ) << "," <<

@@ -2,6 +2,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 
 #include "blue_comm.h"
+#include "oxapp.h"
 #include "trivial_log.h"
 #include "ns.h"
 
@@ -22,37 +23,36 @@ BlueComm::BlueComm(std::string &address, int channel ):sock(0),_is_open(false) {
 
 }
 bool BlueComm::open() {
-
-  if( (sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
-    BOOST_LOG_TRIVIAL(error) << "Socket OPEN failed.";
+  bool not_reported = true;
+  do {
+    if( (sock = socket(AF_BLUETOOTH, SOCK_STREAM, BTPROTO_RFCOMM)) < 0) {
+      BOOST_LOG_TRIVIAL(error) << "Socket OPEN failed.";
       _is_open = false;
-  } else {
-    BOOST_LOG_TRIVIAL(debug) << "open success";
-  }
-
-  if(bind(sock, (struct sockaddr *)&laddr, sizeof(laddr)) < 0) {
-    BOOST_LOG_TRIVIAL(error) << "Socket BIND failed.";
-    _is_open = false;
-  } else {
-    BOOST_LOG_TRIVIAL(debug) << "bind success";
-  }
-
-  if(connect(sock, (struct sockaddr *)&raddr, sizeof(raddr)) < 0) {
-    BOOST_LOG_TRIVIAL(error) << "Socket connect failed: " << address ;
-    _is_open = false;
-  } else {
-    _is_open = true;
-  }
-  
-  if(! _is_open) {
-    BOOST_LOG_TRIVIAL(error) << "Attempting to reconnect(open)";
-    b::this_thread::sleep(b::posix_time::milliseconds(250));
-    close( sock );
-    if (this->open() ) {
-      BOOST_LOG_TRIVIAL(error) << "Reconnected!";
+    } else {
+      BOOST_LOG_TRIVIAL(debug) << "open success";
     }
-  } 
-  _is_open = true;
+    if(bind(sock, (struct sockaddr *)&laddr, sizeof(laddr)) < 0) {
+      BOOST_LOG_TRIVIAL(error) << "Socket BIND failed.";
+      _is_open = false;
+    } else {
+      BOOST_LOG_TRIVIAL(debug) << "bind success";
+    }    
+    if(connect(sock, (struct sockaddr *)&raddr, sizeof(raddr)) < 0) {
+      if ( not_reported ) {
+        BOOST_LOG_TRIVIAL(error) << "Socket connect failed: " << address ;
+        not_reported = false;
+      }
+      b::this_thread::sleep(b::posix_time::milliseconds(1000));
+      close( sock );
+      _is_open = false;
+    } else {
+      _is_open = true;
+      break;
+    }
+    OxApp::system_status->set_val( LED_3,1 );
+  } while( ! _is_open );
+  BOOST_LOG_TRIVIAL(error) << "Reconnected!";
+  OxApp::system_status->set_val( LED_3,0 );
   return _is_open;
 
 }
