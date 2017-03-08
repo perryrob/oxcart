@@ -24,5 +24,12 @@ void Airdata::run_algo() {
 
   OxApp::algo_press->set_val( TAS, OxApp::algo_press->get_val( AIRSPEED ) *
              sqrt( SI_RHO / OxApp::algo_press->get_val(LOCAL_RHO) ));
+
+  /***
+   * Test for NaN Since this is an input into our quaternion.
+   */ 
+  if (OxApp::algo_press->get_val( TAS ) != OxApp::algo_press->get_val( TAS )) {
+    OxApp::algo_press->set_val( TAS, 0.0 );
+  }
   
 }

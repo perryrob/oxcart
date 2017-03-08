@@ -299,20 +299,7 @@ void LSM6::callibrate() {
                  a_bias.z * a_bias.z );
 
   BOOST_LOG_TRIVIAL(debug) << "a_mag: " << a_mag;
-  /****
-  double pitch = atan2(a_bias.x/a_mag, sqrt(a_bias.y/a_mag * a_bias.y/a_mag) + 
-             (a_bias.z/a_mag * a_bias.z/a_mag));
-  double roll = atan2(a_bias.y/a_mag, sqrt(a_bias.x/a_mag * a_bias.x/a_mag) + 
-             (a_bias.z/a_mag * a_bias.z/a_mag));
 
-  BOOST_LOG_TRIVIAL(debug) << "pitch: " << pitch  * 180.0 / M_PI;
-  BOOST_LOG_TRIVIAL(debug) << "roll: " << roll  * 180 / M_PI;
-
-  a_bias.x -= a_mag * sin( pitch );
-  a_bias.y -= a_mag * sin( roll );
-  
-   a_mag /= GRAVITY;
-  **/
 
   BOOST_LOG_TRIVIAL(debug) << "bias x: " << a_bias.x / a_mag * GRAVITY  ;
   BOOST_LOG_TRIVIAL(debug) << "bias y: " << a_bias.y  / a_mag * GRAVITY  ;

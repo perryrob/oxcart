@@ -105,7 +105,7 @@ void LIS3MDL::enableDefault(void)
     // 0x70 = 0b01110000
     // 0x68 =  0b01011000 
     // OM = 11 (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
-    writeReg(CTRL_REG1, 0x68);
+    writeReg(CTRL_REG1, 0x70);
 
     // 0x00 = 0b00000000
     // FS = 00 (+/- 4 gauss full scale)
@@ -171,10 +171,10 @@ void LIS3MDL::read()
   uint8_t zlm = Wire->read();
   uint8_t zhm = Wire->read();
 
-  // combine high and low bytes
-  m.x = (int16_t)(xhm << 8 | xlm);
-  m.y = (int16_t)(yhm << 8 | ylm);
-  m.z = (int16_t)(zhm << 8 | zlm);
+  // combine high and low bytes + callibration factors
+  m.x = (int16_t)(xhm << 8 | xlm) - 4071;
+  m.y = (int16_t)(yhm << 8 | ylm) + 4105;
+  m.z = (int16_t)(zhm << 8 | zlm) - 1163;
 }
 
 void LIS3MDL::vector_normalize(vector<float> *a)

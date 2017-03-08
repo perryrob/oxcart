@@ -100,16 +100,16 @@ void CommandProc::process_command() {
   if (CMD == SET_ALT ) {
     switch (cmd_pressed) {
     case KEY_UP:
-      BOOST_LOG_TRIVIAL(info) << "SET_ALT + 170 Pa";
+      BOOST_LOG_TRIVIAL(info) << "SET_ALT + 33.86388 Pa";
       OxApp::manual_double_vals->set_val( SEA_LEVEL_PRESSURE,
               OxApp::manual_double_vals->get_val(SEA_LEVEL_PRESSURE) +
-                                          170.0 );
+                                          33.86388 );
       break;
     case KEY_DOWN:
-      BOOST_LOG_TRIVIAL(info) << "SET_ALT - 170 Pa";
+      BOOST_LOG_TRIVIAL(info) << "SET_ALT - 33.86388 Pa";
       OxApp::manual_double_vals->set_val( SEA_LEVEL_PRESSURE,
             OxApp::manual_double_vals->get_val(SEA_LEVEL_PRESSURE) -
-                                          170.0 );
+                                          33.86388 );
       break;
     }
   }
