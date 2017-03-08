@@ -1,7 +1,11 @@
-/*********************************************************************
-OxCart display.
-https://github.com/nox771/i2c_t3/blob/master/examples/advanced_slave/advanced_slave.ino
-*********************************************************************/
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
 
 #include <Adafruit_GFX.h>
 #include <sharp_mem_disp.h>

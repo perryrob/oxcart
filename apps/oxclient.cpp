@@ -5,6 +5,15 @@
 #include "conversion.h"
 #include "oxbluebus.h"
 #include "oxBlueDevice.h"
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
+
 #include "output.h"
 #include "devices/KOBO.h"
 #include "devices/KEYBOARD.h"

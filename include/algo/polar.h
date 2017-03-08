@@ -1,3 +1,12 @@
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
+
 #ifndef __POLAR_H__
 #define __POLAR_H__
 
@@ -6,7 +15,7 @@
 static const int DEGREE = 3;
 static const int N=24;
 
-// ASW20a m/s
+// ASW20a m/s N20UZ
 double POLAR[N][2]={
   19.44442765,-1.00,
   20.83331533,-0.75,

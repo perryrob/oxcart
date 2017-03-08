@@ -1,3 +1,12 @@
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
+
 #include <boost/interprocess/managed_shared_memory.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread/thread.hpp> 

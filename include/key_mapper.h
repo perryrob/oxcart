@@ -1,17 +1,12 @@
-/*
- * Input event codes
- *
- *    *** IMPORTANT ***
- * This file is not only included from C-code but also from devicetree source
- * files. As such this file MUST only contain comments and defines.
- *
- * Copyright (c) 1999-2002 Vojtech Pavlik
- * Copyright (c) 2015 Hans de Goede <hdegoede@redhat.com>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 as published by
- * the Free Software Foundation.
- */
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
+
 #ifndef __KEY_MAPPER_H__
 #define __KEY_MAPPER_H__
 

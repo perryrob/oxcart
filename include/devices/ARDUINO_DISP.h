@@ -1,3 +1,12 @@
+/********************************************************************************
+
+Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
+All rights reserved.
+
+Please see license in the project root directory fro more details
+
+*/
+
 #ifndef __ARDUINO_DISP_H__
 #define __ARDUINO_DISP_H__
 
