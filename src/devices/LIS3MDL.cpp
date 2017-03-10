@@ -1,4 +1,4 @@
-
+#include <boost/utility/binary.hpp>
 #include "oxapp.h"
 #include "devices/LIS3MDL.h"
 
@@ -23,6 +23,7 @@ LIS3MDL::LIS3MDL() : OxI2CDevice( "LIS3MDL")
 
   io_timeout = 0;  // 0 = no timeout
   did_timeout = false;
+  initialize=true;
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ bool LIS3MDL::init(deviceType device, sa1State sa1)
     case device_auto:
       break;
   }
-
+  enableDefault();
   return true;
 }
 
@@ -102,13 +103,21 @@ void LIS3MDL::enableDefault(void)
 {
   if (_device == device_LIS3MDL)
   {
+    if( initialize ) {
+      initialize=false;
+    }
+    BOOST_LOG_TRIVIAL(debug) << "INITIALIZE";
     // 0x70 = 0b01110000
-    // 0x68 =  0b01011000 
+    // def      10010000      
+    // 0x68 = 0b01111110 
     // OM = 11 (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
-    writeReg(CTRL_REG1, 0x70);
+    writeReg(CTRL_REG1, 0x7E);
 
     // 0x00 = 0b00000000
     // FS = 00 (+/- 4 gauss full scale)
+    // 0x00 = 0b01100000
+    // FS = 60 (+/- 16 gauss full scale)
+
     writeReg(CTRL_REG2, 0x00);
 
     // 0x00 = 0b00000000
@@ -118,6 +127,9 @@ void LIS3MDL::enableDefault(void)
     // 0x0C = 0b00001100
     // OMZ = 11 (ultra-high-performance mode for Z)
     writeReg(CTRL_REG4, 0x0C);
+
+    // b00100000
+    writeReg(CTRL_REG5, 0x80);
   }
 }
 
@@ -148,13 +160,30 @@ uint8_t LIS3MDL::readReg(uint8_t reg)
 // Reads the 3 mag channels and stores them in vector m
 void LIS3MDL::read()
 {
+  uint16_t millis_start = millis();
+  do {   
+    Wire->beginTransmission(address);
+    Wire->write(STATUS_REG);
+    Wire->endTransmission();
+    Wire->requestFrom(address, (uint8_t)1);
+    uint8_t stat = Wire->read();
+    BOOST_LOG_TRIVIAL(debug) << "raw status: " << (int)stat;
+    stat = BOOST_BINARY(00000100) & stat;
+    BOOST_LOG_TRIVIAL(debug) << "status: " << (int)stat;
+    if (io_timeout > 0 && ((uint16_t)millis() - millis_start) > io_timeout) {
+      did_timeout = true;
+      BOOST_LOG_TRIVIAL(warning) << "TIMEOUT";
+      break;
+    }
+  } while ((int)stat == 0 );
+  
   Wire->beginTransmission(address);
   // assert MSB to enable subaddress updating
-  Wire->write(OUT_X_L | 0x80);
+  Wire->write(OUT_X_L);
   Wire->endTransmission();
   Wire->requestFrom(address, (uint8_t)6);
 
-  uint16_t millis_start = millis();
+  millis_start = millis();
   while (Wire->available() < 6)
   {
     if (io_timeout > 0 && ((uint16_t)millis() - millis_start) > io_timeout)
@@ -163,18 +192,37 @@ void LIS3MDL::read()
       return;
     }
   }
-
+  BOOST_LOG_TRIVIAL(debug) << "----------------";
   uint8_t xlm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)xlm;
   uint8_t xhm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)xhm;
+  BOOST_LOG_TRIVIAL(debug) << "----------------";
   uint8_t ylm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)ylm;
   uint8_t yhm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)yhm;
+  BOOST_LOG_TRIVIAL(debug) << "----------------";
   uint8_t zlm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)zlm;
   uint8_t zhm = Wire->read();
+  BOOST_LOG_TRIVIAL(debug) << (int)zhm;
+  BOOST_LOG_TRIVIAL(debug) << "----------------";
+  
+  // combine high and low bytes
+  m.x = (int16_t)(xhm << 8 | xlm);
+  m.y = (int16_t)(yhm << 8 | ylm);
+  m.z = (int16_t)(zhm << 8 | zlm);
+  
 
-  // combine high and low bytes + callibration factors
-  m.x = (int16_t)(xhm << 8 | xlm) - 4071;
-  m.y = (int16_t)(yhm << 8 | ylm) + 4105;
-  m.z = (int16_t)(zhm << 8 | zlm) - 1163;
+  BOOST_LOG_TRIVIAL(debug) << "before: " << m.x << " " << m.y << " " << m.z;
+
+  m.x +=  1600;
+  m.y -=  3000;
+  m.z +=  750;
+
+  BOOST_LOG_TRIVIAL(debug) << "after: " << m.x << " " << m.y << " " << m.z;
+  
 }
 
 void LIS3MDL::vector_normalize(vector<float> *a)
@@ -190,14 +238,14 @@ void LIS3MDL::rw_device() {
     BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
     return;
   }
-
-  if (! init() ) {
-    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
-    set_device_failed();
-    return;
+  if ( initialize ) {
+    if (! init() ) {
+      BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
+      set_device_failed();
+      return;
+    }
   }
 
-  enableDefault();
   read();
 
   OxApp::l_mag->set_val(X,(double)m.x / 6842.0 );

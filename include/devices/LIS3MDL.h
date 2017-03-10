@@ -84,7 +84,8 @@ class LIS3MDL : public OxI2CDevice {
 
     uint16_t io_timeout;
     bool did_timeout;
-
+    bool initialize;
+    
     int16_t testReg(uint8_t address, regAddr reg);
 };
 

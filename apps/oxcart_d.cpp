@@ -41,6 +41,7 @@ int main(int argc, char * argv[] ){
    * Get the device buses up and running.
   */
   OxI2CBus i2c( "/dev/i2c-2" );
+  OxI2CBus diaplsy_i2c( "/dev/i2c-1" );
   OxGPSDbus gps_bus;
   /************************************************************
    * Set up the multiplexers for the BMP085s which run through 
@@ -49,13 +50,12 @@ int main(int argc, char * argv[] ){
   TCA9548A tca9548_1( TCA9548A_CH1 );
   TCA9548A tca9548_2( TCA9548A_CH2 );
   TCA9548A tca9548_3( TCA9548A_CH3 );
-  TCA9548A tca9548_4( TCA9548A_CH4 );
   
   /************************************************************
    * Create the Arduino SHARP MEM disply
    */
   ARDUINO_DISP aurduino_disp;
-  aurduino_disp.set_multiplexer( &tca9548_4 );
+ 
   /************************************************************
    * Create the Pressure device objects. Not that p1 is pitot,
    * p2 is static and p3 is total energy.
@@ -89,7 +89,9 @@ int main(int argc, char * argv[] ){
   i2c.add_device(&p3); // pitot
   i2c.add_device(&s);
   i2c.add_device(&l);
-  i2c.add_device( &aurduino_disp );
+  /************************************************************
+   */
+  diaplsy_i2c.add_device( &aurduino_disp );
   /************************************************************
    * Create the GPS object and add it to the gps serial bus
   */
@@ -99,6 +101,7 @@ int main(int argc, char * argv[] ){
    * Start the device threads
    */
   i2c.run();
+  diaplsy_i2c.run();
   gps_bus.run();
   
   
@@ -118,6 +121,7 @@ int main(int argc, char * argv[] ){
   OxApp::system_status->set_val( LED_3,0 );
 
   i2c.stop();
+  diaplsy_i2c.stop();
   gps_bus.stop();
   OxApp::destroy();
 

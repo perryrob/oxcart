@@ -33,8 +33,9 @@ Output::Output(unsigned int mode, unsigned int level) : _mode(mode),
 
 void Output::threaded_task(){
 
-  while( keep_running ) {
+  while( keep_running ) {    
     if( OxApp::system_status->get_val( OUTPUT ) == 1 ) {
+      /**
       LOG_INFO << "EULER" << S << OxApp::algo_mad_euler->get_val(ROLL) << S <<  
         OxApp::algo_mad_euler->get_val(GPS_ROLL) << S <<
         OxApp::algo_mad_euler->get_val(PITCH) << S <<  
@@ -61,11 +62,11 @@ void Output::threaded_task(){
       LOG_INFO << "GRYO" << S << OxApp::l_gyro->get_val(X) << S <<
         OxApp::l_gyro->get_val(Y) << S <<
         OxApp::l_gyro->get_val(Z);
-
+      **/
       LOG_INFO << "MAG" << S << OxApp::l_mag->get_val(X) << S <<
         OxApp::l_mag->get_val(Y) << S <<
         OxApp::l_mag->get_val(Z);
-
+      /**
       LOG_INFO << "PRESSURE" << S << OxApp::l_pressure->get_val(BMP_TE) <<
         S << OxApp::l_pressure->get_val(BMP_PITOT) <<
         S << OxApp::l_pressure->get_val(BMP_STATIC);
@@ -86,6 +87,7 @@ void Output::threaded_task(){
       LOG_INFO << "AIRDATA" <<
         S << OxApp::algo_press->get_val(AIRSPEED) <<
         S << OxApp::algo_press->get_val(TAS);
+      **/
     }
     b::this_thread::sleep(b::posix_time::milliseconds(10));
   }

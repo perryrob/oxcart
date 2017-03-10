@@ -19,7 +19,7 @@ class ArduinoWire {
 
  private:
 	int fd;               //File descriptor used to access i2c device
-    static char * i2c_bus;
+    char * i2c_bus;
     
 	uint8_t txAddress;
 	std::deque<uint8_t> txBuffer;

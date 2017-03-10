@@ -16,6 +16,9 @@ Please see license in the project root directory fro more details
 #include <termios.h>
 #include <errno.h>
 
+GPS::GPS() : OxGPSDDevice( "GPS" ) {
+  OxApp::system_status->set_val( LED_1 ,1);
+}
 
 void GPS::NMEA() {
 

@@ -22,7 +22,7 @@ int main(int argc, char * argv [] ) {
     i2c.add_device(&s);
 
     i2c.run();
-    b::this_thread::sleep(b::posix_time::milliseconds(10));
+    b::this_thread::sleep(b::posix_time::milliseconds(5000));
     i2c.stop();
 
     cerr << s.m.x << " " << s.m.y << " " << s.m.z << endl;

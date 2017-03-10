@@ -20,20 +20,18 @@
 #include "arduino_wire.h"
 #include <sstream>
 
-char * ArduinoWire::i2c_bus = 0;
-
 const char * hex( uint8_t v) {
   std::ostringstream convert;
   convert << "0x" << std::uppercase << std::hex << (int)v;
   return convert.str().c_str();
 }
 
-ArduinoWire::ArduinoWire(): fd(0), txAddress(0), activeDevice(false), is_master(true), funcs(0) {}
+ArduinoWire::ArduinoWire(): fd(0),i2c_bus(0), txAddress(0), activeDevice(false), is_master(true), funcs(0) {}
 
 
-ArduinoWire::ArduinoWire(const char* bus): fd(0), txAddress(0), activeDevice(true), is_master(true), funcs(0){
-  if ( ArduinoWire::i2c_bus == 0 ) {
-    ArduinoWire::i2c_bus = const_cast<char *>(bus);
+ArduinoWire::ArduinoWire(const char* bus): fd(0), i2c_bus(0), txAddress(0), activeDevice(true), is_master(true), funcs(0){
+  if ( i2c_bus == 0 ) {
+    i2c_bus = const_cast<char *>(bus);
   }
 }
 

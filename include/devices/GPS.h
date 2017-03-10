@@ -22,7 +22,7 @@ class GPS : public OxGPSDDevice {
 
 public:
 
- GPS() : OxGPSDDevice( "GPS" ) {}
+ GPS();
 
   void rw_device();
   void NMEA();
