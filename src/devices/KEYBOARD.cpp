@@ -41,6 +41,12 @@ void KEYBOARD::open_keyboard() {
       failed = false;
       break;
     }
+    if (OxApp::system_status->get_val( OXCLIENT_STAT ) >= SHUTTING_DOWN) {
+      failed = false;
+      keep_running = false;
+      BOOST_LOG_TRIVIAL(debug) << "KEBOARD oxclient shutting down..";
+      break;
+    }
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   } while( failed ) ;
 
@@ -85,7 +91,7 @@ void KEYBOARD::threaded_task() {
      */
     if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2) {
       command_proc.process_event( ev );
-    }    
+    }
   }
 }
 

@@ -28,6 +28,7 @@ Please see license in the project root directory fro more details
 static bool KEEP_GOING = true;
 
 void control_c(int s) {
+  OxApp::system_status->set_val( OXCART_D_STAT,SHUTTING_DOWN);
   KEEP_GOING = false;
 }
 
@@ -36,7 +37,9 @@ int main(int argc, char * argv[] ){
   init_production_log();
  
   OxApp::create();
-
+  
+  OxApp::system_status->set_val( OXCART_D_STAT,STARTING);
+  
   /************************************************************
    * Get the device buses up and running.
   */
@@ -114,6 +117,7 @@ int main(int argc, char * argv[] ){
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   while( KEEP_GOING ) {
+    OxApp::system_status->set_val( OXCART_D_STAT,RUNNING);
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   }
   OxApp::system_status->set_val( LED_1,0 );
@@ -123,6 +127,6 @@ int main(int argc, char * argv[] ){
   i2c.stop();
   diaplsy_i2c.stop();
   gps_bus.stop();
+  OxApp::system_status->set_val( OXCART_D_STAT,SHUTDOWN);
   OxApp::destroy();
-
 }

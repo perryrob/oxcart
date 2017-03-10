@@ -23,6 +23,7 @@ Please see license in the project root directory fro more details
 static bool KEEP_GOING = true;
 
 void control_c(int s) {
+  OxApp::system_status->set_val( OXALGOS_STAT,SHUTTING_DOWN);
   KEEP_GOING = false;
 }
 
@@ -31,7 +32,8 @@ int main(int argc, char * argv[] ){
   init_production_log();
  
   OxApp::create();
-  
+
+  OxApp::system_status->set_val( OXALGOS_STAT,STARTING);
   /************************************************************
    *
    * Initialize any shared mem values
@@ -64,7 +66,9 @@ int main(int argc, char * argv[] ){
 
 
   while( KEEP_GOING ) {
+    OxApp::system_status->set_val( OXALGOS_STAT,RUNNING);
     b::this_thread::sleep(b::posix_time::milliseconds(500));
   }
+  OxApp::system_status->set_val( OXALGOS_STAT,SHUTDOWN);
   algo_thread.stop();
 }

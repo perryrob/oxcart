@@ -132,6 +132,13 @@ static const unsigned int LED_1=7;
 static const unsigned int LED_2=8;
 static const unsigned int LED_3=9;
 static const unsigned int OUTPUT=10;
+// Status for OXCART_D_STAT, OXALGOS_STAT,OXCLIENT_STAT
+static const int8_t STARTING=101;
+static const int8_t RUNNING=102;
+static const int8_t SHUTTING_DOWN=103;
+static const int8_t SHUTDOWN=104;
+
+
 
 typedef b::posix_time::ptime Time;
 typedef b::posix_time::time_duration TimeDuration;

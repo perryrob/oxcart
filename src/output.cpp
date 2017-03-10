@@ -90,6 +90,9 @@ void Output::threaded_task(){
       **/
     }
     b::this_thread::sleep(b::posix_time::milliseconds(10));
+    if (OxApp::system_status->get_val( OXCLIENT_STAT ) == SHUTTING_DOWN) {
+      keep_running = false;      
+    }
   }
 
 }

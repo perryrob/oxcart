@@ -33,8 +33,10 @@ using namespace std;
 static bool KEEP_GOING = true;
 
 void control_c(int s) {
+  OxApp::system_status->set_val( OXCLIENT_STAT,SHUTTING_DOWN);
+  BOOST_LOG_TRIVIAL(warning) << "oxalgos shutting down..." ;
+  b::this_thread::sleep(b::posix_time::milliseconds(100));
   KEEP_GOING = false;
-  cout << endl;
 }
 
 int main(int argc, char * argv[] ){
@@ -67,9 +69,8 @@ int main(int argc, char * argv[] ){
    }
 
   OxApp::create();
-  OxApp::system_status->set_val( LED_1,0 );
-  OxApp::system_status->set_val( LED_2,0 );
-  OxApp::system_status->set_val( LED_3,0 );
+  
+  OxApp::system_status->set_val( OXCLIENT_STAT,STARTING);
   /************************************************************
    *
    * Start the output NOTE: its start from the GUI.
@@ -101,7 +102,11 @@ int main(int argc, char * argv[] ){
   OxApp::manual_int_vals->set_val( SYS_CMD,0 );
   k.run();
   
-  while( KEEP_GOING && ! vm.count("kobo") && ! vm.count("info") ) {    
+  while( KEEP_GOING && ! vm.count("kobo")) {
+    if (OxApp::system_status->get_val( OXCLIENT_STAT ) == SHUTTING_DOWN) {
+      break;
+    }
+    OxApp::system_status->set_val( OXCLIENT_STAT,RUNNING);
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
       i2c_last_time =  OxApp::l_gyro->get_time(X);
       sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
@@ -216,16 +221,14 @@ int main(int argc, char * argv[] ){
     bus.add_device( &kobo );
     bus.run();
     while( KEEP_GOING ) {
+      OxApp::system_status->set_val( OXCLIENT_STAT,RUNNING);
       b::this_thread::sleep(b::posix_time::milliseconds(100));      
     }
     cout << "Stop...." << endl;
     bus.stop();
-    if ( vm.count("info")) {
-      while( KEEP_GOING ) {
-        b::this_thread::sleep(b::posix_time::milliseconds(100));
-      }
-    }
   }
+  BOOST_LOG_TRIVIAL(warning) << "oxalgos shut down." ;
+  OxApp::system_status->set_val( OXCLIENT_STAT,SHUTDOWN);
   b::this_thread::sleep(b::posix_time::milliseconds(500));
   k.stop();
   o.stop();

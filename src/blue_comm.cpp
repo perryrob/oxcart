@@ -58,10 +58,18 @@ bool BlueComm::open() {
       _is_open = true;
       break;
     }
+    if (OxApp::system_status->get_val( OXCLIENT_STAT ) >= SHUTTING_DOWN) {
+      _is_open = false;
+      OxApp::system_status->set_val( LED_3,0 );
+      BOOST_LOG_TRIVIAL(error) << "BLUETOOTH oxclient shutting down..";
+      break;
+    }
     OxApp::system_status->set_val( LED_3,1 );
   } while( ! _is_open );
-  BOOST_LOG_TRIVIAL(error) << "Reconnected!";
-  OxApp::system_status->set_val( LED_3,0 );
+  if( _is_open ) {
+    BOOST_LOG_TRIVIAL(error) << "Reconnected!";
+    OxApp::system_status->set_val( LED_3,0 );
+  } 
   return _is_open;
 
 }
