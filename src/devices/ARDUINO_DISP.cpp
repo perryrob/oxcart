@@ -35,7 +35,7 @@ void ARDUINO_DISP::rw_device() {
     last_update = OxApp::get_time_ms();
     render_page();
   }
-  if( OxApp::get_time_ms() - last_update > 500 ) {
+  if( OxApp::get_time_ms() - last_update > 200 ) {
     render_page();
     last_update = OxApp::get_time_ms();
   } else {

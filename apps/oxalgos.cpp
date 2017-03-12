@@ -32,8 +32,15 @@ int main(int argc, char * argv[] ){
   init_production_log();
  
   OxApp::create();
-
   OxApp::system_status->set_val( OXALGOS_STAT,STARTING);
+  if( OxApp::time_set() ){}
+  /************************************************************
+   * wait for oxcart_d
+   */
+  while(OxApp::system_status->get_val( OXCART_D_STAT ) < RUNNING) {
+    if ( ! KEEP_GOING ) break;
+    b::this_thread::sleep(b::posix_time::milliseconds(500));
+  }
   /************************************************************
    *
    * Initialize any shared mem values

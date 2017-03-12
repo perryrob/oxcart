@@ -37,14 +37,26 @@ int main(int argc, char * argv[] ){
   init_production_log();
  
   OxApp::create();
-  
   OxApp::system_status->set_val( OXCART_D_STAT,STARTING);
+  /************************************************************
+   * Create the Arduino SHARP MEM disply
+   */
+  OxI2CBus diaplsy_i2c( "/dev/i2c-1" );
+  ARDUINO_DISP aurduino_disp;
+  diaplsy_i2c.add_device( &aurduino_disp );
+  diaplsy_i2c.run();
+  
+  OxApp::system_status->set_val( LED_1,1 );
+  OxApp::system_status->set_val( LED_2,1 );
+  OxApp::system_status->set_val( LED_3,1 );
+
+  OxApp::KEYBOARD_BUFFER->set_str( "* starting *",14);
+  if( OxApp::time_set() ){}  
   
   /************************************************************
    * Get the device buses up and running.
   */
   OxI2CBus i2c( "/dev/i2c-2" );
-  OxI2CBus diaplsy_i2c( "/dev/i2c-1" );
   OxGPSDbus gps_bus;
   /************************************************************
    * Set up the multiplexers for the BMP085s which run through 
@@ -54,11 +66,7 @@ int main(int argc, char * argv[] ){
   TCA9548A tca9548_2( TCA9548A_CH2 );
   TCA9548A tca9548_3( TCA9548A_CH3 );
   
-  /************************************************************
-   * Create the Arduino SHARP MEM disply
-   */
-  ARDUINO_DISP aurduino_disp;
- 
+
   /************************************************************
    * Create the Pressure device objects. Not that p1 is pitot,
    * p2 is static and p3 is total energy.
@@ -90,8 +98,6 @@ int main(int argc, char * argv[] ){
   i2c.add_device(&s);
   i2c.add_device(&l);
   i2c.add_device(&p3); // pitot
-  i2c.add_device(&s);
-  i2c.add_device(&l);
   /************************************************************
    */
   diaplsy_i2c.add_device( &aurduino_disp );
@@ -104,7 +110,6 @@ int main(int argc, char * argv[] ){
    * Start the device threads
    */
   i2c.run();
-  diaplsy_i2c.run();
   gps_bus.run();
   
   

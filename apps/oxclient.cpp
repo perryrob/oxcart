@@ -1,10 +1,3 @@
-#include <boost/thread.hpp>
-#include <boost/chrono.hpp>
-#include <boost/program_options.hpp>
-#include "oxapp.h"
-#include "conversion.h"
-#include "oxbluebus.h"
-#include "oxBlueDevice.h"
 /********************************************************************************
 
 Copyright (c) 2017 Bob Perry / asw204k_AT_yahoo.com
@@ -14,12 +7,22 @@ Please see license in the project root directory fro more details
 
 */
 
+#include <boost/thread.hpp>
+#include <boost/chrono.hpp>
+#include <boost/program_options.hpp>
+#include "oxapp.h"
+#include "conversion.h"
+#include "oxbluebus.h"
+#include "oxBlueDevice.h"
+
 #include "output.h"
 #include "devices/KOBO.h"
 #include "devices/KEYBOARD.h"
 
 #include "algo/polar.h"
+#include "algo/linregres.h"
 #include "algo/checksum.h"
+#include "algo/average.h"
 
 #include <signal.h>
 
@@ -69,8 +72,12 @@ int main(int argc, char * argv[] ){
    }
 
   OxApp::create();
-  
   OxApp::system_status->set_val( OXCLIENT_STAT,STARTING);
+  if( OxApp::time_set() ){}
+  while(OxApp::system_status->get_val( OXCART_D_STAT ) < RUNNING) {
+    if ( ! KEEP_GOING ) break;
+    b::this_thread::sleep(b::posix_time::milliseconds(500));
+  }
   /************************************************************
    *
    * Start the output NOTE: its start from the GUI.
@@ -94,13 +101,17 @@ int main(int argc, char * argv[] ){
   sigaction(SIGINT, &sigIntHandler, NULL);
 
   uint64_t i2c_last_time=0;
-  double sampling_rate=(double)OxApp::get_time_ms();
-
+  
   Polar polar;
 
+  auto start_time = (double)OxApp::get_time_ms();
+  auto end_time = (double)OxApp::get_time_ms();
+  
   KEYBOARD k("/dev/input/event1");
   OxApp::manual_int_vals->set_val( SYS_CMD,0 );
   k.run();
+
+  Average sampling_rate(100);
   
   while( KEEP_GOING && ! vm.count("kobo")) {
     if (OxApp::system_status->get_val( OXCLIENT_STAT ) == SHUTTING_DOWN) {
@@ -108,8 +119,10 @@ int main(int argc, char * argv[] ){
     }
     OxApp::system_status->set_val( OXCLIENT_STAT,RUNNING);
     if (i2c_last_time < OxApp::l_gyro->get_time(X) ) {
+      end_time=(double)OxApp::get_time_ms();
+      sampling_rate.update( (1.0 / ((end_time-start_time) * 0.001)) );
+      start_time=(double)OxApp::get_time_ms();
       i2c_last_time =  OxApp::l_gyro->get_time(X);
-      sampling_rate = (OxApp::get_time_ms() - i2c_last_time) *0.001 ;
       cout <<  ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << endl;
       cout << "Mroll: " <<  OxApp::algo_mad_euler->get_val(ROLL) <<
         " GPS_ROLL: " << OxApp::algo_mad_euler->get_val(GPS_ROLL) <<
@@ -158,7 +171,7 @@ int main(int argc, char * argv[] ){
         Conv::feet(OxApp::algo_press->get_val(ALTITUDE)) << " ft " <<
           OxApp::l_temp->get_val(BMP_STATIC) << " C " <<
         OxApp::algo_press->get_val(LOCAL_RHO) << " ~" << endl;
-      cout <<  "-------------------- " << sampling_rate << endl;
+      cout <<  "------------- " << sampling_rate.get_average() << " Hz" << endl;
       cout << "GPS: " << OxApp::l_gps_fix->get_val(LONGITUDE) << " " << 
         OxApp::l_gps_fix->get_val(LATITUDE) << " " << 
         OxApp::l_gps_fix->get_val(GPS_ALTITUDE) << " m " << 
@@ -208,9 +221,7 @@ int main(int argc, char * argv[] ){
       BOOST_LOG_TRIVIAL(debug) << PGRMZck.get_sentence();
       BOOST_LOG_TRIVIAL(debug) << PITV3ck.get_sentence();
       BOOST_LOG_TRIVIAL(debug) << PITV4ck.get_sentence();
-    }
-    
-    b::this_thread::sleep(b::posix_time::milliseconds(5));
+    }    
   } // local client printing to screen
   
   if ( vm.count("kobo")) {

@@ -11,8 +11,12 @@ Please see license in the project root directory fro more details
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include "trivial_log.h"
 #include <ctime>
 #include <boost/interprocess/managed_shared_memory.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/thread/thread.hpp> 
+
 
 bip::managed_shared_memory * OxApp::shm = 0;
 
@@ -174,5 +178,17 @@ void OxApp::destroy() {
     OxApp::shm = 0;
   }
 }
-
+bool OxApp::time_set() {
+  unsigned int TRIES = 300;
+  unsigned int count = 1;
+  while( OxApp::get_time_ms() < 1483254000000L ) {
+    if (count > TRIES) {
+      BOOST_LOG_TRIVIAL(error) << "System clock not set.";
+      return false;
+    }    
+    count++;
+    b::this_thread::sleep(b::posix_time::milliseconds(1000)); // wait a sec
+  }
+  return true;
+}
 

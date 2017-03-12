@@ -156,6 +156,9 @@ public:
     return shm;
   }
 
+  static bool time_set();
+
+  
   static uint64_t get_time_ms();
   static void get_time_str(std::string &s);
 
