@@ -163,8 +163,14 @@ void Madgwick::update(double ax, double ay, double az,
    roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
    
    pitch *= -RAD_DEG;
+
+   if ( yaw > 0.174533 ) {
+     yaw -= 0.174533; // 10 degrees for Tucson variation
+   } else {
+     yaw += 0.174533;
+   }
    yaw   *= -RAD_DEG;
-   if ( yaw < 0 ) yaw += 360.0;   
+   if ( yaw < 0 ) yaw += 360.0;
    roll  *= RAD_DEG;
  }
  

@@ -18,7 +18,7 @@ Please see license in the project root directory fro more details
 #include "named_store.h"
 #include "ns.h"
 
-static const std::string OX_VERSION="OX 1.03"; 
+static const std::string OX_VERSION="OX 1.05"; 
 
 static const std::string MEM_NAME="OXCART_V1"; 
 static const unsigned int MEM_SIZE=64000;
