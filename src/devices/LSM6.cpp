@@ -346,9 +346,9 @@ void LSM6::rw_device() {
   OxApp::l_accel->set_val(Y,(double)a.y / a_mag * GRAVITY);
   OxApp::l_accel->set_val(Z,(double)a.z / a_mag * GRAVITY);
   readGyro();
-  OxApp::l_gyro->set_val(X,(double)g.x * 8.75 / 1000.0 * M_PI / 180.0); // rad/s at 245 max dps
-  OxApp::l_gyro->set_val(Y,(double)g.y * 8.75 / 1000.0 * M_PI / 180.0);
-  OxApp::l_gyro->set_val(Z,(double)g.z * 8.75 / 1000.0 * M_PI / 180.0);
+  OxApp::l_gyro->set_val(X,(double)g.x * 0.00875044 * M_PI / 180.0); 
+  OxApp::l_gyro->set_val(Y,(double)g.y * 0.00875044 * M_PI / 180.0);
+  OxApp::l_gyro->set_val(Z,(double)g.z * 0.00875044 * M_PI / 180.0);
 
   
 }

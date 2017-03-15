@@ -67,6 +67,11 @@ bool LinRegres::ready() {
 
 bool LinRegres::update( const double &X, const double &Y) {
 
+  /**
+   * If the X axis hasn't changed, just throw it out.
+   */
+  if (x_que.size() > 0 && x_que.back() == X ) return false;
+  
   while(ready()) {
     x_que.pop_front();
     y_que.pop_front();

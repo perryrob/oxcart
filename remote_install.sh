@@ -9,6 +9,9 @@ function copy_bin {
     echo "cp -> ${SRC_DIR}/build/apps/oxclient ${REMOTE}:${DST_DIR}/bin/."
     scp -q ${SRC_DIR}/apps/ox.sh ${REMOTE}:${DST_DIR}/bin/.
     echo "cp -> ${SRC_DIR}/apps/ox.sh ${REMOTE}:${DST_DIR}/bin/."
+    scp -q ${SRC_DIR}/build/apps/mag_cal ${REMOTE}:${DST_DIR}/bin/.
+    echo "cp -> ${SRC_DIR}/apps/mag_cal ${REMOTE}:${DST_DIR}/bin/."
+
 }
 
 function copy_lib {
@@ -115,7 +118,7 @@ if [ "$(uname -n)" = "wildcat" ]; then
         mkdir -p ${UPGRADE_DIR}/data
         mkdir -p ${UPGRADE_DIR}/test
         DST_DIR=${UPGRADE_DIR}
-        REMOTE=localhost
+        REMOTE=localhost        
         copy_lib
         copy_bin
         copy_include
@@ -133,11 +136,14 @@ if [ "$(uname -n)" = "wildcat" ]; then
     *)
         $0 clean
         $0 ninja
-        echo "Coping files to remote host" 
-        $0 lib
-        $0 bin
-        $0 test
-        $0 include
+        echo "Coping files to remote host"
+        ssh -q $REMOTE exit
+        if [ $? == 0 ]; then
+            $0 lib
+            $0 bin
+            $0 test
+            $0 include
+        fi
         $0 upgrade
         echo " done."
         ;;

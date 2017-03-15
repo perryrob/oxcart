@@ -18,6 +18,7 @@ Please see license in the project root directory fro more details
 #include "output.h"
 #include "devices/KOBO.h"
 #include "devices/KEYBOARD.h"
+#include "devices/NCURSES.h"
 
 #include "algo/polar.h"
 #include "algo/linregres.h"
@@ -50,6 +51,8 @@ int main(int argc, char * argv[] ){
     ("help,h", "Print help messages")
     ("debug,d", "Print tons of debug stuff. Essentially disable init_prod log.")
     ("info,i", "Print a little more quiet info log.")
+    ("ncurses,n", "Show an ncurses display like the instrument.")
+    ("verbose,v", "Show default tons  of text.")
     ("destroy", "Purge shared memory")
     ("kobo,k", "Sends mesages to KOBO bluetooth default 00:06:66:73:E6:0D"); 
  
@@ -106,14 +109,32 @@ int main(int argc, char * argv[] ){
 
   auto start_time = (double)OxApp::get_time_ms();
   auto end_time = (double)OxApp::get_time_ms();
-  
+
+  /************************************************************
+   *
+   * Start up the keyboard.
+   */
   KEYBOARD k("/dev/input/event1");
-  OxApp::manual_int_vals->set_val( SYS_CMD,0 );
   k.run();
 
-  Average sampling_rate(100);
+
+
+  if( vm.count("ncurses") ) {
+    NCURSES_DISP nd;
+    while( KEEP_GOING ) {
+      OxApp::system_status->set_val( OXCLIENT_STAT,RUNNING);
+      nd.rw_device();
+      b::this_thread::sleep(b::posix_time::milliseconds(100));      
+    }
+  }
   
-  while( KEEP_GOING && ! vm.count("kobo")) {
+  Average sampling_rate(100);  
+
+  /************************************************************
+   *
+   * Verbose mode
+   */
+  while( KEEP_GOING && vm.count("verbose")) {
     if (OxApp::system_status->get_val( OXCLIENT_STAT ) == SHUTTING_DOWN) {
       break;
     }
@@ -222,8 +243,11 @@ int main(int argc, char * argv[] ){
       BOOST_LOG_TRIVIAL(debug) << PITV3ck.get_sentence();
       BOOST_LOG_TRIVIAL(debug) << PITV4ck.get_sentence();
     }    
-  } // local client printing to screen
-  
+  } 
+  /************************************************************
+   *
+   * Run the KOBO portion to connect to XCSoar.
+   */
   if ( vm.count("kobo")) {
     cout << "Kobo: enabled.." << endl;
     string remote_device = "00:06:66:73:E6:0D";
@@ -238,6 +262,10 @@ int main(int argc, char * argv[] ){
     cout << "Stop...." << endl;
     bus.stop();
   }
+  /************************************************************
+   *
+   * Shut down sequence
+   */
   BOOST_LOG_TRIVIAL(warning) << "oxalgos shut down." ;
   OxApp::system_status->set_val( OXCLIENT_STAT,SHUTDOWN);
   b::this_thread::sleep(b::posix_time::milliseconds(500));

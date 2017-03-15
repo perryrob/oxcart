@@ -24,6 +24,7 @@ if meson.is_cross_build()
     LIB_DIRS=['/usr/lib','/usr/local/arm-linux-gnueabihf/lib']
 endif
 
+
 boost_dep=dependency('boost', version: '>=1.58')
 thread_dep = cpp.find_library('pthread', required : true)
 rt_dep = cpp.find_library('rt', required : true)
@@ -35,6 +36,8 @@ bt_dt = cpp.find_library('boost_date_time', required : true, dirs:LIB_DIRS)
 bt_chrono = cpp.find_library('boost_chrono', required : true, dirs:LIB_DIRS) 
 bt_f = cpp.find_library('boost_filesystem', required : true, dirs:LIB_DIRS) 
 bt_po = cpp.find_library('boost_program_options', required : true, dirs:LIB_DIRS) 
+ncurses_dep=cpp.find_library('ncurses', required : true, dirs:LIB_DIRS)
+ncursesw_dep=cpp.find_library('ncursesw', required : true, dirs:LIB_DIRS)
 
 gpsd_dep = cpp.find_library('gps', required : true, dirs:LIB_DIRS) 
 bluetooth_dep = cpp.find_library('bluetooth', required : true, dirs:LIB_DIRS) 

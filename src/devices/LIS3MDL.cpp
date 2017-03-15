@@ -1,7 +1,7 @@
 #include <boost/utility/binary.hpp>
 #include "oxapp.h"
 #include "devices/LIS3MDL.h"
-
+#include <cmath>
 #include "trivial_log.h"
 
 // Defines ////////////////////////////////////////////////////////////////
@@ -87,6 +87,9 @@ bool LIS3MDL::init(deviceType device, sa1State sa1)
       break;
   }
   enableDefault();
+  if( initialize ) {
+    initialize=false;
+  }
   return true;
 }
 
@@ -103,15 +106,12 @@ void LIS3MDL::enableDefault(void)
 {
   if (_device == device_LIS3MDL)
   {
-    if( initialize ) {
-      initialize=false;
-    }
     BOOST_LOG_TRIVIAL(debug) << "INITIALIZE";
     // 0x70 = 0b01110000
     // def      10010000      
     // 0x68 = 0b01111110 
     // OM = 11 (ultra-high-performance mode for X and Y); DO = 100 (10 Hz ODR)
-    writeReg(CTRL_REG1, 0x7E);
+    writeReg(CTRL_REG1, 0x70);
 
     // 0x00 = 0b00000000
     // FS = 00 (+/- 4 gauss full scale)
@@ -124,12 +124,12 @@ void LIS3MDL::enableDefault(void)
     // MD = 00 (continuous-conversion mode)
     writeReg(CTRL_REG3, 0x00);
 
-    // 0x0C = 0b00001100
+    // 0x0C = 0b00001100 BLE0 Z axis in low perf mode.
     // OMZ = 11 (ultra-high-performance mode for Z)
-    writeReg(CTRL_REG4, 0x0C);
+    writeReg(CTRL_REG4, 0x00);
 
-    // b00100000
-    writeReg(CTRL_REG5, 0x80);
+    // Default mode.
+    writeReg(CTRL_REG5, 0x0C);
   }
 }
 
@@ -216,12 +216,21 @@ void LIS3MDL::read()
   
 
   BOOST_LOG_TRIVIAL(debug) << "before: " << m.x << " " << m.y << " " << m.z;
-
-  m.x +=  1600;
-  m.y -=  3000;
-  m.z +=  750;
-
+ 
+ 
   BOOST_LOG_TRIVIAL(debug) << "after: " << m.x << " " << m.y << " " << m.z;
+
+  /************************************************************
+   * Soft Iron corrextion step
+
+  double rad = sqrt( 1762.0 * 1762.0 +  2560.0 * 2560.0);
+
+  double theta = asin( 2560.0 / rad );
+
+  
+  m.x = cos(theta) - sin(theta);
+  m.y = sin(theta) + cos(theta);
+   */
   
 }
 
@@ -245,12 +254,18 @@ void LIS3MDL::rw_device() {
       return;
     }
   }
-
   read();
+  /************************************************************
+   * Hard Iron Correction factor
+   * 1670.0 648.5 -15710.5
+  */
+  m.x +=  1670;
+  m.y +=  648;
+  m.z +=  -15710;
 
-  OxApp::l_mag->set_val(X,(double)m.x / 6842.0 );
-  OxApp::l_mag->set_val(Y,(double)m.y / 6842.0);
-  OxApp::l_mag->set_val(Z,(double)m.z / 6842.0);
+  OxApp::l_mag->set_val(X,(double)m.x * 0.14615609470 ); // mill Gausss
+  OxApp::l_mag->set_val(Y,(double)m.y * 0.14615609470 ); // 1 / 6.842
+  OxApp::l_mag->set_val(Z,(double)m.z * 0.14615609470 );
 
 }
 

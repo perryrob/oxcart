@@ -64,6 +64,16 @@ test_KEYBOARD_exe = executable('test_KEYBOARD','test_KEYBOARD.cpp',
                                   ])
 
 
+test_NCURSES_exe = executable('test_NCURSES','test_NCURSES.cpp',
+                                  include_directories : inc,
+                                  link_with : [oxlib,ox_device_lib],
+                                  dependencies :  [
+                                      thread_dep,rt_dep,
+                                      bs_dep,bt_dep,bt_log,bt_logs,gpsd_dep,
+                                      ncurses_dep,ncursesw_dep 
+                                  ])
+
+
 test('TCA9548A', test_TCA9548A_exe)
 test('BMP085', test_BMP085_exe)
 test('LSM6', test_LSM6_exe)

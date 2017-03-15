@@ -53,7 +53,8 @@ void KEYBOARD::open_keyboard() {
   FD_ZERO(&set); /* clear the set */
   FD_SET(device_fd, &set); /* add our file descriptor to the set */
 
-  timeout.tv_sec = 1;
+  timeout = {1, 0};
+  // timeout.tv_sec = 1;
 
   BOOST_LOG_TRIVIAL(debug) << "Opened keyboard..";
   OxApp::system_status->set_val( LED_2,0 );
@@ -66,10 +67,12 @@ void KEYBOARD::threaded_task() {
   ssize_t n;
   
   while (keep_running) {
+    BOOST_LOG_TRIVIAL(debug) << "Select...";
     rv = select(device_fd + 1, &set, NULL, NULL, &timeout);
-    if(rv == -1)
+    if(rv == -1) {
+      BOOST_LOG_TRIVIAL(error) << "Select error...";
       perror("select"); /* an error accured */
-    else if(rv == 0) {
+    } else if(rv == 0) {
       FD_ZERO(&set); /* clear the set */
       FD_SET(device_fd, &set); /* add our file descriptor to the set */
       timeout.tv_sec = 1;

@@ -87,6 +87,7 @@ class LIS3MDL : public OxI2CDevice {
     bool initialize;
     
     int16_t testReg(uint8_t address, regAddr reg);
+
 };
 
 template <typename Ta, typename Tb, typename To> void LIS3MDL::vector_cross(const vector<Ta> *a, const vector<Tb> *b, vector<To> *out)

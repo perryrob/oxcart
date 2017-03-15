@@ -25,6 +25,7 @@ inc = include_directories(INCLUDE_DIRS)
 
 add_global_arguments('-std=c++11', language : 'cpp')
 add_global_arguments('-g', language : 'cpp')
+
 add_global_arguments('-DBOOST_LOG_DYN_LINK', language : 'cpp')
 
 

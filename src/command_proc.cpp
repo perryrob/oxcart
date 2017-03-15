@@ -107,6 +107,19 @@ void CommandProc::process_command() {
     else
       OxApp::system_status->set_val( OUTPUT,1 );
   }
+   if(cmd_pressed == KEY_ENTER && cmd_string.compare( "CAL" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "CAL";
+    system("/home/perryr/oxcart/bin/ox.sh cal");
+   }
+   if(cmd_pressed == KEY_ENTER && cmd_string.compare( "RESTART" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "RESTART";
+    system("/home/perryr/oxcart/bin/ox.sh  restart");
+   }
+
+   if(cmd_pressed == KEY_ENTER && cmd_string.compare( "STOP" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "STOP";
+    system("/home/perryr/oxcart/bin/ox.sh  stop");
+   }
 
   /**
    * Now process page up or arrow actions based on the command.

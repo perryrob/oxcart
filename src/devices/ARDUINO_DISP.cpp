@@ -67,7 +67,7 @@ void ARDUINO_DISP::led_on( uint8_t LED, bool on ) {
 
     }
     break;
-  case 2:
+  case 3: // BUG Lower light compensate for arduino mis-code.
     if( on ) {
       Wire->beginTransmission(ARDUINO_I2CADDR);
       Wire->write(LED_2_ON);
@@ -80,7 +80,7 @@ void ARDUINO_DISP::led_on( uint8_t LED, bool on ) {
       BOOST_LOG_TRIVIAL(debug) << "LED_2_off";
     }
     break;
-  case 3:
+  case 2: // BUG Lower light compensate for arduino mis-code.
     if( on ) {
       Wire->beginTransmission(ARDUINO_I2CADDR);
       Wire->write(LED_3_ON);

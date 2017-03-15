@@ -18,7 +18,7 @@ Please see license in the project root directory fro more details
 #include "named_store.h"
 #include "ns.h"
 
-static const std::string OX_VERSION="OX 1.02"; 
+static const std::string OX_VERSION="OX 1.03"; 
 
 static const std::string MEM_NAME="OXCART_V1"; 
 static const unsigned int MEM_SIZE=64000;
@@ -26,7 +26,7 @@ static const unsigned int MEM_SIZE=64000;
 // Dimensional sizes
 static const unsigned int L_TEMP_SIZE=3;
 static const unsigned int L_ACCEL_SIZE=3;
-static const unsigned int L_GYRO_SIZE=3;
+static const unsigned int L_GYRO_SIZE=9;
 static const unsigned int L_MAG_SIZE=3;
 static const unsigned int GPS_BUFF_SIZE=1024;
 static const unsigned int KEYBOARD_BUFF_SIZE=1024;
@@ -34,6 +34,15 @@ static const unsigned int KEYBOARD_BUFF_SIZE=1024;
 static const unsigned int X=0;
 static const unsigned int Y=1;
 static const unsigned int Z=2;
+
+static const unsigned int X_HARD=3;
+static const unsigned int Y_HARD=4;
+static const unsigned int Z_HARD=5;
+static const unsigned int X_SOFT=6;
+static const unsigned int Y_SOFT=7;
+static const unsigned int Z_SOFT=8;
+
+
 
 static const unsigned int V=0;
 

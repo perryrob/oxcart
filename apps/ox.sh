@@ -12,6 +12,7 @@ oxalgos
 KILL_APPS="oxcart_d
 oxalgos
 oxclient
+mag_cal
 "
 
 ################################################################################
@@ -48,6 +49,10 @@ case "$1" in
     restart)
         $0 stop
         $0 start
+        ;;
+    cal)
+        $0 stop
+        ${EXE_PATH}/mag_cal &
         ;;
     stop)
         for app in ${KILL_APPS}; do
