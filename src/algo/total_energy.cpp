@@ -18,12 +18,12 @@ TotalEnergy::TotalEnergy() : OxAlgo( "Total Energy",100 ) {
     TAS_linear_regression = new LinRegres( 1000 );
     ALTITUDE_linear_regression = new LinRegres( 2500 );
     TE_ALTITUDE_linear_regression = new LinRegres( 5000 );
-
+    /*
     TE_ALTITUDE_linear_regression->set_filter(1.0,
                                              0.2,
                                              0.001,
                                              1.0);
-
+    */
   }
 
 void TotalEnergy::run_algo() {
