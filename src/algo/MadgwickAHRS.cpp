@@ -159,19 +159,30 @@ void Madgwick::update(double ax, double ay, double az,
    q[3] = q4 * norm;
    
    yaw   = atan2(2.0f * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]);   
-   pitch = -asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
+   pitch = asin(2.0f * (q[1] * q[3] - q[0] * q[2]));
    roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
    
-   pitch *= -RAD_DEG;
 
-   if ( yaw > 0.174533 ) {
-     yaw -= 0.174533; // 10 degrees for Tucson variation
+   if ( yaw < 0 && yaw >= -M_PI ) yaw *= -1.0;
+   if ( yaw < -M_PI ) yaw += 2.0 * M_PI;
+   
+   if ( OxApp::manual_double_vals->get_val(VARIATION) < 0 ) {
+     if ( yaw > OxApp::manual_double_vals->get_val(VARIATION) ) {
+       yaw +=  OxApp::manual_double_vals->get_val(VARIATION);
+     } else {
+       yaw +=  OxApp::manual_double_vals->get_val(VARIATION) + 2.0 * M_PI;
+     }
    } else {
-     yaw += 0.174533;
+     if ( yaw < 2.0 * M_PI -  OxApp::manual_double_vals->get_val(VARIATION) ) {
+       yaw +=  OxApp::manual_double_vals->get_val(VARIATION);
+     } else {
+       yaw -=  2.0 * M_PI - OxApp::manual_double_vals->get_val(VARIATION);
+     }
    }
-   yaw   *= -RAD_DEG;
-   if ( yaw < 0 ) yaw += 360.0;
+   
    roll  *= RAD_DEG;
+   pitch *= RAD_DEG;
+   yaw  *= RAD_DEG;
  }
  
 void Madgwick::run_algo() {

@@ -18,6 +18,7 @@ static const uint8_t DO_NOTHING=0;
 static const uint8_t SET_ALT=1;
 static const uint8_t SET_PITCH=2;
 static const uint8_t SET_MAC=3;
+static const uint8_t SET_VARIATION=4;
 
 class CommandProc {
 

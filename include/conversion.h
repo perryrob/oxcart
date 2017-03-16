@@ -9,6 +9,8 @@ Please see license in the project root directory fro more details
 #ifndef __CONVERSIONS_H__
 #define __CONVERSIONS_H__
 
+#include <cmath>
+
 class Conv {
 
  public:
@@ -26,6 +28,10 @@ class Conv {
 
   static inline double feet( double m ) {
     return m * 3.28084;
+  }
+
+  static inline double rad2deg( double m ) {
+    return m * 180.0 / M_PI;
   }
 
   

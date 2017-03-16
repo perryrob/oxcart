@@ -90,6 +90,11 @@ void CommandProc::process_command() {
     OxApp::system_status->set_val( LED_3,1 );
     CMD=SET_PITCH;
   }
+  if(cmd_pressed == KEY_ENTER && cmd_string.compare( "VAR" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "VAR";
+    OxApp::system_status->set_val( LED_3,1 );
+    CMD=SET_VARIATION;
+  }
   if(cmd_pressed == KEY_ENTER && cmd_string.compare( "SHUTDOWN" ) == 0 ) {
     OxApp::system_status->set_val( LED_3,1 );
     BOOST_LOG_TRIVIAL(info) << "SHUTDOWN";
@@ -172,6 +177,23 @@ void CommandProc::process_command() {
       if ( OxApp::manual_double_vals->get_val(MCREADY) < 0.0 ) {
         OxApp::manual_double_vals->set_val( MCREADY, 0.0 );
       }
+      break;
+    }
+  }
+  if (CMD == SET_VARIATION ) {
+    switch (cmd_pressed) {
+    case KEY_UP:
+      BOOST_LOG_TRIVIAL(info) << "SET_VARATION + 1";
+      OxApp::manual_double_vals->set_val( VARIATION,
+                    OxApp::manual_double_vals->get_val(VARIATION) +
+                                          0.008726646259971648 );
+      break;
+    case KEY_DOWN:
+      BOOST_LOG_TRIVIAL(info) << "SET_VARIATION - 1";
+      OxApp::manual_double_vals->set_val( VARIATION,
+            OxApp::manual_double_vals->get_val(VARIATION) -
+                                          0.008726646259971648 );
+
       break;
     }
   }

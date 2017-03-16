@@ -115,11 +115,12 @@ static const unsigned int LOAD_FACTOR=2;
 //GPS.NMEA
 
 //manual_double_vals
-static const unsigned int MANUAL_DOUBLE_VALS=4;
+static const unsigned int MANUAL_DOUBLE_VALS=5;
 static const unsigned int MCREADY=0;
 static const unsigned int WING_LOADING=1;
 static const unsigned int SEA_LEVEL_PRESSURE=2;
 static const unsigned int PITCH_ADJUSTMENT=3;
+static const unsigned int VARIATION=4;
 
 //manual_int_vals
 static const unsigned int MANUAL_INT_VALS=3;

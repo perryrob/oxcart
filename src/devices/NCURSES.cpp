@@ -17,6 +17,7 @@ Please see license in the project root directory fro more details
 #include <vector>
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 #include "trivial_log.h"
 
 NCURSES_DISP::NCURSES_DISP() : init(true),
@@ -71,7 +72,8 @@ void NCURSES_DISP::render_page() {
     ss.precision(0);
     // Show Pressure Alt
     ss << "Alt: " << std::fixed <<
-      Conv::feet(static_cast<double>(OxApp::algo_press->get_val(PRESSURE_ALTITUDE))) ;
+      Conv::feet(static_cast<double>(OxApp::algo_press->get_val(PRESSURE_ALTITUDE)))<<
+      " f";
     write_string( 0, 30, 1, ss.str() );
     ss.str(std::string()); // clear
     ss.precision(2);
@@ -81,7 +83,9 @@ void NCURSES_DISP::render_page() {
           static_cast<double>(OxApp::manual_double_vals->get_val(
                                    SEA_LEVEL_PRESSURE)
                               )
-                        );
+                        ) << " V:" << std::setprecision(0) <<
+    Conv::rad2deg(static_cast<double>(OxApp::manual_double_vals->get_val(VARIATION)))
+       << "d";
     write_string( 0, 40, 1, ss.str() );
 
     ss.str(std::string()); // clear
@@ -119,16 +123,6 @@ void NCURSES_DISP::render_page() {
       " led2: " <<  (bool)OxApp::system_status->get_val( LED_2 ) <<
       " led3: " <<  (bool)OxApp::system_status->get_val( LED_3 );
     write_string( 0, 90, 1, ss.str() );
-
-    ss.str(std::string()); // clear
-    ss.precision(1);
-    ss <<   std::fixed << OxApp::l_mag->get_val(X) << " " <<
-      std::fixed << OxApp::l_mag->get_val(Y) << " " <<
-      std::fixed << OxApp::l_mag->get_val(Z) ;
-    
-    write_string( 0, 100, 1, ss.str() );
-
-
     break;    
   }
 

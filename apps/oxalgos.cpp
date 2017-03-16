@@ -49,6 +49,7 @@ int main(int argc, char * argv[] ){
   OxApp::manual_double_vals->set_val(MCREADY,0.0);
   OxApp::manual_double_vals->set_val(WING_LOADING,1.0);
   OxApp::manual_double_vals->set_val(SEA_LEVEL_PRESSURE,101325.0);
+  OxApp::manual_double_vals->set_val(VARIATION,-0.174533); //-10D for Tucson variation
   
   OxAlgoThread algo_thread; 
   Madgwick mw;

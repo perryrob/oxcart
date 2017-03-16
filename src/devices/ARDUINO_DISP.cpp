@@ -16,6 +16,7 @@ Please see license in the project root directory fro more details
 #include <vector>
 #include <ctime>
 #include <sstream>
+#include <iomanip>
 #include "trivial_log.h"
 
 ARDUINO_DISP::ARDUINO_DISP()  : OxI2CDevice( "ARDUINO_DISP"), init(true),
@@ -187,7 +188,8 @@ void ARDUINO_DISP::render_page() {
           static_cast<double>(OxApp::manual_double_vals->get_val(
                                    SEA_LEVEL_PRESSURE)
                               )
-                        );
+                        ) << " " << std::setprecision(0) <<
+    Conv::rad2deg(static_cast<double>(OxApp::manual_double_vals->get_val(VARIATION)));
     write_string( 0, 40, 1, ss.str() );
 
     ss.str(std::string()); // clear
