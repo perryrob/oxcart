@@ -69,10 +69,9 @@ void KOBO::rw_device() {
 
   if( bus->is_open() ) {
     bus->write( GPRMC );
-    bus->write( GPGGA );
-
     bus->write( PGRMZck.get_sentence() );
     bus->write( PITV3ck.get_sentence() );
+    bus->write( GPGGA );
     bus->write( PITV4ck.get_sentence() );
     bus->write( PITV5ck.get_sentence() );
 

@@ -163,26 +163,25 @@ void Madgwick::update(double ax, double ay, double az,
    roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
    
 
-   if ( yaw < 0 && yaw >= -M_PI ) yaw *= -1.0;
-   if ( yaw < -M_PI ) yaw += 2.0 * M_PI;
-   
-   if ( OxApp::manual_double_vals->get_val(VARIATION) < 0 ) {
-     if ( yaw > OxApp::manual_double_vals->get_val(VARIATION) ) {
-       yaw +=  OxApp::manual_double_vals->get_val(VARIATION);
-     } else {
-       yaw +=  OxApp::manual_double_vals->get_val(VARIATION) + 2.0 * M_PI;
-     }
-   } else {
-     if ( yaw < 2.0 * M_PI -  OxApp::manual_double_vals->get_val(VARIATION) ) {
-       yaw +=  OxApp::manual_double_vals->get_val(VARIATION);
-     } else {
-       yaw -=  2.0 * M_PI - OxApp::manual_double_vals->get_val(VARIATION);
-     }
+   if ( yaw < 0 && yaw >= -M_PI )
+     yaw = -1.0 * yaw;
+   else if ( yaw <= M_PI )
+     yaw = 2.0 * M_PI - yaw;
+
+   double tmp_yaw = yaw + OxApp::manual_double_vals->get_val(VARIATION);
+
+   if( tmp_yaw < 0 ) {
+     yaw = 2.0 * M_PI + tmp_yaw;
+   } else if ( tmp_yaw > 0 ) {
+     if( tmp_yaw > 2.0 * M_PI )
+       yaw = tmp_yaw - 2.0 * M_PI;
+     else
+       yaw = tmp_yaw;
    }
-   
+   yaw  *= RAD_DEG;
    roll  *= RAD_DEG;
    pitch *= RAD_DEG;
-   yaw  *= RAD_DEG;
+
  }
  
 void Madgwick::run_algo() {
