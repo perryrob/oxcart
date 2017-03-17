@@ -46,7 +46,8 @@ bool BMP085::begin(uint8_t mode) {
   mc = read16(BMP085_CAL_MC);
   md = read16(BMP085_CAL_MD);
 
-
+  initialized = true;
+  
   return true;
 }
 
@@ -176,6 +177,7 @@ int32_t BMP085::readPressure(void) {
 #if BMP085_DEBUG == 1
   Serial.print("p = "); Serial.println(p);
 #endif
+  lastP = kal.getFilteredValue(lastP);
   return lastP;
 }
 
@@ -263,33 +265,15 @@ void BMP085::write8(uint8_t a, uint8_t d) {
 void BMP085::rw_device() {
   
   if (is_device_failed()) {
-    BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<<get_name()<< " channel: " <<
-      (int)(((TCA9548A*)get_multiplexer())->get_channel());
-    if (is_multiplexed()) {
-      switch(((TCA9548A*)get_multiplexer())->get_channel() ) {
-      case TCA9548A_CH1:
-        OxApp::l_pressure->set_val(BMP_TE,0);
-        OxApp::l_temp->set_val(BMP_TE,0);
-        OxApp::algo_press->set_val(TE_ALTITUDE,0);
-        break;
-      case TCA9548A_CH2:
-        OxApp::l_pressure->set_val(BMP_PITOT,0);
-        OxApp::l_temp->set_val(BMP_PITOT,0);
-        break;
-      case TCA9548A_CH3:
-        OxApp::l_pressure->set_val(BMP_STATIC,0);
-        OxApp::l_temp->set_val(BMP_STATIC,0);
-        OxApp::algo_press->set_val(ALTITUDE,0);
-        break;        
-      }
-    }
     return;
   }
-  if ( ! begin(BMP085_STANDARD) ) {
-    BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name()<< " channel: " <<
-      (int)(((TCA9548A*)get_multiplexer())->get_channel());
-    set_device_failed();
-    return;
+  if( ! initialized ) {
+    if ( ! begin(BMP085_STANDARD) ) {
+      BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name()<< " channel: " <<
+        (int)(((TCA9548A*)get_multiplexer())->get_channel());
+      set_device_failed();
+      return;
+    }
   }
   // meters I get temp and pascals with this single read
   readAltitude((float)OxApp::manual_double_vals->get_val(SEA_LEVEL_PRESSURE));  

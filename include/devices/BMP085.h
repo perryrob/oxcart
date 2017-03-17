@@ -22,6 +22,7 @@
 
 #include "arduino_core.h"
 #include "oxi2cdevice.h"
+#include "algo/kalman.h"
 
 #define BMP085_DEBUG 0
 
@@ -83,7 +84,7 @@ class BMP085 : public OxI2CDevice {
 
   int32_t lastP;
   float lastT,lastA;
-
+  Kalman kal;
 };
 
 

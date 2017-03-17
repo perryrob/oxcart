@@ -13,12 +13,14 @@ Please see license in the project root directory fro more details
 #include "arduino_wire.h"
 #include <string>
 
+static const unsigned int MAX_RETRY_COUNT = 5000;
+
 class OxI2CDevice {
 
 public:
 
- OxI2CDevice( const std::string &name ) : name( name ), multiplexer(0),
-    device_failed(false) {}
+ OxI2CDevice( const std::string &name ) :  initialized(false),
+    name( name ), multiplexer(0), device_failed(false), retry_count(0) {}
 
   inline std::string const & get_name() { return name; }
 
@@ -30,7 +32,17 @@ public:
   inline OxI2CDevice * get_multiplexer() { return multiplexer; }
   void set_bus( ArduinoWire *i2cbus ) { Wire = i2cbus; }
 
-  inline bool is_device_failed() { return device_failed; }
+  inline bool is_device_failed() {
+    if( device_failed ) {
+      ++retry_count;
+      if ( retry_count >= MAX_RETRY_COUNT  ) {
+        device_failed = false;
+        initialized = false;
+        retry_count = 0;
+      }
+    }
+    return device_failed;
+  }
   inline void set_device_failed(){ device_failed = true; }
 
   virtual void rw_device() = 0;
@@ -38,15 +50,18 @@ public:
   
 protected:
 
-  ArduinoWire *Wire;  
   OxI2CDevice() {}  
   virtual ~OxI2CDevice(){}
-
+  ArduinoWire *Wire;
+  bool initialized;
+  
 private:
 
   const std::string name;
   OxI2CDevice *multiplexer;
   bool device_failed;
+  unsigned int retry_count;
+
 };
 
 #endif

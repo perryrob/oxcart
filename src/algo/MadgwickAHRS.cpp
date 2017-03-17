@@ -178,10 +178,6 @@ void Madgwick::update(double ax, double ay, double az,
      else
        yaw = tmp_yaw;
    }
-   yaw  *= RAD_DEG;
-   roll  *= RAD_DEG;
-   pitch *= RAD_DEG;
-
  }
  
 void Madgwick::run_algo() {

@@ -38,9 +38,6 @@ LSM6::LSM6()  : OxI2CDevice( "LSM6DS33")
 
   a_mag = 0.0;
 
-  initialize=true;
-
-
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -123,11 +120,11 @@ void LSM6::enableDefault(void)
 {
   if (_device == device_DS33)
   {
-    if( initialize ) {
+    if( initialized ) {
       // Reset device
       // Don't do this. It seems to cause the unit to become unstable.
       // writeReg(CTRL3_C, 0x84);
-      initialize=false;
+      initialized=false;
     }
 
     BOOST_LOG_TRIVIAL(debug) << "device_DS33" ;
@@ -320,7 +317,7 @@ void LSM6::rw_device() {
       return;
     }
     
-    if ( initialize ) {
+    if ( ! initialized ) {
       if (! init() ) {
         BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
         set_device_failed();

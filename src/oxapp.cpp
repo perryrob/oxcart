@@ -34,6 +34,7 @@ NamedStore<double> * OxApp::algo_mad_euler = new NamedStore<double>(
 NamedStore<double> * OxApp::algo_mad_quat = new NamedStore<double>(
                                                            ALGO_MAD_QUAT_SIZE);
 NamedStore<double> * OxApp::algo_press = new NamedStore<double>(ALGO_PRESS_SIZE);
+NamedStore<double> * OxApp::algo_wind = new NamedStore<double>(ALGO_WIND_SIZE);
 NamedStore<double> * OxApp::algo_press_rate = new NamedStore<double>(
                                                           ALGO_PRESS_RATE_SIZE);
 
@@ -72,6 +73,7 @@ bip::managed_shared_memory * OxApp::create() {
     delete algo_mad_euler;
     delete algo_mad_quat;
     delete algo_press;
+    delete algo_wind;
     delete algo_press_rate;
 
     delete manual_double_vals;
@@ -100,6 +102,10 @@ bip::managed_shared_memory * OxApp::create() {
                                             ALGO_MAD_QUAT_SIZE );
     algo_press = new NamedStore<double>( "ALGO.pressure", OxApp::shm,
                                          ALGO_PRESS_SIZE );
+
+    algo_wind = new NamedStore<double>( "ALGO.wind", OxApp::shm,
+                                         ALGO_WIND_SIZE );
+
     algo_press_rate = new NamedStore<double>("ALGO.pressure_rate",OxApp::shm,
                                              ALGO_PRESS_RATE_SIZE);
 
@@ -157,6 +163,7 @@ void OxApp::destroy() {
   delete algo_mad_euler;
   delete algo_mad_quat;
   delete algo_press;
+  delete algo_wind;
   delete algo_press_rate;
 
   delete algo_misc_rate;

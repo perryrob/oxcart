@@ -32,7 +32,7 @@ Please see license in the project root directory fro more details
 
 #define ARDUINO_I2CADDR 0x20
 
-static const uint8_t MAX_PAGES=1;
+static const uint8_t MAX_PAGES=2;
 
 class ARDUINO_DISP : public OxI2CDevice {
 

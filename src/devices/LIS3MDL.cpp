@@ -20,10 +20,9 @@
 LIS3MDL::LIS3MDL() : OxI2CDevice( "LIS3MDL") 
 {
   _device = device_auto;
-
   io_timeout = 0;  // 0 = no timeout
   did_timeout = false;
-  initialize=true;
+
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -86,9 +85,9 @@ bool LIS3MDL::init(deviceType device, sa1State sa1)
     case device_auto:
       break;
   }
-  enableDefault();
-  if( initialize ) {
-    initialize=false;
+  if( ! initialized ) {
+    enableDefault();
+    initialized = true;
   }
   return true;
 }
@@ -247,7 +246,7 @@ void LIS3MDL::rw_device() {
     BOOST_LOG_TRIVIAL(warning) <<"Offline Device: "<< get_name();
     return;
   }
-  if ( initialize ) {
+  if ( ! initialized ) {
     if (! init() ) {
       BOOST_LOG_TRIVIAL(error) <<"** Device FAILED: "<<get_name();
       set_device_failed();

@@ -5,7 +5,8 @@ oxcart_algo_sources = [
     'total_energy.cpp',
     'misc_rate.cpp',
     'polar.cpp',
-    'checksum.cpp'
+    'checksum.cpp',
+    'wind.cpp'  
 ]
 
 

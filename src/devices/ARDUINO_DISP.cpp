@@ -157,15 +157,24 @@ void ARDUINO_DISP::render_page() {
     OxApp::manual_int_vals->set_val( DISP_CMD,0 );
   }
 
+  if ( OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) > MAX_PAGES - 1 ) {
+    OxApp::manual_int_vals->set_val( DISP_PAGE_NO, 0 );
+  }
+  if ( OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) < 0 ) {
+    OxApp::manual_int_vals->set_val( DISP_PAGE_NO, MAX_PAGES - 1);
+  }
+
+  
+  std::string tmp_str;
+  std::stringstream ss;
+
   switch( OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) ) {
 
   case 0:
-    write_string( 30, 0, 1, OX_VERSION );
+    write_string( 20, 0, 1, OX_VERSION + " p1");
     // Display the date and time
-    std::string tmp_str;
     OxApp::get_time_str( tmp_str );
     write_string( 0, 10, 1, tmp_str );
-    std::stringstream ss;
     // Show GPS mode
     if(OxApp::l_gps_fix->get_val(STATUS)==0)
       ss << "GPS: NO FIX";
@@ -201,11 +210,14 @@ void ARDUINO_DISP::render_page() {
     
     ss.str(std::string()); // clear
     ss.precision(0);
-    ss << "RPY: " << std::fixed << OxApp::algo_mad_euler->get_val(ROLL) <<
+    ss << "RPY: " << std::fixed <<
+      Conv::rad2deg(OxApp::algo_mad_euler->get_val(ROLL)) <<
       "," <<
-      std::fixed << OxApp::algo_mad_euler->get_val(PITCH) <<
+      std::fixed <<
+      Conv::rad2deg(OxApp::algo_mad_euler->get_val(PITCH)) <<
       "," <<
-      std::fixed << OxApp::algo_mad_euler->get_val(YAW);
+      std::fixed <<
+      Conv::rad2deg(OxApp::algo_mad_euler->get_val(YAW));
     write_string( 0, 60, 1, ss.str() );
     ss.str(std::string()); // clear
     ss.precision(1);
@@ -217,6 +229,34 @@ void ARDUINO_DISP::render_page() {
       ss << " data:OFF";
     }
     
+    write_string( 0, 70, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();
+    write_string( 0, 80, 1, ss.str() );
+    break;
+    
+  case 1:
+    write_string( 20, 0, 1, OX_VERSION + " p2");
+    ss.str(std::string());
+    ss << "    ";
+    write_string( 0, 10, 1, ss.str() );
+    ss.str(std::string());
+    ss << "ALT, MAC, PITCH";
+    write_string( 0, 20, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "VAR, SHUTDOWN";
+    write_string( 0, 30, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "SHUTDOWN";
+    write_string( 0, 40, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "OUTPUT, CAL";
+    write_string( 0, 50, 1, ss.str() );    
+    ss.str(std::string()); // clear
+    ss << "RESTART";
+    write_string( 0, 60, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "STOP, PAGE";
     write_string( 0, 70, 1, ss.str() );
     ss.str(std::string()); // clear
     ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();

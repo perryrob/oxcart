@@ -125,7 +125,11 @@ void CommandProc::process_command() {
     BOOST_LOG_TRIVIAL(info) << "STOP";
     system("/home/perryr/oxcart/bin/ox.sh  stop");
    }
-
+   if(cmd_pressed == KEY_ENTER && cmd_string.compare( "PAGE" ) == 0 ) {
+    BOOST_LOG_TRIVIAL(info) << "PAGE";
+    OxApp::system_status->set_val( LED_3,1 );
+    CMD=PAGE;
+  }
   /**
    * Now process page up or arrow actions based on the command.
    */
@@ -197,4 +201,19 @@ void CommandProc::process_command() {
       break;
     }
   }
+  if (CMD == PAGE ) {
+    switch (cmd_pressed) {
+    case KEY_UP:
+      BOOST_LOG_TRIVIAL(info) << "PAGE + 1";
+      OxApp::manual_int_vals->set_val( DISP_PAGE_NO,
+              OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) + 1);
+      break;
+    case KEY_DOWN:
+      BOOST_LOG_TRIVIAL(info) << "PAGE - 1";
+            OxApp::manual_int_vals->set_val( DISP_PAGE_NO,
+              OxApp::manual_int_vals->get_val( DISP_PAGE_NO ) - 1);
+
+      break;
+    }
+  }  
 }

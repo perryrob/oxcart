@@ -20,6 +20,7 @@
 #include <math.h>
 #include "oxalgo.h"
 #include <stdint.h>
+#include "algo/kalman.h"
 //-------------------------------------------------------------------------------
 // Variable declaration
 class Madgwick : public OxAlgo {

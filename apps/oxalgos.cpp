@@ -14,6 +14,7 @@ Please see license in the project root directory fro more details
 #include "algo/total_energy.h"
 #include "algo/airdata.h"
 #include "algo/misc_rate.h"
+#include "algo/wind.h"
 
 
 #include <signal.h>
@@ -56,11 +57,13 @@ int main(int argc, char * argv[] ){
   TotalEnergy te;
   MiscRate mr;
   Airdata a;
+  Wind wind;
   
   algo_thread.add_algo(&mw);
   algo_thread.add_algo(&a);
   algo_thread.add_algo(&te);
   algo_thread.add_algo(&mr);
+  algo_thread.add_algo(&wind);
 
   algo_thread.run();
   

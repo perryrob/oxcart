@@ -9,6 +9,7 @@ Please see license in the project root directory fro more details
 
 #include "oxapp.h"
 #include "constants.h"
+#include "conversion.h"
 #include <boost/thread.hpp>
 #include <boost/chrono.hpp>
 #include "devices/KOBO.h"
@@ -35,9 +36,10 @@ void KOBO::rw_device() {
     "," << "2";
   Checksum PGRMZck(PGRMZ);
   
-  PITV3 << "PITV3," << OxApp::algo_mad_euler->get_val( ROLL ) << "," <<
-    OxApp::algo_mad_euler->get_val( PITCH ) << "," <<
-    OxApp::algo_mad_euler->get_val( YAW ) << "," <<
+  PITV3 << "PITV3," <<
+    Conv::rad2deg(OxApp::algo_mad_euler->get_val( ROLL )) << "," <<
+    Conv::rad2deg(OxApp::algo_mad_euler->get_val( PITCH )) << "," <<
+    Conv::rad2deg(OxApp::algo_mad_euler->get_val( YAW )) << "," <<
     OxApp::algo_press->get_val(AIRSPEED) << "," <<
     OxApp::algo_misc_rate->get_val(LOAD_FACTOR);
   Checksum PITV3ck(PITV3);

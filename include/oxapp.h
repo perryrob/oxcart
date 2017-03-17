@@ -42,8 +42,6 @@ static const unsigned int X_SOFT=6;
 static const unsigned int Y_SOFT=7;
 static const unsigned int Z_SOFT=8;
 
-
-
 static const unsigned int V=0;
 
 // ALGO.pressure
@@ -82,6 +80,11 @@ static const unsigned int A=0;
 static const unsigned int B=1;
 static const unsigned int C=2;
 static const unsigned int D=3;
+
+// ALGO.wind
+static const unsigned int ALGO_WIND_SIZE=2;
+static const unsigned int WIND_SPEED=0;
+static const unsigned int WIND_DIR=1;
 
 // Multiplexer
 static const unsigned int CH1=0;
@@ -185,6 +188,7 @@ public:
   static NamedStore<double> *algo_mad_euler;
   static NamedStore<double> *algo_mad_quat;
   static NamedStore<double> *algo_press;
+  static NamedStore<double> *algo_wind;
   static NamedStore<double> *algo_press_rate;
 
   static NamedStore<double> *algo_misc_rate;

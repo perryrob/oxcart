@@ -123,6 +123,11 @@ void NCURSES_DISP::render_page() {
       " led2: " <<  (bool)OxApp::system_status->get_val( LED_2 ) <<
       " led3: " <<  (bool)OxApp::system_status->get_val( LED_3 );
     write_string( 0, 90, 1, ss.str() );
+
+    ss.str(std::string()); // clear
+    ss  <<  Conv::knots(OxApp::algo_wind->get_val( WIND_SPEED )) << " @ " <<
+      Conv::rad2deg(OxApp::algo_wind->get_val( WIND_DIR )) ;
+    write_string( 0, 100, 1, ss.str() );    
     break;    
   }
 

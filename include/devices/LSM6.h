@@ -143,7 +143,6 @@ class LSM6 : public OxI2CDevice {
   bool did_timeout;
   
   bool callibrated;
-  bool initialize;
   double a_mag;
   
   int16_t testReg(uint8_t address, regAddr reg);
