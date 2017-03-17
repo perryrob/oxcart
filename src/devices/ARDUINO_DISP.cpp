@@ -6,8 +6,8 @@ All rights reserved.
 Please see license in the project root directory fro more details
 
 */
-
 #include "oxapp.h"
+#include "algo/polar.h"
 #include "devices/ARDUINO_DISP.h"
 #include "devices/TCA9548A.h"
 #include "conversion.h"
@@ -164,6 +164,7 @@ void ARDUINO_DISP::render_page() {
     OxApp::manual_int_vals->set_val( DISP_PAGE_NO, MAX_PAGES - 1);
   }
 
+  Polar polar;
   
   std::string tmp_str;
   std::stringstream ss;
@@ -234,9 +235,49 @@ void ARDUINO_DISP::render_page() {
     ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();
     write_string( 0, 80, 1, ss.str() );
     break;
-    
+
   case 1:
     write_string( 20, 0, 1, OX_VERSION + " p2");
+    // Display the date and time
+    OxApp::get_time_str( tmp_str );
+    write_string( 0, 10, 1, tmp_str );
+    ss.str(std::string()); // clear
+    ss.precision(0);
+    ss << "TE: " <<  std::fixed <<
+      Conv::feet(OxApp::algo_press->get_val(TE_ALTITUDE)) << " f";
+    write_string( 0, 20, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "AL: " <<  std::fixed <<
+      Conv::feet(OxApp::algo_press->get_val(ALTITUDE)) << " f";
+    write_string( 0, 30, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "SP: " <<  std::fixed <<
+      Conv::knots(OxApp::algo_press->get_val(AIRSPEED)) << " k";
+    write_string( 0, 40, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "TAS: " <<  std::fixed <<
+      Conv::knots(OxApp::algo_press->get_val(TAS)) << " k";
+    write_string( 0, 50, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "GS: " <<   std::fixed <<
+      Conv::knots(OxApp::l_gps_fix->get_val(SPEED)) << " k";
+    write_string( 0, 60, 1, ss.str() );
+    ss.str(std::string()); // clear
+    if ( OxApp::algo_press->get_val(AIRSPEED) > 20.0 ) {
+      ss << "LD: " <<  std::fixed <<
+        fabs(OxApp::algo_press->get_val(AIRSPEED)  /
+             polar.sink_rate(OxApp::algo_press->get_val(AIRSPEED))) ;
+    } else {
+      ss << "LD: " <<  "~";
+    }
+    write_string( 0, 70, 1, ss.str() );
+    ss.str(std::string()); // clear
+    ss << "> " <<  OxApp::KEYBOARD_BUFFER->get_str();
+    write_string( 0, 80, 1, ss.str() );
+    break;
+
+  case 2:
+    write_string( 20, 0, 1, OX_VERSION + " p3");
     ss.str(std::string());
     ss << "    ";
     write_string( 0, 10, 1, ss.str() );

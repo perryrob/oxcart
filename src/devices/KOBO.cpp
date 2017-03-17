@@ -48,8 +48,8 @@ void KOBO::rw_device() {
 
   
   PITV5 << "PITV5," <<
-    fixed << 0.0 << "," <<
-    fixed << 0.0 << "," <<
+    fixed << OxApp::algo_wind->get_val( WIND_SPEED ) << "," <<
+    fixed << Conv::rad2deg(OxApp::algo_wind->get_val( WIND_DIR )) << "," <<
     fixed << sqrt( OxApp::algo_press->get_val(LOCAL_RHO) / SI_RHO ) << "," <<
     fixed << 0.0 << "," <<
     0 << "," <<

@@ -16,7 +16,7 @@ static const int DEGREE = 3;
 static const int N=24;
 
 // ASW20a m/s N20UZ
-double POLAR[N][2]={
+static const double POLAR[N][2]={
   19.44442765,-1.00,
   20.83331533,-0.75,
   22.22220302,-0.69,
@@ -46,8 +46,8 @@ double POLAR[N][2]={
 class Polar {
   
  public:
- Polar() : n(DEGREE) {}
-  void calc_poly();
+ Polar() : n(DEGREE) { calc_poly(); }
+
   inline double sink_rate( double airspeed_ms ) {
     if ( airspeed_ms  < 15.0 ) return 0.0;
     double ret_val=0;
@@ -58,6 +58,7 @@ class Polar {
   ~Polar(){}
 
  private:
+  void calc_poly();
   int n; //degree of polynomial
   double a[DEGREE+1];
   

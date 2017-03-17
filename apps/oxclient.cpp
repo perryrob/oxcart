@@ -206,8 +206,14 @@ int main(int argc, char * argv[] ){
         endl;
       cout << "WingLoading: " <<
         OxApp::manual_double_vals->get_val(WING_LOADING) << endl;
+      cout << "Wind: "  << OxApp::algo_wind->get_val( WIND_SPEED) << " @ " <<
+        Conv::rad2deg(OxApp::algo_wind->get_val( WIND_DIR )) << " " <<
+        OxApp::algo_press->get_val( TAS ) << " " <<
+        OxApp::l_gps_fix->get_val(  SPEED ) << " " <<
+        OxApp::l_gps_fix->get_val(  TRACK ) << " " <<
+        OxApp::algo_mad_euler->get_val( YAW ) << " " << endl;
+        
       cout << "> " << OxApp::KEYBOARD_BUFFER->get_str() << endl;
-
       cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<<endl;
       stringstream PGRMZ;
       stringstream PITV3;

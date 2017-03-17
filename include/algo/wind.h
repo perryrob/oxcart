@@ -6,7 +6,7 @@
 class Wind : public OxAlgo {
 
  public:
-  Wind(){};
+  Wind() : OxAlgo("Wind",100) {};
   void run_algo();
 };
 
