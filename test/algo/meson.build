@@ -47,9 +47,18 @@ test_wind_exe = executable('wind', 'test_wind.cpp',
                                       bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
                                   ])
 
+test_turbulence_exe = executable('turbulence', 'test_turbulence.cpp',
+                                  include_directories : inc,
+                                  link_with : [oxlib,ox_algo_lib],
+                                  dependencies :  [
+                                      thread_dep,rt_dep,
+                                      bs_dep,bt_dep,bt_log,bt_logs,bt_chrono
+                                  ])
+
 test('madg', test_Madg_exe)
 test('airdata', test_airdata_exe)
 test('linregres', test_linregres_exe)
 test('nmea_cksum', test_cksum_exe)
 test('polar', test_polar_exe)
 test('wind', test_wind_exe)
+test('turbulence', test_turbulence_exe)
